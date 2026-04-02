@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --accent: #1D9E75; --accent-soft: #e1f5ee;
+    --eu-blue: #003399; --eu-gold: #FFCC00;
+    --red: #C0392B; --amber: #EF9F27; --green: #1D9E75; --blue: #378ADD; --purple: #7F77DD;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .top-bar {
+    background: var(--ink); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 48px; position: sticky; top: 0; z-index: 100;
+  }
+  .back-link {
+    font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none;
+    display: flex; align-items: center; gap: 6px; transition: color 0.15s;
+  }
+  .back-link:hover { color: rgba(247,245,240,1); }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  .hero { background: #003399; color: #fff; padding: 3.5rem 2rem 3rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #FFCC00; margin-bottom: 1rem; }
+  .hero-title {
+    font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 400; line-height: 1.15; letter-spacing: -0.02em;
+    margin-bottom: 1rem; max-width: 700px;
+  }
+  .hero-title em { font-style: italic; color: #FFCC00; }
+  .hero-meta { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.5); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .tab-bar {
+    background: #fff; border-bottom: 1px solid var(--line);
+    padding: 0 2rem; position: sticky; top: 48px; z-index: 90;
+    display: flex; overflow-x: auto; scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 14px 18px; font-size: 13px; font-weight: 400;
+    color: var(--ink-muted); background: none; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    white-space: nowrap; transition: all 0.15s; font-family: var(--sans);
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: #003399; font-weight: 500; }
+
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lede {
+    font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-style: italic; line-height: 1.75; color: var(--ink-soft);
+    margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line);
+  }
+
+  h2 { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem; }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+  .card-red    { border-left: 3px solid var(--red); }
+  .card-amber  { border-left: 3px solid var(--amber); }
+  .card-blue   { border-left: 3px solid var(--blue); }
+  .card-green  { border-left: 3px solid var(--green); }
+  .card-purple { border-left: 3px solid var(--purple); }
+  .card-eu     { border-left: 3px solid #003399; }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-red    { background: #fdf0ee; color: #922b21; }
+  .tag-amber  { background: #FAEEDA; color: #854F0B; }
+  .tag-blue   { background: #E6F1FB; color: #185FA5; }
+  .tag-green  { background: #e1f5ee; color: #0F6E56; }
+  .tag-purple { background: #EEEDFE; color: #534AB7; }
+  .tag-gray   { background: var(--paper-warm); color: var(--ink-muted); }
+  .tag-eu     { background: #003399; color: #FFCC00; }
+
+  /* RISK TIER STACK */
+  .tier-stack { display: flex; flex-direction: column; gap: 3px; margin-bottom: 1.5rem; }
+  .tier {
+    border-radius: 6px; padding: 1.25rem 1.5rem;
+    display: grid; grid-template-columns: 140px 1fr; gap: 1rem; align-items: start;
+  }
+  .tier-unacceptable { background: #fdf0ee; border: 1px solid rgba(192,57,43,0.2); }
+  .tier-high         { background: #FAEEDA; border: 1px solid rgba(239,159,39,0.25); }
+  .tier-limited      { background: #E6F1FB; border: 1px solid rgba(55,138,221,0.2); }
+  .tier-minimal      { background: #e1f5ee; border: 1px solid rgba(29,158,117,0.2); }
+
+  .tier-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .tier-unacceptable .tier-label { color: #922b21; }
+  .tier-high         .tier-label { color: #854F0B; }
+  .tier-limited      .tier-label { color: #185FA5; }
+  .tier-minimal      .tier-label { color: #0F6E56; }
+
+  .tier-desc { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
+  .tier-desc strong { font-weight: 500; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: var(--line); }
+  .tl-item { position: relative; padding-bottom: 1.5rem; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -1.5rem; top: 4px;
+    width: 13px; height: 13px; border-radius: 50%;
+    border: 2px solid var(--paper-card); background: #003399;
+  }
+  .tl-dot.past   { background: var(--ink-muted); }
+  .tl-dot.now    { background: var(--amber); box-shadow: 0 0 0 3px rgba(239,159,39,0.2); }
+  .tl-dot.future { background: var(--line); border-color: var(--line); }
+  .tl-date { font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 3px; }
+  .tl-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .tl-body { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+
+  /* OBLIGATIONS TABLE */
+  .oblig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .oblig-cell { background: var(--paper-card); padding: 1.25rem; }
+  .oblig-role { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 8px; }
+  .oblig-cell h3 { font-size: 13px; margin-bottom: 10px; }
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+
+  /* NIST MAPPING */
+  .map-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); margin-bottom: 1px; }
+  .map-row:first-child .map-cell { border-radius: 6px 6px 0 0; }
+  .map-row:last-child .map-cell  { border-radius: 0 0 6px 6px; }
+  .map-cell { background: var(--paper-card); padding: 1rem 1.25rem; }
+  .map-cell.header { background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .map-cell p { font-size: 13px; }
+  .map-wrap { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+
+  /* TERM GRID */
+  .sub-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 8px; }
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .term-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open  { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .term-name { font-size: 13px; font-weight: 500; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def  { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  /* PITCH */
+  .pitch-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+  .pitch-q { background: var(--paper-warm); padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .pitch-a { padding: 14px 16px; font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--ink); }
+
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  @media (max-width: 600px) {
+    .tier { grid-template-columns: 1fr; gap: 4px; }
+    .oblig-grid { grid-template-columns: 1fr; }
+    .map-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Regulation · European Union</div>
+    <h1 class="hero-title">EU <em>Artificial Intelligence</em> Act</h1>
+    <div class="hero-meta">
+      <span>Regulation (EU) 2024/1689 · In force August 2024</span>
+      <span>5 sections · Interactive</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('risk', this)">Risk Tiers</button>
+  <button class="tab-btn" onclick="showTab('obligations', this)">Obligations & Timeline</button>
+  <button class="tab-btn" onclick="showTab('nist', this)">vs NIST RMF</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">The EU AI Act is the world's first comprehensive legal framework for AI — binding law, not a voluntary framework. If your AI system affects people in the EU, it applies to you, regardless of where in the world you're based.</p>
+
+    <div class="card card-eu">
+      <span class="tag tag-eu">What it is</span>
+      <h3>The world's first binding AI law</h3>
+      <p>Regulation (EU) 2024/1689 entered into force on 1 August 2024. Unlike NIST RMF — which is voluntary — this is law with teeth. Fines for the most serious violations reach <strong>€35 million or 7% of global annual turnover</strong>, whichever is higher. It takes a risk-based approach: the more an AI system can harm people, the stricter the rules it faces.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Extraterritorial reach</span>
+      <h3>It applies beyond Europe's borders</h3>
+      <p>This is the detail that surprises most clients. The Act applies to any organisation — anywhere in the world — whose AI systems are <strong>placed on the EU market or used in the EU</strong>. If you're an Australian company whose HR screening tool is used by a European subsidiary, the Act applies. This is the EU's "Brussels Effect" in action: one regulation that shapes global practice.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">Core logic</span>
+      <h3>Risk-based, not technology-based</h3>
+      <p>The Act doesn't regulate specific technologies — it regulates <strong>the risk a system poses to people</strong>. The same underlying model could be minimal risk in one use case and high risk in another. A recommendation engine for films: minimal risk. The same engine used to rank job applicants: high risk. Context is everything.</p>
+    </div>
+
+    <div class="card card-green">
+      <span class="tag tag-green">Who it targets</span>
+      <h3>Providers and deployers — both have obligations</h3>
+      <p><strong>Providers</strong> (those who develop or place AI on the market) carry the heaviest burden. <strong>Deployers</strong> (those who use AI in their operations) have lighter but real obligations. Critically: if a deployer puts their own brand on a system or makes substantial changes to it, they can become legally responsible as a provider. The obligations follow the risk, not just the job title.</p>
+    </div>
+  </div>
+
+  <!-- RISK TIERS -->
+  <div id="tab-risk" class="section">
+    <p class="lede">Four tiers. The tier your system sits in determines everything — your obligations, your timeline, and your exposure if something goes wrong. Getting the classification right is the first and most consequential decision.</p>
+
+    <div class="tier-stack">
+      <div class="tier tier-unacceptable">
+        <div>
+          <div class="tier-label">Unacceptable risk</div>
+          <div style="font-size:11px; color:#922b21; margin-top:4px;">Banned outright</div>
+        </div>
+        <div class="tier-desc">
+          <strong>Eight practices prohibited from 2 February 2025.</strong> These are considered incompatible with EU values and fundamental rights. Prohibited uses include: subliminal or manipulative techniques that distort behaviour or impair decision-making; exploiting vulnerabilities due to age, disability, or socioeconomic situation; social scoring by public authorities; real-time remote biometric identification in public spaces (with narrow law enforcement exceptions); AI that infers emotions in workplaces or education; building facial recognition databases through untargeted scraping; profiling individuals to predict criminal behaviour based solely on personality traits.
+        </div>
+      </div>
+
+      <div class="tier tier-high">
+        <div>
+          <div class="tier-label">High risk</div>
+          <div style="font-size:11px; color:#854F0B; margin-top:4px;">Strictly regulated</div>
+        </div>
+        <div class="tier-desc">
+          <strong>Subject to mandatory requirements before market placement.</strong> Two categories: AI embedded in products already covered by EU safety legislation (medical devices, vehicles, machinery); and AI listed in Annex III — covering critical infrastructure, education, employment, essential services (credit, insurance), law enforcement, migration, and administration of justice. <strong>Key examples:</strong> CV screening tools, credit scoring, medical diagnosis AI, biometric categorisation systems. Must undergo conformity assessment, maintain technical documentation, register on an EU public database, and enable human oversight.
+        </div>
+      </div>
+
+      <div class="tier tier-limited">
+        <div>
+          <div class="tier-label">Limited risk</div>
+          <div style="font-size:11px; color:#185FA5; margin-top:4px;">Transparency obligations</div>
+        </div>
+        <div class="tier-desc">
+          <strong>Lighter obligations focused on disclosure.</strong> Users must be told they are interacting with AI — chatbots must identify themselves as AI. Providers of generative AI must ensure AI-generated content is identifiable. Deepfakes and AI-generated content intended to inform the public must be clearly labelled. The principle: people have a right to know when AI is involved in what they're seeing or who they're talking to.
+        </div>
+      </div>
+
+      <div class="tier tier-minimal">
+        <div>
+          <div class="tier-label">Minimal risk</div>
+          <div style="font-size:11px; color:#0F6E56; margin-top:4px;">No mandatory obligations</div>
+        </div>
+        <div class="tier-desc">
+          <strong>The majority of AI systems today.</strong> Spam filters, AI in video games, recommendation systems for entertainment, most productivity tools. No mandatory requirements — though voluntary codes of conduct are encouraged. The Act was deliberately designed so that most AI remains unregulated: the burden falls where the harm potential is highest.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-gray">Classification trap</span>
+      <h3>The same model, different tiers</h3>
+      <p>A large language model used as a creative writing assistant is minimal risk. The same model deployed to make or influence decisions about loan applications is high risk. The AI Act classifies the <strong>use case and deployment context</strong> — not the underlying technology. This is the single most important concept when advising clients on their AI portfolio.</p>
+    </div>
+
+    <div class="card card-purple">
+      <span class="tag tag-purple">GPAI — a separate category</span>
+      <h3>General Purpose AI models (like GPT-4, Claude, Gemini)</h3>
+      <p>GPAI models sit outside the four-tier structure — they have their own obligations from August 2025. All GPAI providers must publish technical documentation, comply with copyright law, and disclose training data summaries. GPAI models deemed to pose <strong>systemic risk</strong> (above 10²⁵ FLOPs training compute threshold) face additional requirements: model evaluations, adversarial testing, incident reporting to the European Commission, and cybersecurity protections.</p>
+    </div>
+  </div>
+
+  <!-- OBLIGATIONS & TIMELINE -->
+  <div id="tab-obligations" class="section">
+    <p class="lede">The obligations on high-risk AI are substantial — and the timeline is tighter than most organisations realise. Conformity assessments, documentation, and risk management systems take 12–18 months to implement properly.</p>
+
+    <div class="sub-label">High-risk AI — provider obligations</div>
+    <div class="oblig-grid">
+      <div class="oblig-cell">
+        <div class="oblig-role">Providers must</div>
+        <ul class="clean">
+          <li>Implement a quality management system</li>
+          <li>Create and maintain technical documentation</li>
+          <li>Conduct a conformity assessment</li>
+          <li>Register the system on the EU public database</li>
+          <li>Affix CE marking (for relevant product categories)</li>
+          <li>Design for appropriate human oversight</li>
+          <li>Ensure accuracy, robustness, and cybersecurity</li>
+          <li>Log system activity automatically</li>
+          <li>Provide instructions for deployers</li>
+          <li>Report serious incidents to authorities</li>
+          <li>Appoint an EU representative if based outside the EU</li>
+        </ul>
+      </div>
+      <div class="oblig-cell">
+        <div class="oblig-role">Deployers must</div>
+        <ul class="clean">
+          <li>Use systems according to provider instructions</li>
+          <li>Assign human oversight to competent people</li>
+          <li>Conduct a Fundamental Rights Impact Assessment</li>
+          <li>Monitor performance and report issues to providers</li>
+          <li>Inform employees when AI is used to monitor them</li>
+          <li>Keep logs for 6 months minimum</li>
+          <li>Ensure data used is relevant and representative</li>
+        </ul>
+        <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--line);">
+          <div class="oblig-role">Deployers become providers if they</div>
+          <ul class="clean">
+            <li>Place the system on the market under their own brand</li>
+            <li>Make substantial modifications to the system</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-label">Enforcement timeline</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot past"></div>
+        <div class="tl-date">1 August 2024</div>
+        <div class="tl-title">Act enters into force</div>
+        <div class="tl-body">Regulation (EU) 2024/1689 published and live. The clock starts.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot past"></div>
+        <div class="tl-date">2 February 2025</div>
+        <div class="tl-title">Prohibited practices banned · AI literacy obligations begin</div>
+        <div class="tl-body">All eight prohibited AI practices are now illegal. Organisations must have already removed or redesigned any systems in this category. Workforce AI literacy requirements also kick in.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot past"></div>
+        <div class="tl-date">2 August 2025</div>
+        <div class="tl-title">GPAI model obligations apply · Governance rules active</div>
+        <div class="tl-body">General Purpose AI model providers must have technical documentation, copyright policies, and training data summaries in place. Systemic risk GPAI models face additional requirements. EU AI governance structures fully operational.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot now"></div>
+        <div class="tl-date">Now → August 2026</div>
+        <div class="tl-title">Compliance window for high-risk AI (Annex III)</div>
+        <div class="tl-body">Organisations deploying high-risk AI systems need to be building compliance programmes now. Conformity assessments, technical documentation, and risk management systems take 12–18 months to implement properly. <strong>August 2026 is the main enforcement deadline.</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot future"></div>
+        <div class="tl-date">2 August 2026</div>
+        <div class="tl-title">Full enforcement — Annex III high-risk systems</div>
+        <div class="tl-body">The primary compliance deadline for most organisations. All Annex III high-risk AI systems must be fully compliant or face enforcement action.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot future"></div>
+        <div class="tl-date">2 August 2027</div>
+        <div class="tl-title">Extended deadline — Annex I embedded systems</div>
+        <div class="tl-body">High-risk AI embedded in regulated products (medical devices, vehicles, machinery) and large-scale legacy IT systems get an additional year due to the complexity of conformity with existing sector legislation.</div>
+      </div>
+    </div>
+
+    <div class="card card-red">
+      <span class="tag tag-red">Penalties</span>
+      <h3>The fines are designed to sting</h3>
+      <p style="margin-bottom:8px;">Prohibited practice violations: up to <strong>€35 million or 7% of global annual turnover</strong>.</p>
+      <p style="margin-bottom:8px;">High-risk non-compliance: up to <strong>€15 million or 3% of global annual turnover</strong>.</p>
+      <p>Providing false information to authorities: up to <strong>€7.5 million or 1% of global annual turnover</strong>. For large multinationals, these are not theoretical numbers.</p>
+    </div>
+  </div>
+
+  <!-- VS NIST RMF -->
+  <div id="tab-nist" class="section">
+    <p class="lede">Most enterprise clients will ask how the EU AI Act and NIST RMF relate to each other. The short answer: they're complementary, not competing. Understanding both — and how they map — is a genuinely differentiating capability.</p>
+
+    <div class="map-wrap">
+      <div class="map-row">
+        <div class="map-cell header">Dimension</div>
+        <div class="map-cell header">EU AI Act</div>
+        <div class="map-cell header">NIST AI RMF</div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>Nature</strong></p></div>
+        <div class="map-cell"><p>Binding law. Mandatory for in-scope organisations.</p></div>
+        <div class="map-cell"><p>Voluntary framework. Organisations choose to adopt it.</p></div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>Origin</strong></p></div>
+        <div class="map-cell"><p>European Union regulation. Extraterritorial reach.</p></div>
+        <div class="map-cell"><p>US government framework. No geographic restriction.</p></div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>Approach</strong></p></div>
+        <div class="map-cell"><p>Risk-tier classification. Prescriptive obligations per tier.</p></div>
+        <div class="map-cell"><p>Function-based (GOVERN, MAP, MEASURE, MANAGE). Flexible and adaptable.</p></div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>Focus</strong></p></div>
+        <div class="map-cell"><p>Compliance, fundamental rights, market access.</p></div>
+        <div class="map-cell"><p>Trustworthiness, risk culture, continuous improvement.</p></div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>Enforcement</strong></p></div>
+        <div class="map-cell"><p>National market surveillance authorities. Fines up to 7% global turnover.</p></div>
+        <div class="map-cell"><p>No enforcement mechanism. Accountability is internal.</p></div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>GPAI / Foundation models</strong></p></div>
+        <div class="map-cell"><p>Specific obligations for GPAI models. Systemic risk threshold defined.</p></div>
+        <div class="map-cell"><p>Framework principles apply but no GPAI-specific provisions.</p></div>
+      </div>
+      <div class="map-row">
+        <div class="map-cell"><p><strong>Human oversight</strong></p></div>
+        <div class="map-cell"><p>Mandatory requirement for high-risk AI. Specific Article 14 obligations.</p></div>
+        <div class="map-cell"><p>Core principle throughout all four functions.</p></div>
+      </div>
+    </div>
+
+    <div class="card card-green">
+      <span class="tag tag-green">The strategic framing</span>
+      <h3>NIST RMF is the practice. EU AI Act is the obligation.</h3>
+      <p>Think of it this way: the NIST RMF teaches you <em>how</em> to manage AI risk responsibly — it builds the muscle. The EU AI Act tells you <em>what</em> you're legally required to demonstrate. Organisations that have implemented the NIST RMF properly will find EU AI Act compliance significantly more achievable — because they've already built the documentation, governance structures, and risk processes the Act demands. The RMF is the preparation; the Act is the exam.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Where they overlap most</span>
+      <h3>Shared ground between the two frameworks</h3>
+      <p style="margin-bottom: 8px;">The EU AI Act's high-risk obligations map closely to NIST RMF concepts: technical documentation (GOVERN), risk management systems (MAP + MEASURE), human oversight (MANAGE), accuracy and robustness requirements (Valid & Reliable), transparency obligations (Accountable & Transparent), and the Fundamental Rights Impact Assessment (MAP function).</p>
+      <p>The Act's prohibition on manipulative AI maps to the Fair/Bias and Safe trustworthiness characteristics. Its requirement for data governance maps to NIST's emphasis on data provenance and computational bias management.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">Key difference to flag</span>
+      <h3>Conformity assessment has no NIST equivalent</h3>
+      <p>The EU AI Act's conformity assessment — a formal process of documenting and proving compliance before placing a high-risk system on the market — has no direct equivalent in the NIST RMF. This is the most operationally demanding element of the Act, and where organisations typically need legal and technical specialist support beyond what a risk framework alone provides.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The vocabulary that signals you understand the Act — not just its headline provisions, but its architecture and intent.</p>
+
+    <div class="sub-label">Core legal terms</div>
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Provider</div>
+        <div class="term-hint">Develops or places AI on the market</div>
+        <div class="term-def">Any natural or legal person who develops an AI system or has one developed, and places it on the market or puts it into service under their own name or trademark. Carries the heaviest obligations under the Act — especially for high-risk systems.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Deployer</div>
+        <div class="term-hint">Uses AI in their operations</div>
+        <div class="term-def">Any natural or legal person — except end users — who uses an AI system under their own authority in a professional capacity. Has lighter obligations than providers, but still faces requirements including fundamental rights impact assessments and human oversight for high-risk systems.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Conformity Assessment</div>
+        <div class="term-hint">The compliance proof process</div>
+        <div class="term-def">The formal process by which a provider demonstrates that a high-risk AI system meets the Act's requirements before placing it on the market. Results in technical documentation and, where required, third-party certification. The most resource-intensive compliance obligation in the Act.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">CE Marking</div>
+        <div class="term-hint">The conformity symbol</div>
+        <div class="term-def">The marking that indicates a product complies with EU requirements. For high-risk AI systems embedded in regulated products, the CE mark signals the AI component also meets the Act's requirements. Familiar from other EU product regulation (medical devices, toys, machinery).</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Annex III</div>
+        <div class="term-hint">The high-risk use case list</div>
+        <div class="term-def">The list in the Act that defines which AI applications are automatically classified as high-risk. Covers 8 domains: critical infrastructure, education, employment (including CV screening and performance evaluation), essential private and public services, law enforcement, migration and border control, administration of justice, and democratic processes.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">GPAI Model</div>
+        <div class="term-hint">General Purpose AI</div>
+        <div class="term-def">An AI model trained on large amounts of data using self-supervision at scale, that displays significant generality and can competently perform a wide range of tasks. GPT-4, Claude, Gemini are examples. Has its own obligation tier separate from the four risk categories, in force from August 2025.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Systemic Risk (GPAI)</div>
+        <div class="term-hint">Threshold for enhanced GPAI obligations</div>
+        <div class="term-def">GPAI models are considered to pose systemic risk if trained using more than 10²⁵ floating point operations (FLOPs). These models face the highest obligations: model evaluations, adversarial testing ("red-teaming"), incident reporting to the European Commission, and cybersecurity requirements.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Fundamental Rights Impact Assessment</div>
+        <div class="term-hint">Required for deployers of high-risk AI</div>
+        <div class="term-def">A structured assessment that deployers of high-risk AI must conduct before deployment. Evaluates the potential impact on fundamental rights — including privacy, non-discrimination, dignity, and access to justice. Must be documented and made available to authorities on request.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Technical Documentation</div>
+        <div class="term-hint">The compliance paper trail</div>
+        <div class="term-def">Detailed documentation that providers of high-risk AI must maintain, covering: system description and intended purpose, design and development process, training data and methodology, testing and validation results, performance metrics, risk management measures, and instructions for deployers. Must be kept up to date and provided to authorities on request.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Brussels Effect</div>
+        <div class="term-hint">Why this matters outside Europe</div>
+        <div class="term-def">The tendency of EU regulation to become a de facto global standard because multinationals find it more efficient to comply with the strictest regime globally rather than maintaining different practices per market. The EU AI Act is expected to drive global AI governance norms in the same way GDPR shaped global data protection practices.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH / TALKING POINTS -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">The questions enterprise clients are asking right now — and answers that demonstrate you understand both the law and its business implications.</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Does the EU AI Act apply to us? We're not a European company."</div>
+      <div class="pitch-a">Almost certainly yes, if any of your AI systems are used by or affect people in the EU — regardless of where you're headquartered. This is the Brussels Effect: the EU doesn't regulate companies, it regulates markets. If your system touches the EU market, you're in scope. We've seen this pattern before with GDPR — organisations assumed it didn't apply to them, then scrambled when it did. The time to determine your exposure is now, not after enforcement starts.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "We use AI for HR — is that high risk?"</div>
+      <div class="pitch-a">If you're using AI to screen CVs, rank candidates, evaluate performance, or make promotion decisions — yes, that's Annex III high-risk. Employment and workforce management is one of the eight domains explicitly listed. That means conformity assessments, technical documentation, human oversight obligations, and registration on the EU public database before the August 2026 deadline. The good news is that with the right process, these are achievable — but 12–18 months is a realistic implementation timeline, so you need to start now.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "We use ChatGPT / Copilot / Claude — does that make us subject to the Act?"</div>
+      <div class="pitch-a">As a deployer using a third-party GPAI model, your obligations depend on how you're using it. Using it as a productivity tool with no automated decision-making — probably limited or minimal risk obligations (mainly transparency). Embedding it into a system that makes decisions affecting people's rights or safety — you need to assess whether that pushes you into high-risk territory. The provider (OpenAI, Microsoft, Anthropic) handles GPAI-level obligations; your obligations as deployer depend on your specific use case.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "How does this relate to GDPR?"</div>
+      <div class="pitch-a">They're complementary, not overlapping. GDPR governs personal data — how you collect, process, and store it. The EU AI Act governs AI systems — how they're built, deployed, and overseen. They interact wherever AI processes personal data (which is often), but they're separate obligations with separate enforcement. Many of the GDPR compliance muscles your organisation has built — data mapping, impact assessments, documentation — are directly applicable to EU AI Act compliance. Think of the AI Act as adding a new dimension to a compliance programme that already exists.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "We already follow NIST RMF — are we compliant?"</div>
+      <div class="pitch-a">NIST RMF gives you the foundations — risk management processes, governance structures, documentation culture — that make AI Act compliance significantly more achievable. But it doesn't get you there by itself. The Act adds specific legal obligations that the RMF doesn't cover: conformity assessments, CE marking, the EU public database registration, mandatory incident reporting, and the Fundamental Rights Impact Assessment. Think of NIST as the practice that prepares you for the exam — but you still have to sit the exam.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "What should we be doing right now?"</div>
+      <div class="pitch-a">Three things immediately. First, audit your AI portfolio — map every system to a risk tier. Don't assume anything is minimal risk without checking against Annex III. Second, prioritise any system that touches employment, credit, essential services, or law enforcement — those are your Annex III systems and August 2026 is your hard deadline. Third, if you're using or deploying GPAI models, check whether your use cases create high-risk obligations that your provider doesn't cover. The organisations that move now will spend 12 months building compliance properly. Those that wait will be scrambling in 2026.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">The one-liner that lands</span>
+      <h3>How to frame it simply</h3>
+      <p>The EU AI Act is to AI what the CE mark is to products — a baseline of safety and accountability that earns the right to operate in the world's largest single market. The question isn't whether to comply. It's whether you have enough time to do it properly.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
