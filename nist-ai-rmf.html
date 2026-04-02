@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIST AI RMF — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --ink-soft: #4a4a44;
+    --ink-muted: #8a8a80;
+    --paper: #f7f5f0;
+    --paper-warm: #eeeae0;
+    --paper-card: #faf9f6;
+    --accent: #1D9E75;
+    --accent-soft: #e1f5ee;
+    --accent-2: #D85A30;
+    --accent-3: #7F77DD;
+    --blue: #378ADD;
+    --amber: #EF9F27;
+    --pink: #D4537E;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  /* ---- NAV BAR ---- */
+  .top-bar {
+    background: var(--ink);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .back-link {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(247,245,240,0.6);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+
+  .back-link:hover { color: rgba(247,245,240,1); }
+
+  .top-bar-title {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(247,245,240,0.4);
+    letter-spacing: 0.05em;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3.5rem 2rem 3rem;
+  }
+
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5DCAA5;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    max-width: 700px;
+  }
+
+  .hero-title em { font-style: italic; color: #5DCAA5; }
+
+  .hero-meta {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(247,245,240,0.5);
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* ---- SECTION TABS ---- */
+  .tab-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 0 2rem;
+    position: sticky;
+    top: 48px;
+    z-index: 90;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tab-bar::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    font-family: var(--sans);
+  }
+
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* ---- CONTENT ---- */
+  .content-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---- TYPOGRAPHY ---- */
+  .lede {
+    font-family: var(--serif);
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-style: italic;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h2 { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem; }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-teal  { border-left: 3px solid var(--accent); }
+  .card-blue  { border-left: 3px solid var(--blue); }
+  .card-amber { border-left: 3px solid var(--amber); }
+  .card-coral { border-left: 3px solid var(--accent-2); }
+  .card-purple{ border-left: 3px solid var(--accent-3); }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .tag-teal   { background: #e1f5ee; color: #0F6E56; }
+  .tag-blue   { background: #E6F1FB; color: #185FA5; }
+  .tag-amber  { background: #FAEEDA; color: #854F0B; }
+  .tag-coral  { background: #FAECE7; color: #993C1D; }
+  .tag-purple { background: #EEEDFE; color: #534AB7; }
+  .tag-gray   { background: var(--paper-warm); color: var(--ink-muted); }
+
+  /* ---- FUNCTION CARDS ---- */
+  .func-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .func-card {
+    background: var(--paper-card);
+    padding: 1.5rem;
+  }
+
+  .func-num {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+
+  .func-name {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+
+  .func-card.govern .func-name { color: #534AB7; }
+  .func-card.map    .func-name { color: #185FA5; }
+  .func-card.measure .func-name { color: #854F0B; }
+  .func-card.manage  .func-name { color: #993C1D; }
+
+  .sub-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 1rem 0 8px;
+  }
+
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+
+  /* ---- TRUST GRID ---- */
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .trust-cell {
+    background: var(--paper-card);
+    padding: 1.25rem;
+  }
+
+  .trust-cell .badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+
+  .trust-cell h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .trust-cell p  { font-size: 12px; }
+
+  /* ---- TERM GRID ---- */
+  .term-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .term-card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color 0.1s, background 0.1s;
+  }
+
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open  { background: #fff; border-color: rgba(26,26,24,0.25); }
+
+  .term-name { font-size: 13px; font-weight: 500; margin-bottom: 0; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def  { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  /* ---- PITCH CARDS ---- */
+  .pitch-card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .pitch-q {
+    background: var(--paper-warm);
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+
+  .pitch-a {
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 600px) {
+    .func-grid { grid-template-columns: 1fr; }
+    .tab-btn { padding: 12px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Frameworks · Risk Management</div>
+    <h1 class="hero-title">NIST <em>AI Risk</em> Management Framework</h1>
+    <div class="hero-meta">
+      <span>NIST AI 100-1 · Version 1.0 · January 2023</span>
+      <span>5 sections · Interactive</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('functions', this)">The 4 Functions</button>
+  <button class="tab-btn" onclick="showTab('trustworthy', this)">Trustworthy AI</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">The NIST AI RMF is the US government's voluntary framework for managing AI risk responsibly — a structured playbook that helps any organisation build, deploy, or use AI systems they can genuinely stand behind.</p>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">Core idea</span>
+      <h3>What problem does it solve?</h3>
+      <p>AI risks aren't like traditional software risks. Models can drift, hallucinate, discriminate, or behave unpredictably in ways that are hard to detect and harder to explain. The RMF gives organisations a shared language and structured approach to get ahead of those risks — rather than reacting when something goes wrong.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Structure</span>
+      <h3>Two parts, one goal</h3>
+      <p style="margin-bottom: 10px;"><strong>Part 1 — Foundations:</strong> Why AI risk is uniquely hard, who it applies to, and what "trustworthy AI" means across 7 characteristics.</p>
+      <p><strong>Part 2 — The Core:</strong> Four functions (GOVERN, MAP, MEASURE, MANAGE) with categories and subcategories you can actually act on.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">Key framing</span>
+      <h3>What "risk" means here</h3>
+      <p>Risk = probability × magnitude of harm. Harms can land on individuals, groups, organisations, society, or the environment. The framework asks you to think about both the likelihood something goes wrong <em>and</em> how bad it would be if it did.</p>
+    </div>
+
+    <div class="card card-coral">
+      <span class="tag tag-coral">Who it's for</span>
+      <h3>AI actors across the lifecycle</h3>
+      <p>The framework uses the term <strong>AI actor</strong> for anyone with a hand in an AI system: designers, developers, deployers, evaluators, procurement teams, end users, and even affected communities. Risk responsibility is shared — it doesn't sit with one team.</p>
+    </div>
+  </div>
+
+  <!-- FUNCTIONS -->
+  <div id="tab-functions" class="section">
+    <p class="lede">The heart of the framework. Four functions that work together in a continuous loop — not a one-time process. GOVERN wraps everything; MAP → MEASURE → MANAGE is the iterative cycle for each AI system.</p>
+
+    <div class="func-grid">
+      <div class="func-card govern">
+        <div class="func-num">Function 01</div>
+        <div class="func-name">GOVERN</div>
+        <p>The culture layer. Sets policies, roles, accountability structures, and incentives so that risk management is embedded across the org — not siloed in one team. Cross-cutting: runs through all other functions.</p>
+        <div class="sub-label">Key outputs</div>
+        <ul class="clean">
+          <li>AI risk policies and documentation</li>
+          <li>Clear roles and responsibilities</li>
+          <li>Org-wide risk culture and oversight</li>
+          <li>Processes for workforce training</li>
+          <li>Third-party / supply chain risk governance</li>
+        </ul>
+      </div>
+
+      <div class="func-card map">
+        <div class="func-num">Function 02</div>
+        <div class="func-name">MAP</div>
+        <p>The context layer. Before you can manage risk, you need to understand your system's purpose, who it affects, and what could go wrong. MAP is about identifying risks in the specific deployment context — not in the abstract.</p>
+        <div class="sub-label">Key outputs</div>
+        <ul class="clean">
+          <li>Use-case and context documentation</li>
+          <li>Stakeholder impact analysis</li>
+          <li>Risk identification and categorisation</li>
+          <li>AI system scope and boundary definition</li>
+          <li>Understanding of AI actor roles</li>
+        </ul>
+      </div>
+
+      <div class="func-card measure">
+        <div class="func-num">Function 03</div>
+        <div class="func-name">MEASURE</div>
+        <p>The evidence layer. Analyse and test the AI system against the trustworthiness characteristics. This is where metrics, evaluations, and benchmarks come in — including the hard-to-quantify ones like fairness and explainability.</p>
+        <div class="sub-label">Key outputs</div>
+        <ul class="clean">
+          <li>Risk measurement methodologies</li>
+          <li>TEVV: Test, Evaluation, Verification, Validation</li>
+          <li>Bias and fairness assessments</li>
+          <li>Performance metrics with disaggregated data</li>
+          <li>Documentation of residual risk</li>
+        </ul>
+      </div>
+
+      <div class="func-card manage">
+        <div class="func-num">Function 04</div>
+        <div class="func-name">MANAGE</div>
+        <p>The action layer. Based on what you've measured, allocate resources, treat identified risks, and build in ongoing monitoring. Includes the ability to stop or pause deployment when risk becomes unacceptable.</p>
+        <div class="sub-label">Key outputs</div>
+        <ul class="clean">
+          <li>Risk treatment plans (mitigate, transfer, accept)</li>
+          <li>Ongoing monitoring and feedback loops</li>
+          <li>Incident response plans</li>
+          <li>Go / no-go deployment decisions</li>
+          <li>Residual risk documentation for users</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-gray">How they connect</span>
+      <h3>The loop never stops</h3>
+      <p>GOVERN wraps everything. MAP → MEASURE → MANAGE is the iterative loop for each AI system. You can enter at any point — but you should revisit continuously. Risk changes as systems, data, and contexts evolve. The framework is designed to be a living process, not a launch checklist.</p>
+    </div>
+  </div>
+
+  <!-- TRUSTWORTHY AI -->
+  <div id="tab-trustworthy" class="section">
+    <p class="lede">For an AI system to be trustworthy, it needs to balance all seven of these characteristics — not just nail one or two. They trade off against each other, and that's where the genuinely hard decisions live.</p>
+
+    <div class="trust-grid">
+
+      <div class="trust-cell">
+        <span class="badge" style="background:#e1f5ee; color:#0F6E56;">Foundation</span>
+        <h3>Valid & Reliable</h3>
+        <p>The baseline requirement. The system does what it's supposed to do, consistently, across expected conditions. Without this, nothing else matters. Includes accuracy, robustness, and generalisability.</p>
+      </div>
+
+      <div class="trust-cell">
+        <span class="badge" style="background:#FAECE7; color:#993C1D;">Critical</span>
+        <h3>Safe</h3>
+        <p>The system doesn't endanger life, health, property, or the environment. Safety must be baked in from the design stage — not patched in later. Highest priority when serious injury or death is possible.</p>
+      </div>
+
+      <div class="trust-cell">
+        <span class="badge" style="background:#E6F1FB; color:#185FA5;">Protection</span>
+        <h3>Secure & Resilient</h3>
+        <p><strong>Security</strong> = defending against attacks. <strong>Resilience</strong> = recovering gracefully. Related but distinct: security includes resilience, but resilience also covers non-adversarial unexpected events.</p>
+      </div>
+
+      <div class="trust-cell">
+        <span class="badge" style="background:#EEEDFE; color:#534AB7;">Cross-cutting</span>
+        <h3>Accountable & Transparent</h3>
+        <p>Transparency = information about how the system works is available. Accountability = clear ownership of outcomes. Transparency is a prerequisite for accountability. Both require ongoing effort, not a one-time declaration.</p>
+      </div>
+
+      <div class="trust-cell">
+        <span class="badge" style="background:#FAEEDA; color:#854F0B;">Comprehension</span>
+        <h3>Explainable & Interpretable</h3>
+        <p><strong>Explainability</strong> = how it works (mechanism). <strong>Interpretability</strong> = what the output means in context (significance). Transparency answers "what happened", explainability answers "how", interpretability answers "why it matters".</p>
+      </div>
+
+      <div class="trust-cell">
+        <span class="badge" style="background:#e1f5ee; color:#0F6E56;">Rights</span>
+        <h3>Privacy-Enhanced</h3>
+        <p>Protecting human autonomy, identity, and dignity. Goes beyond data protection — includes anonymity, consent, and controlling how personal information is inferred. AI creates new privacy risks not present in traditional software.</p>
+      </div>
+
+      <div class="trust-cell" style="grid-column: 1 / -1;">
+        <span class="badge" style="background:#FBEAF0; color:#993558;">Equity</span>
+        <h3>Fair — with Harmful Bias Managed</h3>
+        <p>Three categories of AI bias: <strong>systemic</strong> (embedded in datasets and society), <strong>computational/statistical</strong> (in algorithms and non-representative samples), and <strong>human-cognitive</strong> (in how people interpret outputs and make design decisions). Mitigating bias ≠ achieving fairness — they're related but distinct goals that require different interventions.</p>
+      </div>
+
+    </div>
+
+    <hr class="divider">
+    <div class="card card-purple">
+      <h3>The tradeoffs are real — and the point</h3>
+      <p>More interpretability can mean less accuracy. Better privacy can reduce fairness (data sparsity). Maximum security can reduce transparency. These tradeoffs don't have universal answers — they depend on context, values, and stakes. The framework asks you to make these tradeoffs <strong>deliberately</strong> and document your reasoning. That's the work.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The vocabulary you'll need to use fluently. Tap any term to expand it. These are the words that signal genuine depth of knowledge in a client conversation.</p>
+
+    <div class="sub-label">Core framework terms</div>
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Actor</div>
+        <div class="term-hint">Anyone with a hand in the AI lifecycle</div>
+        <div class="term-def">Anyone who plays an active role in the AI system lifecycle — designers, developers, deployers, evaluators, operators, end users, and affected communities. Risk responsibility is distributed across all AI actors, not held by one team.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI System</div>
+        <div class="term-hint">The formal definition</div>
+        <div class="term-def">An engineered or machine-based system that generates outputs — predictions, recommendations, or decisions — influencing real or virtual environments. Designed to operate with varying degrees of autonomy.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Risk</div>
+        <div class="term-hint">Probability × magnitude</div>
+        <div class="term-def">The composite measure of an event's probability of occurring and the magnitude of its consequences. Risk = likelihood of harm × magnitude of that harm. Can be positive or negative; the RMF focuses on managing negative impacts while enabling positive ones.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Risk Tolerance</div>
+        <div class="term-hint">You define it — the RMF doesn't</div>
+        <div class="term-def">An organisation's readiness to accept risk in pursuit of its objectives. Highly contextual — shaped by regulation, industry norms, community expectations, and severity of potential harms. The RMF doesn't prescribe tolerance; you determine what's acceptable for your context.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Residual Risk</div>
+        <div class="term-hint">What remains after treatment</div>
+        <div class="term-def">Risk that remains after risk treatment has been applied. Must be documented and communicated to end users so they understand potential negative impacts. Residual risk is unavoidable — the goal is to make it explicit and manageable.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">TEVV</div>
+        <div class="term-hint">Test, Eval, Verify, Validate</div>
+        <div class="term-def">Test, Evaluation, Verification & Validation. The ongoing technical process of checking that an AI system performs as intended, meets requirements, and doesn't create unexpected harms. Should happen throughout the AI lifecycle — not just at launch.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Socio-technical</div>
+        <div class="term-hint">AI is never just technical</div>
+        <div class="term-def">A key framing throughout the RMF. AI systems are shaped by and embedded in social contexts, human behaviour, and organisational dynamics. Risk and trust can't be assessed by looking at the model alone — context and people are inseparable from the technology.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI RMF Profile</div>
+        <div class="term-hint">Your customised application</div>
+        <div class="term-def">A customised selection of functions, categories, and subcategories tailored to an organisation's specific context, risk tolerance, and goals. Profiles can represent current state ("where we are") or target state ("where we want to be").</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Inscrutability</div>
+        <div class="term-hint">Opacity that blocks risk measurement</div>
+        <div class="term-def">When an AI system is so opaque that it's difficult or impossible to understand why it produces certain outputs. Driven by model complexity, limited documentation, or inherent uncertainty. Makes risk measurement fundamentally harder — you can't properly assess what you can't see into.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI RMF Playbook</div>
+        <div class="term-hint">The practical companion resource</div>
+        <div class="term-def">A companion resource (available at nist.gov) that provides specific tactical actions for each category and subcategory of the framework. Voluntary and customisable. Think of the RMF as the "what" and the Playbook as the "how".</div>
+      </div>
+    </div>
+
+    <div class="sub-label" style="margin-top:1.5rem;">Trustworthiness terms</div>
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Validity</div>
+        <div class="term-hint">Does it do what it's supposed to?</div>
+        <div class="term-def">Confirmation that requirements for a specific intended use have been fulfilled. A valid system does what it was designed to do in the context it's deployed in — not just in lab conditions.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Reliability</div>
+        <div class="term-hint">Does it keep doing it?</div>
+        <div class="term-def">The ability to perform as required, without failure, over a given time period under expected conditions. Reliability is about consistent performance over the lifetime of the system — not just at launch.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Robustness</div>
+        <div class="term-hint">Does it hold up under pressure?</div>
+        <div class="term-def">The ability to maintain performance across a variety of circumstances — including unexpected inputs and use cases. A robust system degrades safely when pushed outside its intended parameters rather than failing dangerously.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Explainability</div>
+        <div class="term-hint">How did it get there?</div>
+        <div class="term-def">A representation of the mechanisms underlying an AI system's operation. Answers "how did it get to that output?" — the process and logic, not just the result. Distinct from interpretability, which is about meaning.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Interpretability</div>
+        <div class="term-hint">What does the output actually mean?</div>
+        <div class="term-def">The meaning of an AI system's output in the context of its designed purpose. Answers "what does that output actually mean for this situation?" You need both explainability and interpretability for meaningful human oversight.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Systemic Bias</div>
+        <div class="term-hint">Baked into data and society</div>
+        <div class="term-def">Bias embedded in datasets, organisational norms, and broader society — not necessarily from anyone's discriminatory intent. AI systems can learn and amplify existing systemic biases at scale and at speed.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Computational Bias</div>
+        <div class="term-hint">Errors in algorithms or data</div>
+        <div class="term-def">Bias arising from systematic errors in algorithms or datasets — often from non-representative samples. Can produce systematically skewed outputs even when the underlying data appears "clean" on the surface.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Human-Cognitive Bias</div>
+        <div class="term-hint">How humans shape and read AI</div>
+        <div class="term-def">Bias in how humans perceive and interpret AI outputs, or how human assumptions shape AI design decisions. Omnipresent throughout the lifecycle — from what features engineers prioritise to how operators act on AI recommendations.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Data Provenance</div>
+        <div class="term-hint">Where did the training data come from?</div>
+        <div class="term-def">Tracking the origin and history of training data. Essential for transparency (understanding what the model learned from) and accountability (attributing decisions to data sources). Also relevant for copyright and intellectual property compliance.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">PETs</div>
+        <div class="term-hint">Privacy-Enhancing Technologies</div>
+        <div class="term-def">Technologies that reduce privacy risks — e.g., differential privacy, federated learning, data minimisation, de-identification. Can trade off with accuracy, particularly when training data is sparse. A key tool in privacy-enhanced AI design.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH / TALKING POINTS -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">Ready-to-use language for the questions clients actually ask. Conversational, credible, and specific enough to demonstrate real depth.</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "What even is the NIST AI RMF?"</div>
+      <div class="pitch-a">It's the most credible, widely-adopted framework for managing AI risk responsibly. Think of what ISO 27001 did for information security — it gave organisations a shared language and structured process to prove they're taking it seriously. The RMF does that for AI. It's voluntary today, but it's increasingly what regulators, enterprise clients, and boards are pointing to when they ask "how are you managing AI risk?"</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Why can't we just use our existing risk management processes?"</div>
+      <div class="pitch-a">Great question — and the RMF addresses this directly. AI risks are categorically different from traditional software risks. Models are trained on data that changes over time. They can behave differently in production than they did in testing. They can amplify existing biases at scale, in ways that are hard to detect and even harder to explain. Your existing frameworks weren't designed for that. The RMF fills those specific gaps.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "What's the business case?"</div>
+      <div class="pitch-a">Trustworthiness is a competitive advantage. Organisations that can demonstrate they govern AI responsibly — with documented processes, clear accountability, and measurable outcomes — will win procurement, avoid regulatory friction, and build the kind of public trust that's hard to earn back once it's lost. The RMF gives you the receipts to show clients and regulators that your AI isn't just powerful, it's responsible.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Which teams need to be involved?"</div>
+      <div class="pitch-a">Everyone with a hand in the system — and that's deliberate. The framework uses the term "AI actors" because risk doesn't belong to just the data science team. Procurement, legal, operations, product, compliance, and even the communities affected by the system all have a role. The most common failure mode is treating AI risk as a purely technical problem. The RMF explicitly counters that.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "How does this relate to the EU AI Act?"</div>
+      <div class="pitch-a">The RMF was designed to be regulation-agnostic and sector-agnostic — but it maps well to regulatory requirements globally. Think of it as the foundational practice layer. If you're doing the RMF well, you're already doing the substantive work that most AI regulations require. It's the "responsible AI" muscle that makes compliance achievable rather than a last-minute scramble.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they push back: "This seems like a lot of overhead for a small team"</div>
+      <div class="pitch-a">The framework is explicitly designed to scale. Smaller organisations can select the categories and subcategories most relevant to their context — you don't implement all of it at once. And the cost of not doing it tends to show up later, at the worst possible time: when something goes wrong and you have no documented process to point to. Starting with GOVERN and a basic MAP assessment is a credible, proportionate starting point for any size organisation.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">Key phrase to remember</span>
+      <h3>The framing that lands</h3>
+      <p>The RMF isn't about <strong>slowing down AI</strong> — it's about <strong>building AI you can defend</strong>. Every organisation deploying AI is going to face scrutiny at some point: from clients, regulators, the press, or their own board. The RMF is how you prepare for that scrutiny before it arrives.</p>
+    </div>
+  </div>
+
+</div><!-- /content-wrap -->
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
