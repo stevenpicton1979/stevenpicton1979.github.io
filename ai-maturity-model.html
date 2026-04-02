@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsible AI Maturity — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --hero-bg: #2a1a0a;
+    --l1: #C0392B; --l1-bg: #fdf0ee;
+    --l2: #D85A30; --l2-bg: #faece7;
+    --l3: #EF9F27; --l3-bg: #FAEEDA;
+    --l4: #1D9E75; --l4-bg: #e1f5ee;
+    --l5: #185FA5; --l5-bg: #E6F1FB;
+    --accent: #B7860B;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .top-bar { background: var(--ink); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 48px; position: sticky; top: 0; z-index: 100; }
+  .back-link { font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+  .back-link:hover { color: #fff; }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  .hero { background: var(--hero-bg); color: #fff; padding: 3.5rem 2rem 3rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #d4a847; margin-bottom: 1rem; }
+  .hero-title { font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .hero-title em { font-style: italic; color: #f5d78e; }
+  .hero-meta { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.45); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .tab-bar { background: #fff; border-bottom: 1px solid var(--line); padding: 0 2rem; position: sticky; top: 48px; z-index: 90; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 14px 18px; font-size: 13px; font-weight: 400; color: var(--ink-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: var(--sans); }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: #B7860B; font-weight: 500; }
+
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lede { font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.25rem); font-style: italic; line-height: 1.75; color: var(--ink-soft); margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+  .card-amber  { border-left: 3px solid #EF9F27; }
+  .card-teal   { border-left: 3px solid #1D9E75; }
+  .card-blue   { border-left: 3px solid #185FA5; }
+  .card-coral  { border-left: 3px solid #D85A30; }
+  .card-red    { border-left: 3px solid #C0392B; }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-amber  { background: #FAEEDA; color: #854F0B; }
+  .tag-teal   { background: #e1f5ee; color: #0F6E56; }
+  .tag-blue   { background: #E6F1FB; color: #185FA5; }
+  .tag-coral  { background: #faece7; color: #993C1D; }
+  .tag-gray   { background: var(--paper-warm); color: var(--ink-muted); }
+
+  .sub-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; }
+
+  /* LEVEL CARDS */
+  .level-stack { display: flex; flex-direction: column; gap: 4px; margin-bottom: 1.5rem; }
+  .level-card { border-radius: 6px; padding: 1.25rem 1.5rem; cursor: pointer; transition: box-shadow 0.15s; border: 1px solid transparent; }
+  .level-card:hover { box-shadow: 0 0 0 1px rgba(26,26,24,0.15); }
+  .level-card.open { box-shadow: 0 0 0 1.5px rgba(26,26,24,0.2); }
+  .l1-card { background: var(--l1-bg); }
+  .l2-card { background: var(--l2-bg); }
+  .l3-card { background: var(--l3-bg); }
+  .l4-card { background: var(--l4-bg); }
+  .l5-card { background: var(--l5-bg); }
+  .level-header { display: flex; align-items: center; gap: 12px; }
+  .level-badge { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .l1 { background: var(--l1); color: #fff; }
+  .l2 { background: var(--l2); color: #fff; }
+  .l3 { background: var(--l3); color: #fff; }
+  .l4 { background: var(--l4); color: #fff; }
+  .l5 { background: var(--l5); color: #fff; }
+  .level-name { font-size: 15px; font-weight: 500; }
+  .level-tagline { font-size: 12px; font-weight: 300; color: var(--ink-muted); margin-left: auto; }
+  .level-chevron { font-size: 12px; color: var(--ink-muted); transition: transform 0.2s; }
+  .level-card.open .level-chevron { transform: rotate(180deg); }
+  .level-body { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(26,26,24,0.1); }
+  .level-card.open .level-body { display: block; }
+  .level-body p { font-size: 13px; margin-bottom: 10px; }
+  .level-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 10px; }
+  .level-col-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .level-body ul.clean li { font-size: 12px; }
+
+  /* DIMENSION TABLE */
+  .dim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .dim-cell { background: var(--paper-card); padding: 1.25rem; }
+  .dim-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .dim-cell p { font-size: 12px; }
+  .dim-cell ul.clean li { font-size: 12px; }
+
+  /* SELF-ASSESSMENT */
+  .assess-wrap { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .assess-header { background: var(--ink); color: var(--paper); padding: 12px 16px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; }
+  .assess-row { display: grid; grid-template-columns: 1fr repeat(5,44px); gap: 0; border-bottom: 1px solid var(--line); }
+  .assess-row:last-child { border-bottom: none; }
+  .assess-row.head { background: var(--paper-warm); }
+  .assess-q { padding: 10px 14px; font-size: 12px; font-weight: 300; color: var(--ink-soft); display: flex; align-items: center; }
+  .assess-q.head-label { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); }
+  .assess-cell { display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--line); padding: 8px 4px; }
+  .assess-cell.head-label { font-size: 10px; font-weight: 500; color: var(--ink-muted); flex-direction: column; gap: 2px; }
+  .assess-radio { appearance: none; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--ink-muted); cursor: pointer; transition: all 0.1s; }
+  .assess-radio:hover { border-color: var(--ink); }
+  .assess-radio:checked { border-color: #1D9E75; background: #1D9E75; }
+  .assess-score-bar { padding: 14px 16px; background: var(--paper-warm); display: flex; align-items: center; gap: 16px; }
+  .score-label { font-size: 12px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; }
+  .score-track { flex: 1; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 3px; background: #1D9E75; transition: width 0.3s; }
+  .score-value { font-size: 13px; font-weight: 500; min-width: 80px; text-align: right; }
+
+  /* ROADMAP */
+  .roadmap-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .rm-cell { background: var(--paper-card); padding: 1.25rem; }
+  .rm-from { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 8px; }
+  .rm-cell h3 { font-size: 13px; margin-bottom: 8px; }
+  .rm-cell ul.clean li { font-size: 12px; }
+
+  /* METRICS */
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-bottom: 1.5rem; }
+  .metric-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1rem; }
+  .metric-name { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .metric-desc { font-size: 11px; font-weight: 300; color: var(--ink-muted); line-height: 1.5; }
+  .metric-example { font-size: 11px; color: var(--ink-soft); margin-top: 6px; font-style: italic; }
+
+  /* TERM GRID */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .term-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .term-name { font-size: 13px; font-weight: 500; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  /* PITCH */
+  .pitch-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+  .pitch-q { background: var(--paper-warm); padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .pitch-a { padding: 14px 16px; font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--ink); }
+
+  @media (max-width: 620px) {
+    .level-cols { grid-template-columns: 1fr; }
+    .roadmap-grid { grid-template-columns: 1fr; }
+    .assess-row { grid-template-columns: 1fr repeat(5,36px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Strategy · Maturity</div>
+    <h1 class="hero-title">Responsible AI <em>Maturity Models</em></h1>
+    <div class="hero-meta">
+      <span>MIT CISR · Microsoft RAI MM · CSIRO · RAI Institute</span>
+      <span>6 sections · Interactive self-assessment</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('levels', this)">The 5 Levels</button>
+  <button class="tab-btn" onclick="showTab('assess', this)">Self-Assessment</button>
+  <button class="tab-btn" onclick="showTab('roadmap', this)">Roadmap</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">A maturity model gives organisations — and the consultants who advise them — a shared language for describing where they are on the responsible AI journey, where they need to get to, and what the path looks like. It turns "we need to do better on AI governance" into a structured, measurable conversation.</p>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">What it is</span>
+      <h3>A structured benchmark, not a judgement</h3>
+      <p>A responsible AI maturity model describes an organisation's AI governance capability across five progressive levels — from ad hoc and reactive at Level 1, through to continuously optimised and industry-leading at Level 5. The levels are cumulative: each builds on the last. You can't skip levels — an organisation claiming Level 4 governance that hasn't implemented Level 2 controls is misrepresenting its maturity. Crucially, being at Level 1 or 2 isn't "bad" — it's an honest starting point that enables targeted improvement.</p>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">Why it matters</span>
+      <h3>The governance gap is costing organisations real money</h3>
+      <p style="margin-bottom:8px;">74% of companies haven't seen measurable return from their AI investments. A 2024 Gartner survey found that while 80% of large organisations claim to have AI governance initiatives, fewer than half can demonstrate measurable maturity. MIT CISR research across 721 companies found that organisations at Levels 1–2 of AI maturity perform <strong>below industry average</strong> financially, while those at Levels 3–4 perform <strong>well above average</strong>. Maturity is directly correlated with financial performance — not just compliance.</p>
+      <p>McKinsey reports organisations embedding responsible AI governance see up to <strong>40% higher ROI</strong> from AI investments due to reduced rework and audit costs.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">The key insight</span>
+      <h3>Maturity ≠ policy coverage. Maturity = evidence quality.</h3>
+      <p>The most common mistake organisations make is confusing having a policy with having mature governance. A responsible AI policy published on a website is not evidence of maturity. Evidence of maturity is: model cards for deployed systems, completed impact assessments with documented decisions, audit logs that regulators could review, bias remediation records with timelines, and incident response playbooks that have been tested. <strong>Governance maturity is measured by what you can prove, not what you've written.</strong></p>
+    </div>
+
+    <div class="card card-coral">
+      <span class="tag tag-coral">Five dimensions assessed</span>
+      <h3>What the model measures</h3>
+      <p>Leading maturity models assess five dimensions simultaneously. <strong>Policy</strong> — what is documented and approved. <strong>Lifecycle controls</strong> — what governance gates exist at build, test, deploy, and change stages. <strong>Data and lineage</strong> — provenance, quality standards, and traceability. <strong>Documentation</strong> — model cards, impact assessments, audit logs. <strong>Monitoring</strong> — drift detection, incident response, and continuous improvement. An organisation can be at different maturity levels across these dimensions — and usually is.</p>
+    </div>
+  </div>
+
+  <!-- THE 5 LEVELS -->
+  <div id="tab-levels" class="section">
+    <p class="lede">Five levels, each with distinct characteristics in how AI governance is practised, evidenced, and embedded. Tap any level to expand it. The question is not which level sounds aspirational — it's which level honestly describes your current state.</p>
+
+    <div class="level-stack">
+
+      <div class="level-card l1-card" onclick="toggleLevel(this)">
+        <div class="level-header">
+          <span class="level-badge l1">Level 1</span>
+          <span class="level-name">Initial — Ad Hoc</span>
+          <span class="level-tagline">Governance by accident</span>
+          <span class="level-chevron">▾</span>
+        </div>
+        <div class="level-body">
+          <p>Governance is informal, inconsistent, or nonexistent. AI systems are deployed based on technical capability rather than governance readiness. Risk management depends on individual champions — if that person leaves, the control goes with them. There is no AI inventory, risk classification is inconsistent across teams, and documentation is sparse. Most organisations deploying AI for the first time are here.</p>
+          <div class="level-cols">
+            <div>
+              <div class="level-col-label">What you typically see</div>
+              <ul class="clean">
+                <li>No central AI inventory or register</li>
+                <li>Teams deploying AI without governance review</li>
+                <li>No AI risk appetite statement</li>
+                <li>Incident response is reactive and unplanned</li>
+                <li>Documentation is project-specific, if it exists</li>
+                <li>Compliance depends on individuals, not processes</li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-col-label">First priority moves</div>
+              <ul class="clean">
+                <li>Build an AI system inventory — know what you have</li>
+                <li>Appoint an AI governance owner (even part-time)</li>
+                <li>Draft an AI use policy — even a simple one</li>
+                <li>Identify your highest-risk AI systems</li>
+                <li>Establish basic incident reporting channels</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card l2-card" onclick="toggleLevel(this)">
+        <div class="level-header">
+          <span class="level-badge l2">Level 2</span>
+          <span class="level-name">Repeatable — Emerging</span>
+          <span class="level-tagline">Governance in silos</span>
+          <span class="level-chevron">▾</span>
+        </div>
+        <div class="level-body">
+          <p>Basic governance processes exist but are inconsistently applied. Some teams follow AI lifecycle controls while others bypass them. Risk management is starting to formalise but still depends on individual champions rather than institutional processes. Incident response protocols may exist in draft form but haven't been tested. This is where many organisations that have "done something" on AI governance actually sit.</p>
+          <div class="level-cols">
+            <div>
+              <div class="level-col-label">What you typically see</div>
+              <ul class="clean">
+                <li>AI ethics principles or policy published</li>
+                <li>Some teams following governance; others bypassing it</li>
+                <li>Governance reviews happening for major projects only</li>
+                <li>Risk assessment is manual and inconsistent</li>
+                <li>No standard model documentation format</li>
+                <li>"Marketing does AI their way; Engineering does it theirs"</li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-col-label">Priority moves to reach Level 3</div>
+              <ul class="clean">
+                <li>Form a cross-functional AI Governance Council</li>
+                <li>Publish a unified AI Policy with mandatory scope</li>
+                <li>Mandate standard tooling (MLOps) for all teams</li>
+                <li>Create a defined model approval process</li>
+                <li>Classify all AI systems by risk tier</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card l3-card" onclick="toggleLevel(this)">
+        <div class="level-header">
+          <span class="level-badge l3">Level 3</span>
+          <span class="level-name">Defined — Enterprise</span>
+          <span class="level-tagline">The governance tipping point</span>
+          <span class="level-chevron">▾</span>
+        </div>
+        <div class="level-body">
+          <p>This is the tipping point. The organisation establishes a unified governance framework applied consistently across the enterprise. An AI Governance Council exists with cross-functional representation. A central AI Policy is published. Standard tooling is mandated. The organisation has visibility into its AI inventory and a defined process for approving models before deployment. MIT CISR research identifies this stage as where financial performance shifts from below-average to above-average.</p>
+          <div class="level-cols">
+            <div>
+              <div class="level-col-label">What you typically see</div>
+              <ul class="clean">
+                <li>AI Governance Council with real authority</li>
+                <li>Complete AI system inventory with risk classifications</li>
+                <li>Standard model documentation (model cards) in use</li>
+                <li>Impact assessments conducted for high-risk systems</li>
+                <li>Bias testing included in deployment gates</li>
+                <li>"We have a standard playbook for responsible AI"</li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-col-label">Priority moves to reach Level 4</div>
+              <ul class="clean">
+                <li>Move from manual to automated monitoring</li>
+                <li>Build governance dashboards for executive visibility</li>
+                <li>Formalise cross-functional reviews pre-deployment</li>
+                <li>Tie governance metrics to executive reporting</li>
+                <li>Implement data lineage capture and model registry</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card l4-card" onclick="toggleLevel(this)">
+        <div class="level-header">
+          <span class="level-badge l4">Level 4</span>
+          <span class="level-name">Managed — Systemic</span>
+          <span class="level-tagline">Governance as a performance driver</span>
+          <span class="level-chevron">▾</span>
+        </div>
+        <div class="level-body">
+          <p>Governance is no longer a gate — it's embedded into how AI is built and operated. Monitoring is automated. Metrics are quantified and reported at board level. The organisation can demonstrate regulatory compliance with evidence, not just policy documents. Incident response has been tested. AI governance has moved from a cost centre to a capability that accelerates responsible AI deployment. MIT CISR identifies this stage as where AI becomes embedded across the enterprise and aligned with strategy.</p>
+          <div class="level-cols">
+            <div>
+              <div class="level-col-label">What you typically see</div>
+              <ul class="clean">
+                <li>Automated drift detection and performance alerts</li>
+                <li>Governance dashboards tracking coverage and risk</li>
+                <li>Board receives regular AI metrics and incident reports</li>
+                <li>Incident response playbooks tested and refined</li>
+                <li>Dynamic risk scoring based on live telemetry</li>
+                <li>Governance enables faster, not slower, AI deployment</li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-col-label">Priority moves to reach Level 5</div>
+              <ul class="clean">
+                <li>Implement post-incident learning loops updating policy</li>
+                <li>Expand red-teaming and adversarial testing for GenAI</li>
+                <li>Pursue voluntary audits and external certification</li>
+                <li>Publish transparency reports for stakeholders</li>
+                <li>Contribute to industry governance standards</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card l5-card" onclick="toggleLevel(this)">
+        <div class="level-header">
+          <span class="level-badge l5">Level 5</span>
+          <span class="level-name">Optimising — Transformative</span>
+          <span class="level-tagline">Industry-leading, continuously improving</span>
+          <span class="level-chevron">▾</span>
+        </div>
+        <div class="level-body">
+          <p>RAI practices are statistically measured, evaluated, monitored, and consistently applied across the entire organisation. The organisation leads the industry — conducting voluntary audits, publishing transparency reports, contributing to external standards, and operating federated governance across subsidiaries and supply chains. The culture of responsible AI is self-sustaining: employees surface concerns proactively, and governance is seen as a professional standard, not a compliance burden. Very few organisations genuinely sit here.</p>
+          <div class="level-cols">
+            <div>
+              <div class="level-col-label">What you typically see</div>
+              <ul class="clean">
+                <li>Voluntary external audits and certifications (e.g. ISO 42001)</li>
+                <li>Published AI transparency and impact reports</li>
+                <li>Federated governance across subsidiaries and supply chain</li>
+                <li>Continuous improvement driven by real-world telemetry</li>
+                <li>Active contribution to industry standards and regulation</li>
+                <li>Governance embedded in organisational culture, not just process</li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-col-label">Characteristics of Level 5 culture</div>
+              <ul class="clean">
+                <li>Transparency is celebrated, not just required</li>
+                <li>Documentation is second nature across all teams</li>
+                <li>Employees escalate AI concerns proactively</li>
+                <li>Responsible AI is a recruitment and retention advantage</li>
+                <li>Governance quality is part of brand identity</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <span class="tag tag-gray">The honest truth</span>
+      <h3>Most large enterprises are at Level 2–3</h3>
+      <p>Despite widespread claims of "mature AI governance," the reality is that most large enterprises sit between Level 2 and Level 3. They have policies and some processes — but governance is inconsistently applied, evidence is patchy, and monitoring is largely manual. The gap between stated maturity and actual maturity is one of the most consistent findings across responsible AI benchmark surveys. Honest assessment of current state is the precondition for meaningful improvement.</p>
+    </div>
+  </div>
+
+  <!-- SELF-ASSESSMENT -->
+  <div id="tab-assess" class="section">
+    <p class="lede">A quick diagnostic. For each area, select the level that honestly describes your current practice — not your aspiration or your policy, but what is actually happening today. Your score indicates your overall maturity level.</p>
+
+    <div class="assess-wrap">
+      <div class="assess-header">AI Governance Self-Assessment — select current practice for each area</div>
+      <div class="assess-row head">
+        <div class="assess-q head-label">Governance area</div>
+        <div class="assess-cell head-label"><span>1</span><span style="font-size:9px;">Ad hoc</span></div>
+        <div class="assess-cell head-label"><span>2</span><span style="font-size:9px;">Silo</span></div>
+        <div class="assess-cell head-label"><span>3</span><span style="font-size:9px;">Defined</span></div>
+        <div class="assess-cell head-label"><span>4</span><span style="font-size:9px;">Managed</span></div>
+        <div class="assess-cell head-label"><span>5</span><span style="font-size:9px;">Leading</span></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">AI system inventory and risk classification</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q1" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q1" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q1" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q1" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q1" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">AI policy — documented, approved, and enforced</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q2" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q2" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q2" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q2" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q2" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">Model documentation (model cards, technical docs)</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q3" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q3" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q3" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q3" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q3" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">Impact assessments for high-risk AI systems</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q4" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q4" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q4" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q4" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q4" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">Bias testing and fairness evaluation at deployment</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q5" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q5" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q5" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q5" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q5" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">Post-deployment monitoring and drift detection</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q6" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q6" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q6" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q6" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q6" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">Incident response — documented, tested, and rehearsed</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q7" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q7" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q7" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q7" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q7" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-row">
+        <div class="assess-q">Board-level AI metrics and reporting</div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q8" value="1" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q8" value="2" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q8" value="3" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q8" value="4" onchange="calcScore()"></div>
+        <div class="assess-cell"><input type="radio" class="assess-radio" name="q8" value="5" onchange="calcScore()"></div>
+      </div>
+      <div class="assess-score-bar">
+        <span class="score-label">Maturity score</span>
+        <div class="score-track"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+        <span class="score-value" id="scoreText">Answer above</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-gray">Using this tool with clients</span>
+      <h3>The assessment is a conversation starter, not a verdict</h3>
+      <p>Use this diagnostic at the start of an engagement to create a shared, honest picture of current state. The value is not in the score — it's in the conversation that happens when different stakeholders disagree about which level describes their organisation. Those disagreements are the governance gaps. An organisation where the CISO thinks they're at Level 4 and the data science team thinks they're at Level 2 has discovered something important before the assessment is even complete.</p>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div id="tab-roadmap" class="section">
+    <p class="lede">Moving from one level to the next requires deliberate investment in the right areas. The roadmap is not a checklist — it's a prioritised set of capabilities to build, anchored in what the evidence shows makes the biggest difference.</p>
+
+    <div class="sub-label">What to focus on at each transition</div>
+    <div class="roadmap-grid">
+      <div class="rm-cell" style="border-top: 3px solid var(--l2);">
+        <div class="rm-from">Level 1 → Level 2</div>
+        <h3>From invisible to visible</h3>
+        <ul class="clean">
+          <li>Build your AI system inventory — every deployed model, its purpose, its data sources</li>
+          <li>Classify systems by risk (use EU AI Act tiers as a starting framework)</li>
+          <li>Appoint a named AI governance owner with clear mandate</li>
+          <li>Draft an AI use policy — even a page is better than nothing</li>
+          <li>Establish a basic incident reporting channel</li>
+          <li>Start requiring impact assessments for new high-risk deployments</li>
+        </ul>
+      </div>
+      <div class="rm-cell" style="border-top: 3px solid var(--l3);">
+        <div class="rm-from">Level 2 → Level 3</div>
+        <h3>From silo to enterprise</h3>
+        <ul class="clean">
+          <li>Form a cross-functional AI Governance Council (Legal, Risk, Tech, Ethics, Operations)</li>
+          <li>Publish a unified AI Policy that applies to all teams — with teeth</li>
+          <li>Mandate standard model documentation (model cards) across all deployments</li>
+          <li>Create a defined model approval process with clear go/no-go criteria</li>
+          <li>Standardise bias testing as a deployment gate</li>
+          <li>Build a governance dashboard visible to senior leadership</li>
+        </ul>
+      </div>
+      <div class="rm-cell" style="border-top: 3px solid var(--l4);">
+        <div class="rm-from">Level 3 → Level 4</div>
+        <h3>From defined to measured</h3>
+        <ul class="clean">
+          <li>Automate drift detection and performance monitoring</li>
+          <li>Tie AI governance metrics to executive and board reporting</li>
+          <li>Test and refine incident response playbooks through tabletop exercises</li>
+          <li>Implement dynamic risk scoring that updates based on live data</li>
+          <li>Build post-incident learning loops that update policy automatically</li>
+          <li>Integrate governance evidence into regulatory filings and procurement responses</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-label">Governance metrics worth tracking</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-name">AI Inventory Coverage</div>
+        <div class="metric-desc">% of deployed AI systems that are documented and risk-classified</div>
+        <div class="metric-example">Target: 100% for production systems</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Impact Assessment Rate</div>
+        <div class="metric-desc">% of high-risk AI deployments with a completed, current impact assessment</div>
+        <div class="metric-example">Target: 100% for Annex III systems</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Bias Remediation Time</div>
+        <div class="metric-desc">Average time from bias detection to documented remediation</div>
+        <div class="metric-example">Level 3: days. Level 4: hours.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Governance Throughput</div>
+        <div class="metric-desc">Number of AI deployment decisions processed through the governance council per month</div>
+        <div class="metric-example">Bottleneck = governance immaturity signal</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Explainability Ratio</div>
+        <div class="metric-desc">% of AI decisions that can be traced to documented lineage and rationale</div>
+        <div class="metric-example">Target varies by risk tier</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Incident Rate & Trend</div>
+        <div class="metric-desc">Number of AI-related incidents per period and year-on-year trend</div>
+        <div class="metric-example">Increasing trend = governance gap</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Policy Compliance Rate</div>
+        <div class="metric-desc">% of AI projects following mandated governance processes end-to-end</div>
+        <div class="metric-example">Below 80% = Level 2 at best</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Data Integrity Index</div>
+        <div class="metric-desc">% of deployed models using certified, quality-assured datasets</div>
+        <div class="metric-example">Foundation for all other governance metrics</div>
+      </div>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">The sequencing trap</span>
+      <h3>Don't try to move two levels at once</h3>
+      <p>The most common roadmap failure is setting a Level 4 target before Level 3 is solid. Automated monitoring built on top of inconsistent manual processes doesn't produce reliable governance — it produces the appearance of governance. Each level must be genuinely embedded before the next is attempted. The signal that a level is genuinely achieved: the governance controls work without the champion who built them. If your AI governance depends on one or two key people, you are at most at Level 2.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The vocabulary of AI maturity — the terms that turn "we need to improve our AI governance" into a structured, credible conversation.</p>
+
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Responsible AI Maturity Model (RAI MM)</div>
+        <div class="term-hint">The framework itself</div>
+        <div class="term-def">A structured framework describing an organisation's AI governance capability across progressive levels. Microsoft Research published a RAI MM with 24 empirically derived dimensions across five levels (Latent to Leading). The RAI Institute's model covers five stages (Initial/Latent to Transformative) based on seven years of research. Multiple models exist — the common thread is five levels from ad hoc to optimised.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Governance Debt</div>
+        <div class="term-hint">The cost of deferred governance</div>
+        <div class="term-def">The accumulation of governance shortcuts, undefined processes, and unmanaged risks that builds up when technology adoption outpaces governance development. Like technical debt, governance debt eventually comes due — manifesting as regulatory fines, reputational damage from AI failures, or inability to scale successful pilots because compliance processes are too slow or fragmented.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Model Card</div>
+        <div class="term-hint">Standard model documentation</div>
+        <div class="term-def">A structured document accompanying an AI model that describes its intended use cases, performance metrics (including disaggregated results for different population groups), known limitations, ethical considerations, and training data characteristics. Model cards are a key evidence artefact distinguishing Level 2 from Level 3 maturity. First proposed by Google researchers in 2018, now expected by most regulatory frameworks.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Governance Council</div>
+        <div class="term-hint">Cross-functional oversight body</div>
+        <div class="term-def">A cross-functional body with representation from Legal, Risk, Ethics, Technology, and Operations that has formal authority over AI governance decisions — including model approval, policy setting, and incident response. Distinguished from an AI Ethics Committee (advisory) by having actual decision-making authority and accountability. A defining characteristic of Level 3 maturity.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Governance Throughput</div>
+        <div class="term-hint">A maturity bottleneck signal</div>
+        <div class="term-def">The number of AI governance decisions (model approvals, risk assessments, policy reviews) a governance structure can process per unit of time. At Level 2–3, governance throughput becomes a binding constraint: a single committee reviewing every deployment works for five models. At 50 models, it creates a bottleneck that pressure-tests the governance culture. Mature organisations solve this through tiered review processes, not by bypassing governance.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">ISO/IEC 42001</div>
+        <div class="term-hint">AI management system standard</div>
+        <div class="term-def">The international standard for AI management systems — published 2023. Provides requirements for establishing, implementing, maintaining, and continually improving an AI management system. Complementary to ISO/IEC 42005 (impact assessment) and ISO/IEC 23894 (risk management). Certification against ISO 42001 is the most credible external validation of Level 4–5 governance maturity currently available.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">MLOps</div>
+        <div class="term-hint">Operational infrastructure for AI governance</div>
+        <div class="term-def">Machine Learning Operations — the set of practices and tools for automating the deployment, monitoring, and management of machine learning models in production. Mandating standard MLOps platforms across an organisation is a key Level 2→3 transition move. Without MLOps, governance controls are manual and inconsistent; with it, they can be embedded in the deployment pipeline itself.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Federated Governance</div>
+        <div class="term-hint">Level 5 governance architecture</div>
+        <div class="term-def">A governance model where AI oversight responsibilities are distributed across subsidiaries, business units, or supply chain partners — each with local accountability — connected by shared standards, interoperable monitoring systems, and central oversight. The hallmark of Level 5 maturity in large, complex organisations. Federated governance enables scale without central bottlenecks; it fails without strong shared standards and trust.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Red-teaming (for AI)</div>
+        <div class="term-hint">Adversarial testing of AI systems</div>
+        <div class="term-def">Structured adversarial testing of an AI system by a team tasked with finding failure modes, vulnerabilities, and misuse scenarios — analogous to penetration testing in cybersecurity. The EU AI Act requires adversarial testing for GPAI models posing systemic risk. A Level 4+ capability: most organisations at Level 3 conduct bias and performance testing but not structured red-teaming.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Total AI Effectiveness (MIT CISR)</div>
+        <div class="term-hint">The performance measurement behind the model</div>
+        <div class="term-def">MIT CISR's composite measure used to classify AI maturity, combining three equally weighted factors: effectiveness of AI to improve operations, improve customer experience, and support and develop ecosystems. Score of 0–49% = Stage 1; 50–74% = Stage 2; 75–99% = Stage 3; 100% = Stage 4. Stages 1–2 correlate with below-average financial performance; Stages 3–4 with significantly above-average financial performance.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">How to use maturity models in client conversations — framing that moves clients from "interesting concept" to "I need to understand where we sit."</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Where do most organisations sit on this model?"</div>
+      <div class="pitch-a">The honest answer: most large enterprises are at Level 2 moving toward Level 3. They have policies and some processes — but governance is inconsistently applied across business units, documentation is patchy, and monitoring is largely manual and reactive. Gartner found that while 80% of large organisations claim AI governance initiatives, fewer than half can demonstrate measurable maturity. The gap between stated maturity and actual maturity is one of the most consistent findings in responsible AI research. Level 1 is also more common than people admit — organisations that have deployed AI without any structured governance process, relying on individual judgement and hoping nothing goes wrong.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "What does moving from Level 2 to Level 3 actually involve?"</div>
+      <div class="pitch-a">Three things above everything else. First: a cross-functional AI Governance Council with real authority — not an advisory body, but one that can say no to a deployment. Second: a unified AI policy that applies to all teams, with mandated tooling and a defined approval process. Without this, different parts of the organisation will keep making incompatible governance decisions. Third: standard model documentation — model cards — for every deployed system. That documentation is the evidence base that regulators, auditors, and clients will ask to see. The Level 2 to 3 transition is fundamentally about moving from individual judgement to institutional process. That's a cultural change as much as a technical one, and it typically takes 12–18 months to embed genuinely.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Why does maturity level affect financial performance?"</div>
+      <div class="pitch-a">MIT CISR's research across 721 companies found a clear correlation: organisations at Levels 1–2 of AI maturity perform below industry average financially; those at Levels 3–4 perform well above average. The mechanism is fairly intuitive. At low maturity, AI projects fail more often, take longer to debug, get blocked by regulatory concerns, and generate incidents that consume management time and create liability. At high maturity, deployment is faster because the evidence trail is clean, incidents are caught earlier and resolved faster, and regulatory approval is predictable. McKinsey quantifies this: organisations with embedded responsible AI governance see up to 40% higher ROI from AI investments. Governance isn't a cost — it's the operating system for extracting value reliably.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they push back: "We're at Level 4 already — we have all of this in place."</div>
+      <div class="pitch-a">The most revealing follow-up question is: "Can you show me the evidence?" Level 4 maturity means automated monitoring with documented thresholds, incident response playbooks that have been tested and refined through actual use, board-level AI metrics received regularly, and governance controls that function when the people who built them aren't in the room. If any of those elements are missing or hypothetical, the honest assessment is Level 2–3. Organisations consistently overestimate their maturity because they conflate policy creation with policy enforcement. A maturity model is only useful if it reflects reality — not aspiration.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "How do we use this as a consulting entry point?"</div>
+      <div class="pitch-a">The self-assessment is your entry point. Run it with a cross-functional group — CISO, General Counsel, Chief Data Officer, and a business unit AI lead. The score matters less than what happens when they disagree. When the CISO thinks the organisation is at Level 3 on incident response and the data science team thinks it's Level 1, you've identified a governance gap that has real operational and regulatory consequences. Your value as an advisor is in facilitating that honest conversation, translating the gap into business risk terms, and building a credible roadmap from current state to target state. The maturity model is the diagnostic; the roadmap is the engagement.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">The framing that opens doors</span>
+      <h3>Maturity is the bridge between frameworks and reality</h3>
+      <p>NIST RMF tells you what good governance looks like. The EU AI Act tells you what's legally required. A maturity model tells you where you are relative to both — and what the next step looks like in your specific context. It's the tool that turns abstract governance frameworks into a concrete, prioritised action plan. That's why it belongs in every enterprise AI advisory conversation.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+
+function toggleLevel(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.level-card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+
+function calcScore() {
+  const names = ['q1','q2','q3','q4','q5','q6','q7','q8'];
+  let total = 0, answered = 0;
+  names.forEach(n => {
+    const sel = document.querySelector(`input[name="${n}"]:checked`);
+    if (sel) { total += parseInt(sel.value); answered++; }
+  });
+  const fill = document.getElementById('scoreFill');
+  const text = document.getElementById('scoreText');
+  if (answered === 0) { fill.style.width = '0%'; text.textContent = 'Answer above'; return; }
+  const avg = total / answered;
+  const pct = ((avg - 1) / 4) * 100;
+  fill.style.width = pct + '%';
+  const level = Math.round(avg);
+  const labels = ['', 'Level 1 — Initial', 'Level 2 — Repeatable', 'Level 3 — Defined', 'Level 4 — Managed', 'Level 5 — Optimising'];
+  const colours = ['', '#C0392B', '#D85A30', '#EF9F27', '#1D9E75', '#185FA5'];
+  fill.style.background = colours[level];
+  text.textContent = `${labels[level]} (avg ${avg.toFixed(1)})`;
+}
+</script>
+</body>
+</html>
