@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Governance for Boards — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --hero-bg: #1a1a2e; --gold: #C9A84C;
+    --teal: #1D9E75; --teal-soft: #e1f5ee;
+    --red: #C0392B; --amber: #EF9F27; --blue: #378ADD; --purple: #7F77DD;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .top-bar { background: var(--ink); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 48px; position: sticky; top: 0; z-index: 100; }
+  .back-link { font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+  .back-link:hover { color: rgba(247,245,240,1); }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  .hero { background: var(--hero-bg); color: #fff; padding: 3.5rem 2rem 3rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .hero-title { font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-meta { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.45); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .tab-bar { background: #fff; border-bottom: 1px solid var(--line); padding: 0 2rem; position: sticky; top: 48px; z-index: 90; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 14px 18px; font-size: 13px; font-weight: 400; color: var(--ink-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: var(--sans); }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--gold); font-weight: 500; }
+
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lede { font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.25rem); font-style: italic; line-height: 1.75; color: var(--ink-soft); margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+  .card-gold   { border-left: 3px solid var(--gold); }
+  .card-teal   { border-left: 3px solid var(--teal); }
+  .card-red    { border-left: 3px solid var(--red); }
+  .card-amber  { border-left: 3px solid var(--amber); }
+  .card-blue   { border-left: 3px solid var(--blue); }
+  .card-purple { border-left: 3px solid var(--purple); }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-gold   { background: #faf3e0; color: #8a6a1a; }
+  .tag-teal   { background: #e1f5ee; color: #0F6E56; }
+  .tag-red    { background: #fdf0ee; color: #922b21; }
+  .tag-amber  { background: #FAEEDA; color: #854F0B; }
+  .tag-blue   { background: #E6F1FB; color: #185FA5; }
+  .tag-purple { background: #EEEDFE; color: #534AB7; }
+  .tag-gray   { background: var(--paper-warm); color: var(--ink-muted); }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .stat-cell { background: var(--paper-card); padding: 1.25rem; }
+  .stat-num { font-family: var(--serif); font-size: 2rem; font-weight: 400; line-height: 1; margin-bottom: 4px; }
+  .stat-num.amber { color: #854F0B; }
+  .stat-num.red   { color: #922b21; }
+  .stat-num.teal  { color: #0F6E56; }
+  .stat-label { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.5; }
+
+  .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .resp-cell { background: var(--paper-card); padding: 1.25rem; }
+  .resp-role { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.8; }
+
+  .q-list { margin-bottom: 1.5rem; }
+  .q-item { border: 1px solid var(--line); border-radius: 6px; margin-bottom: 6px; overflow: hidden; }
+  .q-header { padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--paper-card); transition: background 0.1s; user-select: none; }
+  .q-header:hover { background: #fff; }
+  .q-header.open { background: var(--ink); }
+  .q-title { font-size: 13px; font-weight: 500; flex: 1; }
+  .q-header.open .q-title { color: var(--paper); }
+  .q-chevron { font-size: 11px; color: var(--ink-muted); transition: transform 0.2s; flex-shrink: 0; }
+  .q-header.open .q-chevron { transform: rotate(180deg); color: rgba(247,245,240,0.5); }
+  .q-body { display: none; padding: 1rem 1.25rem 1.25rem; background: #fff; border-top: 1px solid var(--line); font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+  .q-item.open .q-body { display: block; }
+  .q-domain { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; }
+
+  .committee-wrap { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .committee-row { display: grid; grid-template-columns: 180px 1fr 1fr; border-bottom: 1px solid var(--line); }
+  .committee-row:last-child { border-bottom: none; }
+  .committee-row.header { background: var(--ink); }
+  .committee-cell { padding: 1rem 1.25rem; border-right: 1px solid var(--line); background: var(--paper-card); }
+  .committee-cell:last-child { border-right: none; }
+  .committee-row.header .committee-cell { background: var(--ink); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(247,245,240,0.5); }
+  .committee-cell h4 { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .committee-cell p { font-size: 12px; }
+
+  .sub-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 8px; }
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .term-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .term-name { font-size: 13px; font-weight: 500; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  .pitch-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+  .pitch-q { background: var(--paper-warm); padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .pitch-a { padding: 14px 16px; font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--ink); }
+
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  @media (max-width: 640px) {
+    .resp-grid { grid-template-columns: 1fr; }
+    .committee-row { grid-template-columns: 1fr; }
+    .committee-cell { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Strategy · Corporate Governance</div>
+    <h1 class="hero-title">AI Governance<br><em>for Boards</em></h1>
+    <div class="hero-meta">
+      <span>Oversight · Accountability · Fiduciary duty</span>
+      <span>6 sections · Interactive</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('responsibilities', this)">Board vs Management</button>
+  <button class="tab-btn" onclick="showTab('questions', this)">Questions to Ask</button>
+  <button class="tab-btn" onclick="showTab('structure', this)">Governance Structure</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">Most enterprise boards are significantly behind on AI governance — even as their organisations accelerate AI deployment. That gap between adoption and oversight is where legal exposure, reputational risk, and competitive disadvantage quietly accumulate.</p>
+
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="stat-num amber">31%</div>
+        <div class="stat-label">of boards say AI is not yet on their agenda — down from 45% in 2024 but still alarming</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num red">66%</div>
+        <div class="stat-label">of directors report "limited to no knowledge or experience" with AI (global survey, 2025)</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num red">85%</div>
+        <div class="stat-label">of boards receive no AI-related metrics or reporting from management</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num teal">+10.9pp</div>
+        <div class="stat-label">return on equity advantage for organisations with AI-savvy boards (MIT, 2025)</div>
+      </div>
+    </div>
+
+    <div class="card card-gold">
+      <span class="tag tag-gold">Why now</span>
+      <h3>AI governance is a fiduciary obligation — not a choice</h3>
+      <p>AI has crossed a threshold. It's no longer an IT project that management handles while the board watches. Organisations are embedding AI into decisions that affect customers, employees, and third parties at scale. Courts, regulators, and shareholders are beginning to hold boards accountable for that. Oversight of AI is increasingly treated as a core director duty — on par with financial and cybersecurity oversight.</p>
+    </div>
+
+    <div class="card card-red">
+      <span class="tag tag-red">Legal reality</span>
+      <h3>AI washing and fiduciary exposure are real and growing</h3>
+      <p style="margin-bottom:8px;">The SEC has already pursued enforcement actions against companies for false AI capability claims — treating it as securities fraud. Courts are actively adjudicating AI liability cases. The EU AI Act creates board-level accountability for non-compliance. Delaware courts' evolving oversight duty case law — though not yet AI-specific — establishes that boards can be liable for failing to oversee mission-critical operational risks.</p>
+      <p>The question is no longer whether boards are responsible for AI risk. It's whether they can demonstrate they exercised reasonable oversight when things go wrong.</p>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">The opportunity</span>
+      <h3>Well-governed AI is a competitive advantage</h3>
+      <p>MIT research (2025) found that organisations with AI-savvy boards outperform peers by 10.9 percentage points in return on equity — while those without board-level AI literacy are 3.8% below their industry average. Governance isn't just about avoiding downside. Boards that govern AI well enable faster, more confident, more scalable deployment — because they've built the trust and process to move further without stumbling.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">Uncomfortable truth</span>
+      <h3>Most boards don't know what they don't know</h3>
+      <p>Only 39% of Fortune 100 companies disclosed any board-level AI oversight as of 2024. Fewer than 25% have board-approved AI policies. In most organisations, management is moving fast and the board is hoping it's going well. That's not oversight — that's optimism.</p>
+    </div>
+  </div>
+
+  <!-- BOARD VS MANAGEMENT -->
+  <div id="tab-responsibilities" class="section">
+    <p class="lede">The most common failure in AI governance is blurred accountability — boards that either micro-manage what they should only oversee, or delegate so completely they have no meaningful visibility. The distinction matters legally and practically.</p>
+
+    <div class="resp-grid">
+      <div class="resp-cell">
+        <div class="resp-role">The board — oversight</div>
+        <ul class="clean">
+          <li>Set the organisation's AI risk appetite</li>
+          <li>Approve the AI governance policy and framework</li>
+          <li>Ensure clear management accountability for AI risk</li>
+          <li>Receive regular, meaningful AI risk reporting</li>
+          <li>Challenge management's AI strategy and risk posture</li>
+          <li>Oversee regulatory compliance (EU AI Act, sector rules)</li>
+          <li>Approve material AI investments and strategy</li>
+          <li>Ensure AI is part of enterprise risk management</li>
+          <li>Maintain appropriate AI literacy at board level</li>
+          <li>Review significant AI incidents and responses</li>
+        </ul>
+      </div>
+      <div class="resp-cell">
+        <div class="resp-role">Management — execution</div>
+        <ul class="clean">
+          <li>Develop and implement the AI strategy</li>
+          <li>Build and operate AI governance processes and controls</li>
+          <li>Conduct AI risk assessments and impact analyses</li>
+          <li>Manage day-to-day AI risk and compliance</li>
+          <li>Define and enforce responsible AI policies</li>
+          <li>Maintain technical documentation and audit trails</li>
+          <li>Report AI risk and performance to the board</li>
+          <li>Own AI vendor and third-party relationships</li>
+          <li>Drive AI literacy across the workforce</li>
+          <li>Respond to AI incidents and near-misses</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-gold">
+      <span class="tag tag-gold">The critical line</span>
+      <h3>Oversight is not management</h3>
+      <p>A board that deep-dives into model architecture is operating outside its remit. A board that simply accepts "AI is fine" is abdicating its duty. Effective oversight sits in the middle: hard questions, clear expectations, structured reporting, challenging assumptions — but trusting management to execute. The skill is asking the right questions, not having the technical answers.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Who owns AI in management?</span>
+      <h3>Accountability needs a name, not just a function</h3>
+      <p style="margin-bottom:8px;">The most common governance gap: AI risk is "everyone's problem" — which means it's no-one's accountability. The board should know exactly who in the C-suite owns AI risk, what their mandate covers, and how they report. This might be the CTO, a Chief AI Officer, the CRO — but it needs to be named and mandated.</p>
+      <p>Increasingly, organisations are establishing cross-functional AI Committees at management level — coordinating AI strategy, risk, ethics, and compliance. The board oversees the committee; the committee manages the function.</p>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="tab-questions" class="section">
+    <p class="lede">The questions that separate boards doing genuine AI oversight from those going through the motions. These are what well-advised directors ask — and what management should be able to answer clearly.</p>
+
+    <div class="sub-label">Strategy & value</div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-gold" style="margin-bottom:0;">Strategy</span>
+          <span class="q-title">What AI systems are we currently using — and do we have a complete inventory?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">Most boards are surprised by how many AI systems are already operating across their organisation — often adopted by individual business units without central oversight. An AI inventory is the foundation of every other governance activity. If management can't answer this question confidently, that's itself a governance finding.</div>
+      </div>
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-gold" style="margin-bottom:0;">Strategy</span>
+          <span class="q-title">What is our AI risk appetite — and has the board formally approved it?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">Risk appetite for AI should be explicit, board-approved, and connected to the broader risk framework. It defines what risks the organisation will accept in pursuit of AI value, and where the red lines are. Without a formal statement, management has no mandate to guide decisions — and the board has no baseline to assess whether they're operating within bounds.</div>
+      </div>
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-gold" style="margin-bottom:0;">Strategy</span>
+          <span class="q-title">How is AI creating measurable value — and are we tracking it?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">Boards should apply the same discipline to AI investments as any capital allocation. What's the business case? What metrics define success? What's the ROI against implementation and governance costs? Without this, AI becomes a cost centre that grows without accountability — or a source of risk not generating commensurate value.</div>
+      </div>
+    </div>
+
+    <div class="sub-label">Risk & compliance</div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-red" style="margin-bottom:0;">Risk</span>
+          <span class="q-title">Do any of our AI systems fall within the EU AI Act's high-risk categories?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">This is not a question management should still be working out. If the organisation uses AI in employment, credit, essential services, education, or law enforcement contexts, it almost certainly has high-risk systems — with a compliance deadline of August 2026. The board should know whether a classification assessment has been completed, what it found, and what the remediation plan is.</div>
+      </div>
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-red" style="margin-bottom:0;">Risk</span>
+          <span class="q-title">What is our exposure if an AI system causes harm to a customer or employee?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">Liability from AI harm can arise from product liability, discrimination claims, data protection breaches, or regulatory penalties. The board should understand the organisation's most significant AI liability scenarios, whether they're adequately insured, and whether the incident response plan has been stress-tested.</div>
+      </div>
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-red" style="margin-bottom:0;">Risk</span>
+          <span class="q-title">Have we conducted AI impact assessments across our portfolio?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">An AI impact assessment evaluates each system against potential harms to individuals, groups, and the organisation. Required under the EU AI Act for high-risk systems (Fundamental Rights Impact Assessment) and best practice across the portfolio. The board should know which systems have been assessed, what risks were identified, and how they're being managed.</div>
+      </div>
+    </div>
+
+    <div class="sub-label">People, culture & capability</div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-purple" style="margin-bottom:0;">People</span>
+          <span class="q-title">Who in management is accountable for AI risk — and what is their mandate?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">If the answer is "the CTO broadly" or "it's shared," that's a governance gap. The board should be able to name the individual responsible for AI risk management, confirm their mandate is adequate, and ensure they have direct access to the board when needed — not just filtered through the CEO.</div>
+      </div>
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-purple" style="margin-bottom:0;">People</span>
+          <span class="q-title">Does this board have sufficient AI literacy to discharge its oversight responsibilities?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">The most uncomfortable — and most important — question. You cannot oversee what you don't understand. Boards should honestly assess collective AI literacy, identify gaps, and address them through director education, external advisors, or board composition decisions. The EU AI Act includes explicit AI literacy obligations. Regulators and litigants will ask whether the board had the competence to perform its oversight role.</div>
+      </div>
+      <div class="q-item">
+        <div class="q-header" onclick="toggleQ(this)">
+          <span class="q-domain tag-purple" style="margin-bottom:0;">People</span>
+          <span class="q-title">How are we ensuring AI is being used ethically across the workforce?</span>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">Responsible AI isn't just a technical control — it's cultural. The board should understand what policies govern employee use of AI tools, how they're enforced, what training exists, and how ethical concerns are surfaced and escalated. Without clear guidance, employees make their own decisions — and that's where data leakage, bias, and misuse typically originate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOVERNANCE STRUCTURE -->
+  <div id="tab-structure" class="section">
+    <p class="lede">Governance without structure is just intention. Effective AI governance requires clear board-level ownership, defined committee responsibilities, and a reporting rhythm that gives the board meaningful visibility without drowning in operational detail.</p>
+
+    <div class="sub-label">Committee ownership — who oversees what</div>
+    <div class="committee-wrap">
+      <div class="committee-row header">
+        <div class="committee-cell">Committee</div>
+        <div class="committee-cell">AI oversight responsibilities</div>
+        <div class="committee-cell">Key questions to ask</div>
+      </div>
+      <div class="committee-row">
+        <div class="committee-cell"><h4>Full Board</h4></div>
+        <div class="committee-cell"><p>AI risk appetite, material AI strategy decisions, significant investments, major incidents, regulatory actions</p></div>
+        <div class="committee-cell"><p>Are we deploying AI in line with our strategy and values? What is our AI risk appetite?</p></div>
+      </div>
+      <div class="committee-row">
+        <div class="committee-cell"><h4>Audit / Risk Committee</h4></div>
+        <div class="committee-cell"><p>AI risk frameworks, regulatory compliance, internal audit of AI controls, third-party AI vendor risk, EU AI Act obligations</p></div>
+        <div class="committee-cell"><p>Are our AI controls adequate? Are we compliant? What does the audit trail show?</p></div>
+      </div>
+      <div class="committee-row">
+        <div class="committee-cell"><h4>Remuneration Committee</h4></div>
+        <div class="committee-cell"><p>AI used in performance evaluation or pay decisions — ensuring AI isn't introducing bias into compensation processes</p></div>
+        <div class="committee-cell"><p>Is AI influencing pay or promotion decisions? Is that lawful and fair?</p></div>
+      </div>
+      <div class="committee-row">
+        <div class="committee-cell"><h4>Nomination / Governance Committee</h4></div>
+        <div class="committee-cell"><p>Board composition and AI expertise gaps, director AI education, succession planning for AI-related executive roles</p></div>
+        <div class="committee-cell"><p>Does the board have adequate AI literacy? Who do we need to add?</p></div>
+      </div>
+      <div class="committee-row">
+        <div class="committee-cell"><h4>ESG / Ethics Committee</h4></div>
+        <div class="committee-cell"><p>AI's impact on people — workforce, customers, communities — bias and fairness, environmental impact of AI infrastructure</p></div>
+        <div class="committee-cell"><p>Is our AI treating people fairly? What is our AI's environmental footprint?</p></div>
+      </div>
+    </div>
+
+    <div class="card card-gold">
+      <span class="tag tag-gold">Reporting rhythm</span>
+      <h3>What good AI reporting to the board looks like</h3>
+      <p style="margin-bottom:8px;">The board should receive structured AI reporting at minimum quarterly for high-risk AI. Good reporting covers five areas: progress against AI strategy and key value metrics; compliance programme status (EU AI Act milestones, regulatory developments); AI risk posture (inventory status, high-risk systems, residual risks); significant incidents, near-misses, and remediation; and emerging external threats (regulation, litigation trends, third-party risks).</p>
+      <p>Only about 15% of boards currently receive AI-related metrics. That means 85% are making oversight decisions without data.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Framework</span>
+      <h3>The three lines model applied to AI</h3>
+      <p style="margin-bottom:8px;"><strong>First line:</strong> Business units and AI teams — own the risk, operate the controls, implement responsible AI day to day.</p>
+      <p style="margin-bottom:8px;"><strong>Second line:</strong> Risk, compliance, legal — set the framework, provide oversight, challenge the first line, ensure regulatory compliance.</p>
+      <p><strong>Third line:</strong> Internal audit — independently verifies the first and second lines are working. AI should be on the internal audit plan. The Audit Committee oversees this layer.</p>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">Emerging role</span>
+      <h3>The Chief AI Officer (CAIO)</h3>
+      <p>A growing number of large organisations are appointing a dedicated Chief AI Officer — a C-suite role that owns AI strategy, governance, and risk across the enterprise. Where this role exists, it typically has a direct line to the board or risk committee. Where it doesn't, the board should understand who functionally carries that responsibility — and whether their mandate, resources, and seniority are adequate.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The vocabulary of boardroom AI conversations — terms you'll encounter in governance documents, regulatory guidance, and director briefings.</p>
+
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Risk Appetite</div>
+        <div class="term-hint">The board's formal tolerance statement</div>
+        <div class="term-def">A board-approved statement defining the level and types of AI-related risk the organisation will accept in pursuit of its objectives. Without a defined appetite, management has no mandate and the board has no baseline to assess compliance. Distinct from risk tolerance (operational limits) and risk capacity (maximum absorbable risk).</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Washing</div>
+        <div class="term-hint">The new greenwashing — with legal teeth</div>
+        <div class="term-def">Making false, misleading, or exaggerated claims about AI capabilities, ethics, or governance. The SEC has already pursued AI washing as securities fraud. Boards must ensure management's external AI communications — in investor materials, marketing, ESG reporting — are accurate and defensible.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Fiduciary Duty</div>
+        <div class="term-hint">The legal baseline for directors</div>
+        <div class="term-def">The legal obligation of directors to act in the best interests of the company and shareholders. Courts are treating AI oversight as part of this duty — particularly where AI failures cause material harm or where directors failed to implement any oversight mechanism for mission-critical AI systems.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Oversight Duty (Caremark)</div>
+        <div class="term-hint">The US case law baseline</div>
+        <div class="term-def">Delaware corporate law doctrine establishing that directors must implement reasonable systems to stay informed about material risks — and that failing to do so is itself a breach of duty. Legal practitioners are actively applying Caremark to AI governance: a board with no AI oversight mechanism has legal exposure when AI harms occur.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Literacy</div>
+        <div class="term-hint">Required — not optional</div>
+        <div class="term-def">Sufficient understanding of AI concepts, capabilities, and risks to discharge oversight responsibilities. The EU AI Act includes explicit AI literacy obligations. For directors, literacy doesn't mean technical expertise — it means being able to ask the right questions, interpret management's answers, and identify when something doesn't add up.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Three Lines Model</div>
+        <div class="term-hint">Structured defence-in-depth</div>
+        <div class="term-def">A governance framework with three accountability layers: first line (business units own and manage risk), second line (risk and compliance set frameworks and oversee), third line (internal audit provides independent assurance). Applied to AI, it gives boards a structured way to verify controls are working — not just that policies exist.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Chief AI Officer (CAIO)</div>
+        <div class="term-hint">Named C-suite accountability</div>
+        <div class="term-def">A senior executive responsible for AI strategy, governance, risk, and ethics across the enterprise. Growing rapidly but not yet universal. Where this role doesn't exist, someone else is carrying the responsibility — the board should know who, with what mandate, and whether it's adequate.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Inventory</div>
+        <div class="term-hint">The governance foundation</div>
+        <div class="term-def">A comprehensive register of all AI systems used, deployed, or procured by the organisation — including third-party and embedded AI. Records each system's purpose, owner, risk tier, data inputs, and governance status. Required for EU AI Act compliance. You cannot govern what you cannot see.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Material AI Risk</div>
+        <div class="term-hint">What rises to board level</div>
+        <div class="term-def">AI-related risk significant enough to warrant board awareness and oversight. Materiality thresholds should be formally defined. Indicators include: EU AI Act high-risk classification, significant customer or employee impact, potential regulatory penalty, or reputational exposure at scale.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Human Oversight (AI)</div>
+        <div class="term-hint">Mandatory for high-risk AI</div>
+        <div class="term-def">The requirement that humans retain meaningful ability to understand, monitor, intervene in, and override AI decisions — mandatory under EU AI Act Article 14 for high-risk systems. At board level, it's an accountability question: who catches AI errors, and do they have the authority and capability to act?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">The real conversations that happen in boardrooms and with C-suite sponsors. Depth and specificity here — not just framework awareness — is what builds credibility and opens engagements.</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When a director asks: "Surely AI governance is management's job — why should the board be involved?"</div>
+      <div class="pitch-a">The board is responsible for overseeing the management of all material risks — and AI has become a material risk for most organisations. When an AI system causes discrimination, a data breach, or a significant failure, regulators and shareholders will ask what the board knew and what it did about it. That's not a question management can answer on the board's behalf. The board can't claim oversight without evidence of engagement — and you can't govern what you don't understand. This is why board AI literacy and structured AI reporting are no longer optional.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When a CEO says: "We have responsible AI policies in place — we're covered."</div>
+      <div class="pitch-a">Policies are a starting point, not a destination. The real questions are: Has the board formally approved those policies? Are they enforced in practice, or are they aspirational documents on an intranet? Has anyone tested whether the controls actually work? Does management report AI risk to the board regularly? Only about 15% of boards currently receive AI-related metrics — meaning in most organisations, the policy exists but the oversight loop is broken. A policy without board visibility is governance theatre, not governance.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When a board chair says: "We don't have anyone with AI expertise on the board."</div>
+      <div class="pitch-a">That's the most common and most honest starting point — and it's addressable through three levers: director education (regular AI briefings from management, external experts, or structured programmes), external advisors (bringing AI governance expertise into the boardroom without changing composition), and longer-term board refreshment (adding a director with relevant expertise at the next opportunity). The goal isn't for every director to become a data scientist. It's for the board collectively to ask the right questions and recognise when answers don't stack up. That's achievable with the right support.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When a risk committee chair asks: "What should we actually be getting in our AI reporting?"</div>
+      <div class="pitch-a">Effective AI board reporting covers five areas: strategy progress (are we getting value from AI investments?), compliance status (EU AI Act milestones, regulatory developments), risk posture (what's in the inventory, what are the high-risk systems, what's the residual risk?), incidents and near-misses (what went wrong and what was done about it?), and emerging threats (new regulations, litigation trends, third-party risks). Most boards get none of this systematically. Establishing that reporting cadence is typically the most valuable first intervention — it creates the information flow that makes all other governance possible.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When a GC asks: "What's our actual legal exposure if an AI system causes harm?"</div>
+      <div class="pitch-a">It's real, multi-vector, and growing. In the EU: fines up to 3% of global turnover for high-risk non-compliance, plus updated product liability rules that can hold providers liable for AI-caused harm. In the US: SEC AI washing enforcement, state-level AI laws (Colorado's AI Act is already in force), and the Caremark doctrine creating board-level liability for governance failures. There's also the plaintiff's bar, actively watching AI discrimination and bias cases. Organisations with documented governance, risk assessments, and incident response will be in materially better shape than those relying on goodwill when a claim arrives.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">The framing that opens boardroom doors</span>
+      <h3>Lead with upside, anchor with obligation</h3>
+      <p>The most effective entry point isn't fear — it's the combination of performance and obligation. Boards with AI literacy outperform by nearly 11 percentage points in ROE. Governance isn't a drag on AI adoption; it's the foundation that makes confident, scalable deployment possible. The framing that lands: <em>"The organisations that govern AI well will use it more boldly — because they've earned the right to."</em></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+function toggleQ(header) {
+  const item = header.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.q-item').forEach(i => { i.classList.remove('open'); i.querySelector('.q-header').classList.remove('open'); });
+  if (!isOpen) { item.classList.add('open'); header.classList.add('open'); }
+}
+</script>
+</body>
+</html>
