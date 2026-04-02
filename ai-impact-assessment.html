@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Impact Assessment — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --hero-bg: #1a1a2e;
+    --accent: #4a3a8a; --accent-light: #eeedfe;
+    --teal: #1D9E75; --teal-light: #e1f5ee;
+    --coral: #D85A30; --coral-light: #faece7;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --amber: #854F0B; --amber-light: #FAEEDA;
+    --red: #922b21; --red-light: #fdf0ee;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .top-bar { background: var(--ink); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 48px; position: sticky; top: 0; z-index: 100; }
+  .back-link { font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+  .back-link:hover { color: #fff; }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  .hero { background: var(--hero-bg); color: #fff; padding: 3.5rem 2rem 3rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #a89fe8; margin-bottom: 1rem; }
+  .hero-title { font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .hero-title em { font-style: italic; color: #c5bff5; }
+  .hero-meta { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.45); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .tab-bar { background: #fff; border-bottom: 1px solid var(--line); padding: 0 2rem; position: sticky; top: 48px; z-index: 90; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 14px 18px; font-size: 13px; font-weight: 400; color: var(--ink-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: var(--sans); }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: #7F77DD; font-weight: 500; }
+
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lede { font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.25rem); font-style: italic; line-height: 1.75; color: var(--ink-soft); margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+  .card-purple { border-left: 3px solid #7F77DD; }
+  .card-teal   { border-left: 3px solid var(--teal); }
+  .card-coral  { border-left: 3px solid var(--coral); }
+  .card-blue   { border-left: 3px solid var(--blue); }
+  .card-amber  { border-left: 3px solid #EF9F27; }
+  .card-red    { border-left: 3px solid #C0392B; }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-purple { background: var(--accent-light); color: #534AB7; }
+  .tag-teal   { background: var(--teal-light);   color: #0F6E56; }
+  .tag-coral  { background: var(--coral-light);  color: #993C1D; }
+  .tag-blue   { background: var(--blue-light);   color: var(--blue); }
+  .tag-amber  { background: var(--amber-light);  color: var(--amber); }
+  .tag-red    { background: var(--red-light);    color: var(--red); }
+  .tag-gray   { background: var(--paper-warm);   color: var(--ink-muted); }
+
+  .sub-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; }
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  /* PROCESS STEPS */
+  .process { display: flex; flex-direction: column; gap: 3px; margin-bottom: 1.5rem; }
+  .step { display: grid; grid-template-columns: 52px 1fr; gap: 1rem; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; align-items: start; }
+  .step-num { font-family: var(--serif); font-size: 2rem; font-style: italic; color: #7F77DD; line-height: 1; padding-top: 2px; }
+  .step-content h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .step-content p { font-size: 13px; }
+  .step-tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; margin-bottom: 6px; }
+
+  /* HARM MATRIX */
+  .harm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .harm-cell { background: var(--paper-card); padding: 1.25rem; }
+  .harm-type { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .harm-cell p { font-size: 13px; }
+  .harm-cell ul.clean li { font-size: 12px; }
+
+  /* STAKEHOLDER MAP */
+  .stakeholder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .sh-cell { background: var(--paper-card); padding: 1.25rem; }
+  .sh-type { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .sh-cell p { font-size: 13px; }
+
+  /* SEVERITY TABLE */
+  .sev-table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; font-size: 13px; }
+  .sev-table th { background: var(--ink); color: var(--paper); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; }
+  .sev-table td { padding: 10px 14px; border-bottom: 1px solid var(--line); font-weight: 300; color: var(--ink-soft); background: var(--paper-card); vertical-align: top; }
+  .sev-table tr:last-child td { border-bottom: none; }
+  .sev-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  /* TERM GRID */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .term-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .term-name { font-size: 13px; font-weight: 500; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  /* PITCH */
+  .pitch-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+  .pitch-q { background: var(--paper-warm); padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .pitch-a { padding: 14px 16px; font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--ink); }
+
+  @media (max-width: 600px) {
+    .harm-grid { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 40px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Tools & Methods</div>
+    <h1 class="hero-title">AI <em>Impact Assessment</em></h1>
+    <div class="hero-meta">
+      <span>ISO/IEC 42005:2025 · EU AI Act · NIST RMF aligned</span>
+      <span>6 sections · Interactive</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('process', this)">The 6-Step Process</button>
+  <button class="tab-btn" onclick="showTab('harms', this)">Harm Analysis</button>
+  <button class="tab-btn" onclick="showTab('stakeholders', this)">Stakeholder Mapping</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">An AI Impact Assessment is how you prove — to regulators, clients, and your own board — that you've thought seriously about what your AI system could do to people before you deploy it. It's the bridge between governance principles and operational reality.</p>
+
+    <div class="card card-purple">
+      <span class="tag tag-purple">What it is</span>
+      <h3>A structured pre-deployment analysis</h3>
+      <p>An AI Impact Assessment (AIIA) is a systematic evaluation of an AI system's potential effects — positive and negative — on individuals, groups, organisations, and society. It identifies who is affected, how they could be harmed, how likely and severe those harms are, and what mitigations are in place. Think of it as a due diligence exercise that creates a documented, auditable record of responsible decision-making.</p>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">Why it matters now</span>
+      <h3>It's becoming mandatory — and expected</h3>
+      <p style="margin-bottom:8px;">The <strong>EU AI Act</strong> requires a Fundamental Rights Impact Assessment for deployers of high-risk AI systems. <strong>ISO/IEC 42005:2025</strong> — published in 2025 — provides the internationally recognised standard methodology. <strong>ISO/IEC 42001</strong> (the AI management system standard) requires organisations to assess AI consequences as part of their management system. Beyond compliance, organisations that conduct systematic impact assessments experience significantly fewer AI-related incidents than those that don't.</p>
+      <p>Clients increasingly ask for evidence of impact assessment as part of procurement. Having a documented, rigorous process is fast becoming a competitive differentiator.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Risk assessment vs impact assessment</span>
+      <h3>They're related but distinct — and the distinction matters</h3>
+      <p><strong>Risk assessment</strong> focuses on the likelihood and severity of potential negative events — it sets strategies for mitigation. <strong>Impact assessment</strong> focuses on the foreseeable effects on people and society — it identifies who is affected and how. You need both. ISO/IEC 42005 specifically clarifies this distinction: impact assessments examine societal and individual consequences; risk assessments examine organisational exposure. In practice, they're conducted together but structured separately in documentation.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">The timing question</span>
+      <h3>Start early — not just before deployment</h3>
+      <p>The most common mistake is treating an impact assessment as a pre-launch checklist. ISO/IEC 42005 is explicit: assessments should be integrated throughout the AI lifecycle — from design and development through deployment and post-market monitoring. An assessment done at design stage can influence architecture decisions. An assessment done the week before launch is mostly documentation of decisions already made, with little ability to change outcomes.</p>
+    </div>
+  </div>
+
+  <!-- 6-STEP PROCESS -->
+  <div id="tab-process" class="section">
+    <p class="lede">A rigorous AI impact assessment follows a structured sequence. Each step builds on the last — skip one and the whole assessment is weakened. The process is iterative, not linear: findings at later steps will send you back to earlier ones.</p>
+
+    <div class="process">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <span class="step-tag" style="background:#eeedfe; color:#534AB7;">Define scope</span>
+          <h3>Describe the system and its purpose</h3>
+          <p>Start by precisely documenting what the AI system is, what it does, its intended purpose, and where it sits in the deployment lifecycle. Include: the type of AI (classification, generation, recommendation, prediction), the input data it uses, the outputs it produces, and who receives those outputs. Also document what the system explicitly does <em>not</em> do — boundary conditions matter as much as intended functions. This scoping document becomes the foundation everything else is built on.</p>
+          <div style="margin-top:10px;">
+            <div class="sub-label" style="margin-top:0; margin-bottom:6px;">Key questions</div>
+            <ul class="clean">
+              <li>What decision or action does this system enable or automate?</li>
+              <li>What are its intended use cases — and what uses are out of scope?</li>
+              <li>What data does it use as input, and where does that data come from?</li>
+              <li>At what stage of development or deployment is it currently?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <span class="step-tag" style="background:#e1f5ee; color:#0F6E56;">Map stakeholders</span>
+          <h3>Identify everyone affected — directly and indirectly</h3>
+          <p>Go beyond the obvious users. An AI hiring tool's stakeholders aren't just the hiring managers using it — they include job applicants (especially those from historically underrepresented groups), employees whose data trains it, and communities where hiring concentrates economic opportunity. Identify groups who benefit, groups who could be harmed, and groups who might be affected without knowing the system exists. Pay particular attention to vulnerable groups: those with less power to challenge or appeal decisions made about them.</p>
+          <div style="margin-top:10px;">
+            <div class="sub-label" style="margin-top:0; margin-bottom:6px;">Stakeholder categories</div>
+            <ul class="clean">
+              <li>Direct users (operate the system)</li>
+              <li>Subjects (decisions made about them)</li>
+              <li>Indirect affected parties (affected by outcomes)</li>
+              <li>Vulnerable or marginalised groups</li>
+              <li>Regulatory bodies and oversight authorities</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <span class="step-tag" style="background:#faece7; color:#993C1D;">Identify harms</span>
+          <h3>Systematically surface potential negative impacts</h3>
+          <p>This is the analytical core of the assessment. For each stakeholder group, evaluate potential harms across multiple dimensions: physical, psychological, financial, reputational, and societal. Critically — look beyond intended uses. Anticipate misuse, over-reliance, and unintended applications. Consider failure modes: what happens when the system is wrong? What happens when it's right but the context has changed? Consider second-order effects: how might this system change behaviour, power dynamics, or social norms over time?</p>
+          <div style="margin-top:10px;">
+            <div class="sub-label" style="margin-top:0; margin-bottom:6px;">Prompt questions</div>
+            <ul class="clean">
+              <li>Who could be worse off because of this system's outputs?</li>
+              <li>What happens to people when the system is wrong?</li>
+              <li>Could this system be misused in ways we haven't designed for?</li>
+              <li>Does this system create or amplify power imbalances?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <span class="step-tag" style="background:#FAEEDA; color:#854F0B;">Assess severity</span>
+          <h3>Score each harm by scale, scope, likelihood, and reversibility</h3>
+          <p>Not all harms are equal. A useful severity framework evaluates four variables for each identified harm. <strong>Scale</strong> — how many people could be affected? <strong>Scope</strong> — what proportion of the affected group is impacted? <strong>Likelihood</strong> — how probable is this harm given the system's design and deployment context? <strong>Reversibility</strong> — can affected individuals recover, or is the harm permanent? The combination of these variables produces a severity score that drives prioritisation. The HUDERIA methodology (Council of Europe) uses exactly this framework.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <span class="step-tag" style="background:#E6F1FB; color:#185FA5;">Mitigate</span>
+          <h3>Design and assign control measures for each material harm</h3>
+          <p>For each harm that exceeds your risk tolerance threshold, define specific mitigations. These fall into four types: <strong>technical controls</strong> (bias detection, model constraints, output filtering), <strong>procedural safeguards</strong> (human review requirements, escalation protocols, override mechanisms), <strong>governance mechanisms</strong> (accountability assignments, audit schedules, incident reporting), and <strong>transparency measures</strong> (disclosure to affected individuals, documentation for regulators). Each mitigation must have a named owner, a timeline, and a measurable outcome. Mitigations without owners don't get implemented.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <span class="step-tag" style="background:#eeedfe; color:#534AB7;">Monitor & update</span>
+          <h3>Build ongoing evaluation into the deployment lifecycle</h3>
+          <p>An impact assessment is not a one-time document — it's a living record. Establish monitoring mechanisms that track real-world performance against the harms identified. Define clear triggers for reassessment: when the system is substantially modified, when it's deployed in a new context, when incident rates change, or when the regulatory environment shifts. The EU AI Act requires conformity assessments to be updated whenever a system undergoes substantial modification. Build feedback channels so users and affected individuals can report concerns — this is often your earliest signal that something is going wrong.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-gray">The documentation imperative</span>
+      <h3>If it isn't documented, it didn't happen</h3>
+      <p>Every stage of an impact assessment — processes followed, decisions made, mitigations applied — must be documented to provide a clear and auditable record. This isn't bureaucracy: it's the mechanism by which accountability is established, trust is built with regulators, and institutional knowledge is preserved when team members change. The EU AI Act requires technical documentation to be available to authorities on request. ISO/IEC 42005 specifies what that documentation must contain.</p>
+    </div>
+  </div>
+
+  <!-- HARM ANALYSIS -->
+  <div id="tab-harms" class="section">
+    <p class="lede">Identifying harms is the hardest and most important part of an impact assessment. It requires moving beyond obvious technical failures to understand the full human and societal consequences of an AI system's outputs.</p>
+
+    <div class="sub-label">Categories of harm to assess</div>
+    <div class="harm-grid">
+      <div class="harm-cell">
+        <div class="harm-type" style="color:#922b21;">Physical harm</div>
+        <p style="margin-bottom:8px;">Injury, illness, or death resulting from AI-driven decisions or actions. Highest severity — always the first priority.</p>
+        <ul class="clean">
+          <li>Medical diagnosis errors leading to wrong treatment</li>
+          <li>Autonomous vehicle decisions causing accidents</li>
+          <li>Safety system failures in industrial settings</li>
+          <li>Delayed emergency response due to AI triage errors</li>
+        </ul>
+      </div>
+      <div class="harm-cell">
+        <div class="harm-type" style="color:#854F0B;">Psychological harm</div>
+        <p style="margin-bottom:8px;">Distress, discrimination, loss of dignity, or erosion of autonomy caused by how an AI system treats people.</p>
+        <ul class="clean">
+          <li>Discriminatory hiring decisions affecting self-worth</li>
+          <li>Intrusive monitoring creating anxiety in workers</li>
+          <li>Manipulative interfaces exploiting cognitive vulnerabilities</li>
+          <li>Loss of human connection in care settings replaced by AI</li>
+        </ul>
+      </div>
+      <div class="harm-cell">
+        <div class="harm-type" style="color:#185FA5;">Financial harm</div>
+        <p style="margin-bottom:8px;">Economic loss, denial of opportunity, or unfair treatment in financial decisions caused by AI outputs.</p>
+        <ul class="clean">
+          <li>Biased credit scoring denying loans to qualified applicants</li>
+          <li>Fraudulent activity enabled by AI bypassing security</li>
+          <li>Job displacement without adequate support mechanisms</li>
+          <li>Insurance pricing that systematically disadvantages groups</li>
+        </ul>
+      </div>
+      <div class="harm-cell">
+        <div class="harm-type" style="color:#534AB7;">Reputational harm</div>
+        <p style="margin-bottom:8px;">Damage to individuals' standing, relationships, or professional prospects caused by incorrect or unfair AI outputs.</p>
+        <ul class="clean">
+          <li>False positive fraud flags damaging customer relationships</li>
+          <li>Incorrect criminal risk scores affecting employment prospects</li>
+          <li>AI-generated content falsely attributed to individuals</li>
+          <li>Privacy breaches exposing sensitive personal information</li>
+        </ul>
+      </div>
+      <div class="harm-cell">
+        <div class="harm-type" style="color:#0F6E56;">Societal harm</div>
+        <p style="margin-bottom:8px;">Systemic effects on communities, democratic processes, or social structures that extend beyond individual cases.</p>
+        <ul class="clean">
+          <li>Amplification of existing social inequalities at scale</li>
+          <li>Erosion of privacy norms through surveillance normalisation</li>
+          <li>Manipulation of political opinion through targeted content</li>
+          <li>Concentration of economic power in AI-enabled monopolies</li>
+        </ul>
+      </div>
+      <div class="harm-cell">
+        <div class="harm-type" style="color:#993C1D;">Environmental harm</div>
+        <p style="margin-bottom:8px;">Resource consumption, emissions, and ecological impacts from AI systems — often overlooked in impact assessments.</p>
+        <ul class="clean">
+          <li>Energy consumption of large model training and inference</li>
+          <li>Water usage in data centre cooling systems</li>
+          <li>E-waste from accelerated hardware obsolescence cycles</li>
+          <li>Optimisation decisions that externalise environmental costs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-label">Severity assessment framework</div>
+    <table class="sev-table">
+      <tr>
+        <th>Variable</th>
+        <th>Low</th>
+        <th>Medium</th>
+        <th>High</th>
+      </tr>
+      <tr>
+        <td><strong>Scale</strong><br><span style="font-size:11px; color:var(--ink-muted);">How many affected?</span></td>
+        <td>Individual or small group</td>
+        <td>Significant subpopulation</td>
+        <td>Large population or systemic</td>
+      </tr>
+      <tr>
+        <td><strong>Scope</strong><br><span style="font-size:11px; color:var(--ink-muted);">What proportion?</span></td>
+        <td>Small fraction of group affected</td>
+        <td>Meaningful minority affected</td>
+        <td>Majority or entire group affected</td>
+      </tr>
+      <tr>
+        <td><strong>Likelihood</strong><br><span style="font-size:11px; color:var(--ink-muted);">How probable?</span></td>
+        <td>Unlikely given design &amp; controls</td>
+        <td>Possible under foreseeable conditions</td>
+        <td>Probable or already occurring</td>
+      </tr>
+      <tr>
+        <td><strong>Reversibility</strong><br><span style="font-size:11px; color:var(--ink-muted);">Can harm be undone?</span></td>
+        <td>Fully reversible with intervention</td>
+        <td>Partially reversible over time</td>
+        <td>Permanent or very difficult to remedy</td>
+      </tr>
+    </table>
+
+    <div class="card card-red">
+      <span class="tag tag-red">The misuse imperative</span>
+      <h3>Always assess unintended applications</h3>
+      <p>One of the most consistent findings in AI impact assessments is that harm frequently comes not from the intended use but from unintended applications, misuse, or over-reliance. A system designed to assist doctors may be used to replace clinical judgement entirely. A tool built for fraud detection may be weaponised against whistleblowers. Assessments that only consider the intended use case are systematically incomplete. ISO/IEC 42005 explicitly requires organisations to anticipate foreseeable misuse scenarios alongside intended use.</p>
+    </div>
+  </div>
+
+  <!-- STAKEHOLDER MAPPING -->
+  <div id="tab-stakeholders" class="section">
+    <p class="lede">Stakeholder mapping is where many impact assessments fall short — focusing only on the direct users of a system while missing the people most likely to be harmed by it. The people operating an AI system are rarely the people most affected by its outputs.</p>
+
+    <div class="sub-label">The full stakeholder landscape</div>
+    <div class="stakeholder-grid">
+      <div class="sh-cell">
+        <div class="sh-type" style="color:#534AB7;">Operators</div>
+        <p>The people and organisations who deploy and run the AI system. Have the most visibility into its operation and the most direct ability to intervene. Often carry legal responsibility as "deployers" under the EU AI Act.</p>
+      </div>
+      <div class="sh-cell">
+        <div class="sh-type" style="color:#0F6E56;">Direct users</div>
+        <p>People who interact with the system's interface directly — the hiring manager using the CV screening tool, the doctor using the diagnostic assistant. Often conflated with "subjects" but distinctly different in their relationship with the system.</p>
+      </div>
+      <div class="sh-cell">
+        <div class="sh-type" style="color:#922b21;">Subjects</div>
+        <p>People about whom the AI system makes decisions or inferences. Often don't know the system exists. Frequently the group most at risk of harm — least empowered to challenge decisions made about them. Must be explicitly identified and prioritised.</p>
+      </div>
+      <div class="sh-cell">
+        <div class="sh-type" style="color:#854F0B;">Indirect affected parties</div>
+        <p>Communities, families, competitors, or social groups affected by the system's outputs without direct involvement. A predictive policing system's subjects' families are indirect affected parties. Often completely absent from impact assessments.</p>
+      </div>
+      <div class="sh-cell">
+        <div class="sh-type" style="color:#185FA5;">Vulnerable groups</div>
+        <p>Groups with less power, resources, or legal protection to challenge AI decisions — including people with disabilities, low-income communities, ethnic minorities, children, elderly people. Must receive heightened scrutiny in harm analysis. ISO/IEC 42005 specifically flags these groups.</p>
+      </div>
+      <div class="sh-cell">
+        <div class="sh-type" style="color:#993C1D;">Regulatory &amp; oversight bodies</div>
+        <p>Regulators, auditors, and oversight authorities who need to verify compliance. Their perspective — what evidence of due diligence they require — should inform how the assessment is structured and documented from the start.</p>
+      </div>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">Engagement — not just identification</span>
+      <h3>Consult affected stakeholders — don't just list them</h3>
+      <p>Identifying stakeholders on paper is the minimum. ISO/IEC 42005 and the HUDERIA methodology both emphasise that <strong>stakeholder engagement</strong> — actually consulting the people affected — improves the quality of risk analysis, builds transparency and trust, and often surfaces harms that internal teams have missed. For high-risk systems, genuine consultation with affected communities is increasingly expected by regulators and sophisticated procurement teams. "Checkbox consultation" — brief surveys that don't influence design — is becoming legally and reputationally inadequate.</p>
+    </div>
+
+    <div class="card card-coral">
+      <span class="tag tag-coral">Worked example — AI hiring tool</span>
+      <h3>Who are the real stakeholders?</h3>
+      <p style="margin-bottom:8px;"><strong>Operators:</strong> HR department, platform vendor</p>
+      <p style="margin-bottom:8px;"><strong>Direct users:</strong> Hiring managers, HR coordinators</p>
+      <p style="margin-bottom:8px;"><strong>Subjects:</strong> Job applicants — especially those from groups historically underrepresented in the industry</p>
+      <p style="margin-bottom:8px;"><strong>Indirect affected parties:</strong> Communities where hiring concentrates economic opportunity; current employees whose performance data trains the model; rejected candidates' families</p>
+      <p style="margin-bottom:8px;"><strong>Vulnerable groups:</strong> Applicants with disabilities; career changers (non-linear CVs); candidates from non-traditional educational backgrounds</p>
+      <p><strong>Regulatory bodies:</strong> Employment regulators; data protection authorities; EU market surveillance authority (under the AI Act, recruitment AI is Annex III high-risk)</p>
+    </div>
+
+    <div class="card card-purple">
+      <span class="tag tag-purple">The salience framework</span>
+      <h3>Not all stakeholders require the same depth of engagement</h3>
+      <p>Prioritise stakeholder engagement based on three factors: <strong>power</strong> (can they influence the system?), <strong>legitimacy</strong> (do they have a recognised claim on the system's outcomes?), and <strong>urgency</strong> (are they at immediate risk of harm?). Groups with low power, high legitimacy, and high urgency — typically subjects from vulnerable groups — warrant the most intensive engagement and the most rigorous harm analysis. Groups with high power and low urgency may require less direct engagement but need to be kept informed.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The vocabulary of impact assessment — the terms that signal you understand the methodology, not just the concept.</p>
+
+    <div class="sub-label">Assessment framework terms</div>
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">AI Impact Assessment (AIIA)</div>
+        <div class="term-hint">The core deliverable</div>
+        <div class="term-def">A structured evaluation of an AI system's potential effects — positive and negative — on individuals, groups, organisations, and society. Distinct from a risk assessment (which focuses on organisational exposure) in that it centres on human and societal consequences. Required by the EU AI Act for high-risk systems (as a Fundamental Rights Impact Assessment) and standardised by ISO/IEC 42005:2025.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">ISO/IEC 42005:2025</div>
+        <div class="term-hint">The international standard</div>
+        <div class="term-def">Published in 2025, the international standard for AI system impact assessments. Provides a standardised methodology for evaluating societal, individual, and organisational effects of AI systems. Complements ISO/IEC 42001 (AI management systems) and ISO/IEC 23894 (AI risk management). The closest thing to a globally recognised blueprint for how impact assessments should be conducted and documented.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Fundamental Rights Impact Assessment (FRIA)</div>
+        <div class="term-hint">EU AI Act requirement</div>
+        <div class="term-def">The specific form of impact assessment required by the EU AI Act for deployers of high-risk AI systems. Must assess potential impact on fundamental rights — privacy, non-discrimination, dignity, and access to justice. Must be documented and available to authorities on request. Required before deployment and updated when the system is substantially modified.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">HUDERIA</div>
+        <div class="term-hint">Council of Europe methodology</div>
+        <div class="term-def">Human Rights, Democracy and Rule of Law Impact Assessment. Adopted by the Council of Europe's Committee on Artificial Intelligence in November 2024. Provides a structured methodology for assessing AI risks to human rights, democracy, and the rule of law. Uses scale, scope, likelihood, and reversibility as the four severity variables. Designed to be flexible across diverse contexts and jurisdictions.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Harm Severity</div>
+        <div class="term-hint">Scale × scope × likelihood × reversibility</div>
+        <div class="term-def">A composite measure of how serious a potential harm is. Assessed across four variables: scale (how many people affected), scope (what proportion of the affected group), likelihood (how probable under foreseeable conditions), and reversibility (can the harm be undone?). High severity = large scale, broad scope, high likelihood, and irreversible. Drives prioritisation of mitigations.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Subject</div>
+        <div class="term-hint">The person decisions are made about</div>
+        <div class="term-def">The individual or group about whom an AI system makes decisions, inferences, or predictions. Distinct from the user (who operates the system). Often the stakeholder most at risk of harm and least empowered to challenge outcomes. A job applicant is the subject of a CV screening tool; the hiring manager is the user. Subjects must be explicitly identified and prioritised in every impact assessment.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Foreseeable Misuse</div>
+        <div class="term-hint">Beyond intended use cases</div>
+        <div class="term-def">Applications, adaptations, or abuses of an AI system that the designer didn't intend but that are predictable given the system's capabilities and context. ISO/IEC 42005 requires organisations to assess foreseeable misuse scenarios alongside intended uses. A document summarisation tool could be misused for surveillance; a sentiment analysis tool could be weaponised for targeted manipulation.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Residual Harm</div>
+        <div class="term-hint">What remains after mitigation</div>
+        <div class="term-def">Harm that remains after all practicable mitigations have been applied. Every system will have some residual harm — the question is whether it falls within the organisation's and society's acceptable threshold. Residual harm must be explicitly documented, disclosed to deployers (by providers), and communicated to affected individuals where appropriate. Ignoring residual harm is a governance failure.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Stakeholder Salience</div>
+        <div class="term-hint">Prioritisation framework</div>
+        <div class="term-def">A framework for prioritising which stakeholders require the most intensive engagement, based on three factors: power (ability to influence the system), legitimacy (recognised claim on outcomes), and urgency (immediacy of potential harm). Groups with low power, high legitimacy, and high urgency — typically subjects from vulnerable groups — receive the highest priority in engagement and harm analysis.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Model Drift</div>
+        <div class="term-hint">Why post-deployment monitoring matters</div>
+        <div class="term-def">The gradual deterioration in an AI system's performance over time as real-world data diverges from training data. Harms identified at assessment stage may materialise later due to model drift — making post-deployment monitoring essential. A system that was fair at launch may become discriminatory as the population it serves changes. Reassessment triggers should include evidence of drift.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH / TALKING POINTS -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">The conversations you'll have when clients ask about AI impact assessments — whether they're trying to understand what they need to do, or trying to understand why it's worth doing.</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Is an AI impact assessment the same as a DPIA?"</div>
+      <div class="pitch-a">Related but different. A DPIA (Data Protection Impact Assessment) is required under GDPR when processing personal data is likely to result in high risk. It focuses on data protection risks. An AI Impact Assessment is broader — it covers not just data protection but all potential harms to people from the AI system's outputs: physical, psychological, financial, reputational, societal, and environmental. Where an AI system processes personal data, you'll typically need both — and they're best designed to complement each other rather than be treated as separate exercises.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Which of our AI systems actually need a full impact assessment?"</div>
+      <div class="pitch-a">A useful starting filter: any system that makes or significantly influences decisions about people — especially people who didn't choose to interact with it. Under the EU AI Act, all Annex III high-risk systems require a Fundamental Rights Impact Assessment. Beyond legal requirements, the practical question is: if this system produces a wrong or unfair output, who gets hurt, and how badly? High-impact decisions in employment, credit, healthcare, education, or law enforcement almost always warrant a full assessment. Internal productivity tools used by employees who can override outputs are lower priority. The key word is "influence" — even advisory AI that humans technically override can produce harm if those overrides are rare in practice.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "How long does an impact assessment take?"</div>
+      <div class="pitch-a">It depends on complexity, but for a high-risk system expect 6–12 weeks for a thorough assessment — longer if genuine stakeholder consultation is required. The temptation is to compress this into a two-day workshop before a product launch. That's not an impact assessment — it's a box-ticking exercise that creates legal liability rather than reducing it. The investment pays back: organisations that conduct thorough impact assessments before deployment consistently experience fewer post-deployment incidents, faster regulatory approval, and stronger client trust. The cost of a proper assessment is a fraction of the cost of a post-deployment harm event.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "We already have an ethics review process — do we still need this?"</div>
+      <div class="pitch-a">An ethics review and an impact assessment serve different purposes. An ethics review typically asks "does this align with our values?" — it's principle-based and often conducted internally. An impact assessment asks "who specifically could be harmed, how severely, and what are we doing about it?" — it's evidence-based, structured, and documented for external accountability. Many organisations with mature ethics review processes still lack the structured, documented methodology that regulators expect and that ISO/IEC 42005 defines. The good news is that a strong ethics culture is excellent preparation for building a rigorous assessment process — the values alignment is already there; what's usually missing is the methodology and documentation rigour.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "What do we actually produce at the end of this?"</div>
+      <div class="pitch-a">A documented assessment report that contains: system description and scope, complete stakeholder map, identified harms with severity scores, mitigation measures with named owners and timelines, residual harm documentation, and a monitoring and reassessment plan. That document serves multiple audiences simultaneously: your technical teams (what to build), your governance and legal teams (compliance evidence), your board (risk oversight), your regulators (due diligence proof), and your clients (trust building). One investment, multiple uses. And critically — it's a living document, not a one-off report. It should be updated as the system evolves.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">The framing that resonates</span>
+      <h3>Impact assessments are insurance that pays dividends</h3>
+      <p>Frame it not as a cost but as an investment that pays out in three ways: it reduces the probability of a harm event; if a harm event occurs, it demonstrates due diligence that limits legal and reputational exposure; and it builds the stakeholder trust that enables faster scaling of AI across the organisation. The clients most resistant to impact assessments are usually those most likely to need them.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
