@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Trustworthiness — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --hero-bg: #0e1a0e;
+    --teal: #1D9E75; --teal-light: #e1f5ee;
+    --coral: #D85A30; --coral-light: #faece7;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --amber: #EF9F27; --amber-light: #FAEEDA;
+    --purple: #7F77DD; --purple-light: #EEEDFE;
+    --red: #C0392B; --red-light: #fdf0ee;
+    --pink: #D4537E; --pink-light: #FBEAF0;
+    --green: #2D6A4F; --green-light: #e8f5ee;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .top-bar { background: var(--ink); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 48px; position: sticky; top: 0; z-index: 100; }
+  .back-link { font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+  .back-link:hover { color: #fff; }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  .hero { background: var(--hero-bg); color: #fff; padding: 3.5rem 2rem 3rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #7ec8a0; margin-bottom: 1rem; }
+  .hero-title { font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .hero-title em { font-style: italic; color: #a8d8b8; }
+  .hero-meta { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.45); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .tab-bar { background: #fff; border-bottom: 1px solid var(--line); padding: 0 2rem; position: sticky; top: 48px; z-index: 90; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 14px 18px; font-size: 13px; font-weight: 400; color: var(--ink-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: var(--sans); }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--teal); font-weight: 500; }
+
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lede { font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.25rem); font-style: italic; line-height: 1.75; color: var(--ink-soft); margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+  .card-teal   { border-left: 3px solid var(--teal); }
+  .card-coral  { border-left: 3px solid var(--coral); }
+  .card-blue   { border-left: 3px solid var(--blue); }
+  .card-amber  { border-left: 3px solid var(--amber); }
+  .card-purple { border-left: 3px solid var(--purple); }
+  .card-red    { border-left: 3px solid var(--red); }
+  .card-green  { border-left: 3px solid var(--green); }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-teal   { background: var(--teal-light);   color: #0F6E56; }
+  .tag-coral  { background: var(--coral-light);  color: #993C1D; }
+  .tag-blue   { background: var(--blue-light);   color: var(--blue); }
+  .tag-amber  { background: var(--amber-light);  color: #854F0B; }
+  .tag-purple { background: var(--purple-light); color: #534AB7; }
+  .tag-red    { background: var(--red-light);    color: #922b21; }
+  .tag-green  { background: var(--green-light);  color: #1a4a34; }
+  .tag-gray   { background: var(--paper-warm);   color: var(--ink-muted); }
+  .tag-pink   { background: var(--pink-light);   color: #993558; }
+
+  .sub-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; }
+
+  /* CHARACTERISTIC CARDS */
+  .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .char-card { background: var(--paper-card); padding: 1.5rem; cursor: pointer; transition: background 0.1s; }
+  .char-card:hover { background: #fff; }
+  .char-card.open { background: #fff; }
+  .char-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; }
+  .char-badge { display: inline-block; font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; margin-bottom: 6px; }
+  .char-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .char-hook { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+  .char-chevron { font-size: 12px; color: var(--ink-muted); transition: transform 0.2s; flex-shrink: 0; margin-left: 8px; }
+  .char-card.open .char-chevron { transform: rotate(180deg); }
+  .char-body { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .char-card.open .char-body { display: block; }
+  .char-body p { font-size: 13px; margin-bottom: 8px; }
+  .char-body ul.clean li { font-size: 12px; }
+  .char-q-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin: 10px 0 4px; }
+
+  /* FEATURED CARD - Valid & Reliable spanning full width */
+  .char-featured { background: var(--paper-card); padding: 1.5rem; border-bottom: 1px solid var(--line); }
+  .char-featured .char-body p { font-size: 13px; }
+
+  /* TRADEOFF MATRIX */
+  .tradeoff-table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; font-size: 12px; }
+  .tradeoff-table th { background: var(--ink); color: var(--paper); padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; }
+  .tradeoff-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); font-weight: 300; color: var(--ink-soft); background: var(--paper-card); vertical-align: top; line-height: 1.6; }
+  .tradeoff-table tr:last-child td { border-bottom: none; }
+  .tension-high { color: #C0392B; font-weight: 500; }
+  .tension-med  { color: #854F0B; font-weight: 500; }
+  .tension-low  { color: #0F6E56; font-weight: 500; }
+
+  /* SPECTRUM VISUALISATION */
+  .spectrum-wrap { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .spectrum-row { display: grid; grid-template-columns: 160px 1fr 160px; gap: 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .spectrum-row:last-child { border-bottom: none; }
+  .spectrum-label { font-size: 11px; font-weight: 400; color: var(--ink-soft); padding: 10px 14px; background: var(--paper-card); }
+  .spectrum-label.right { text-align: right; }
+  .spectrum-track { height: 6px; background: var(--line); position: relative; margin: 0 12px; border-radius: 3px; }
+  .spectrum-fill { position: absolute; top: 0; height: 100%; border-radius: 3px; background: var(--teal); }
+  .spectrum-name { display: none; }
+
+  /* CONTEXT EXAMPLES */
+  .context-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .context-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; }
+  .context-sector { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .context-card h3 { font-size: 13px; margin-bottom: 8px; }
+  .context-card p { font-size: 12px; }
+  .context-priority { font-size: 11px; font-weight: 500; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--ink-muted); }
+
+  /* TERM GRID */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .term-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .term-name { font-size: 13px; font-weight: 500; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  /* PITCH */
+  .pitch-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+  .pitch-q { background: var(--paper-warm); padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .pitch-a { padding: 14px 16px; font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--ink); }
+
+  /* SOURCES */
+  .src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+  .src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+  .src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+  .src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+  .src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+  .src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+
+  @media (max-width: 600px) {
+    .char-grid { grid-template-columns: 1fr; }
+    .context-grid { grid-template-columns: 1fr; }
+    .spectrum-row { grid-template-columns: 100px 1fr 100px; }
+    .spectrum-label { font-size: 10px; padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Concepts · NIST AI RMF</div>
+    <h1 class="hero-title">AI <em>Trustworthiness</em></h1>
+    <div class="hero-meta">
+      <span>Seven characteristics · Tradeoffs · Real-world application</span>
+      <span>6 sections · Interactive</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('characteristics', this)">The 7 Characteristics</button>
+  <button class="tab-btn" onclick="showTab('tradeoffs', this)">Tradeoffs</button>
+  <button class="tab-btn" onclick="showTab('context', this)">By Sector</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">Trustworthiness is not a single property an AI system either has or lacks — it is a balance of seven characteristics, each in tension with the others. Understanding these tensions is where genuine expertise lives, and where the most consequential decisions about AI deployment get made.</p>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">The foundation</span>
+      <h3>Trustworthiness is a social concept, not a technical one</h3>
+      <p>NIST is explicit: trustworthiness is a social concept that ranges across a spectrum and is only as strong as its weakest characteristic. A system cannot be called trustworthy because it scores well on one dimension — a highly accurate but opaque system, a secure but unfair system, or a transparent but unreliable system are all untrustworthy. The goal is balance, not optimisation of individual properties.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">Why it matters beyond compliance</span>
+      <h3>40% of business leaders cite trustworthiness concerns — and consumers notice</h3>
+      <p style="margin-bottom:8px;">A 2023 survey found more than 40% of business leaders cite concerns about AI trustworthiness as a barrier to adoption. A 2024 study found that simply labelling a product as using "artificial intelligence" reduces purchase intent among consumers — a direct measure of the trust deficit AI faces.</p>
+      <p>The business case for trustworthy AI is not just ethical — it is commercial. Organisations that can demonstrate trustworthiness across all seven characteristics can deploy AI more broadly, win procurement with trust-sensitive clients, and avoid the reputational and regulatory consequences of high-profile AI failures.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">The architecture</span>
+      <h3>How the seven characteristics relate to each other</h3>
+      <p style="margin-bottom:8px;"><strong>Valid & Reliable</strong> is the foundation — without it, no other characteristic matters. You cannot have a trustworthy system that doesn't work.</p>
+      <p style="margin-bottom:8px;"><strong>Accountable & Transparent</strong> is the cross-cutting characteristic — it touches all the others. You cannot manage what you cannot see, and you cannot be accountable for what you have not disclosed.</p>
+      <p>The remaining five — Safe, Secure & Resilient, Explainable & Interpretable, Privacy-Enhanced, and Fair with Bias Managed — must all be balanced against each other and against the first two. Neglecting any one increases both the probability and magnitude of harm.</p>
+    </div>
+
+    <div class="card card-coral">
+      <span class="tag tag-coral">The hard truth</span>
+      <h3>Every AI deployment involves tradeoffs between these characteristics</h3>
+      <p>This is not a limitation to be solved — it is a reality to be managed. More interpretability typically costs some accuracy. Better privacy can reduce fairness. Maximum security can reduce transparency. These tradeoffs are inherent, not incidental. The mark of sophisticated AI governance is making these tradeoffs deliberately, transparently, and with appropriate justification — not pretending they don't exist.</p>
+    </div>
+  </div>
+
+  <!-- THE 7 CHARACTERISTICS -->
+  <div id="tab-characteristics" class="section">
+    <p class="lede">Seven characteristics, each with distinct meaning, measurement approaches, and tensions with the others. Tap any card to expand it. The NIST AI RMF treats all seven as necessary conditions — none is optional, though their relative priority depends on context.</p>
+
+    <div class="char-grid">
+
+      <!-- Valid & Reliable spans full width conceptually - use a featured card -->
+      <div class="char-card" style="grid-column: 1 / -1; border-bottom: 1px solid var(--line);" onclick="toggleChar(this)">
+        <span class="char-badge" style="background:#e1f5ee; color:#0F6E56;">Foundation</span>
+        <div class="char-header">
+          <div class="char-name">Valid & Reliable</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Does the system do what it is supposed to do, consistently, in the conditions it is expected to operate in? Without this, nothing else matters.</div>
+        <div class="char-body">
+          <p><strong>Validity</strong> is confirmation that requirements for the specific intended use have been fulfilled — the system does what it was designed to do in its deployment context, not just in the lab. <strong>Reliability</strong> is the ability to perform without failure over time and across conditions — not just at launch, but throughout the system's operational lifetime.</p>
+          <p>Two sub-properties matter most: <strong>accuracy</strong> (how close outputs are to true values, measured with false positive and false negative rates disaggregated by demographic group) and <strong>robustness</strong> (the ability to maintain performance across varied, unexpected, and adversarial conditions). A system can be accurate in testing and non-robust in deployment — and that gap is where most real-world AI failures live.</p>
+          <div class="char-q-label">Board & client questions this enables</div>
+          <ul class="clean">
+            <li>What are the false positive and false negative rates — disaggregated by demographic group?</li>
+            <li>How does performance differ between training conditions and real-world deployment?</li>
+            <li>What is the monitoring process for detecting when performance degrades over time?</li>
+            <li>Has the system been tested in conditions outside its training distribution?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="toggleChar(this)">
+        <span class="char-badge" style="background:#fdf0ee; color:#922b21;">Critical</span>
+        <div class="char-header">
+          <div class="char-name">Safe</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Does the system avoid endangering life, health, property, or the environment — under all defined operating conditions?</div>
+        <div class="char-body">
+          <p>Safety must be designed in from the start — it cannot be retrofitted. The highest priority when risk of serious injury or death exists. Safe operation requires responsible design and development, clear guidance to deployers on responsible use, and the ability to shut down, modify, or intervene when systems deviate from expected behaviour.</p>
+          <p>AI safety draws on established practices from high-stakes industries — aviation, medical devices, nuclear — where safety cases must be constructed and maintained throughout the system lifecycle. For AI, this means rigorous simulation testing, real-time monitoring, human override capabilities, and defined safe failure modes.</p>
+          <div class="char-q-label">What "safe" looks like in practice</div>
+          <ul class="clean">
+            <li>Defined safe failure modes — the system degrades gracefully rather than failing dangerously</li>
+            <li>Human override mechanisms that are genuinely usable under operational conditions</li>
+            <li>Real-time monitoring with automatic alerts when outputs fall outside safe parameters</li>
+            <li>Documented safety cases reviewed by independent parties for high-stakes deployments</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="toggleChar(this)">
+        <span class="char-badge" style="background:#E6F1FB; color:#185FA5;">Protection</span>
+        <div class="char-header">
+          <div class="char-name">Secure & Resilient</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Can the system withstand attacks and unexpected adverse events, and recover when they occur?</div>
+        <div class="char-body">
+          <p>Security and resilience are related but distinct. <strong>Security</strong> encompasses protocols to avoid, protect against, respond to, and recover from attacks — including adversarial examples, data poisoning, model inversion, and intellectual property theft through system endpoints. <strong>Resilience</strong> is the ability to return to normal function after unexpected adverse events — including non-adversarial failures, environmental changes, and out-of-distribution inputs.</p>
+          <p>AI systems face unique security threats not present in traditional software. Data poisoning can corrupt a model's behaviour at the training stage. Adversarial examples — carefully crafted inputs — can cause confident but wrong predictions. Model theft through repeated querying can expose proprietary intellectual property.</p>
+          <div class="char-q-label">Key security considerations for AI</div>
+          <ul class="clean">
+            <li>Adversarial robustness testing — can the system be fooled by crafted inputs?</li>
+            <li>Training data integrity — has the training pipeline been protected from poisoning?</li>
+            <li>Model access controls — who can query the model and what rate limits apply?</li>
+            <li>Graceful degradation — what happens when the system operates outside its training distribution?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="toggleChar(this)" style="grid-column: 1 / -1;">
+        <span class="char-badge" style="background:#EEEDFE; color:#534AB7;">Cross-cutting</span>
+        <div class="char-header">
+          <div class="char-name">Accountable & Transparent</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Is information about the system available to those who need it — and are there people and processes responsible for its outcomes?</div>
+        <div class="char-body">
+          <p><strong>Transparency</strong> is the extent to which information about an AI system and its outputs is available to those interacting with it — whether or not they know they are interacting with AI. It answers "what happened?" <strong>Accountability</strong> presupposes transparency: you cannot be accountable for something that has not been disclosed. It answers "who is responsible?"</p>
+          <p>Meaningful transparency is layered — different stakeholders need different information. A technical team needs model architecture and training data details. A regulator needs documentation of the risk management process. An end user needs to know they are interacting with AI and what their recourse is if they believe a decision was wrong. A system can be transparent to one audience and opaque to another — and both matter.</p>
+          <p>NIST treats this characteristic as cross-cutting because accountability and transparency are necessary to assess and maintain all other characteristics over time. Without transparency, you cannot determine whether a system is fair, safe, or reliable.</p>
+          <div class="char-q-label">The three transparency questions</div>
+          <ul class="clean">
+            <li><strong>What happened?</strong> — System-level transparency: what did the system do, when, and under what conditions?</li>
+            <li><strong>How?</strong> — Explainability: what mechanism produced this particular output?</li>
+            <li><strong>Why does it matter?</strong> — Interpretability: what does this output mean in the context of the decision being made?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="toggleChar(this)">
+        <span class="char-badge" style="background:#FAEEDA; color:#854F0B;">Comprehension</span>
+        <div class="char-header">
+          <div class="char-name">Explainable & Interpretable</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Can humans understand how and why the system produced a particular output — well enough to oversee, challenge, and improve it?</div>
+        <div class="char-body">
+          <p><strong>Explainability</strong> describes the mechanisms underlying AI operation — the "how." <strong>Interpretability</strong> describes the meaning of outputs in context — the "why it matters." Both are necessary for genuine human understanding, but they are different things. A technically explainable system may produce outputs that are meaningless without domain expertise. An interpretable output may be based on mechanisms that cannot be adequately explained.</p>
+          <p>The tension with validity is real and documented: the most accurate models (deep neural networks) are often the least explainable. Simpler, more interpretable models (decision trees, linear regression) sacrifice predictive power for transparency. This is not a problem to be solved — it is a tradeoff to be made deliberately based on the stakes of the application.</p>
+          <div class="char-q-label">Explainability approaches</div>
+          <ul class="clean">
+            <li>LIME / SHAP — local post-hoc explanation methods for individual predictions</li>
+            <li>Attention mechanisms — showing which input features the model weighted most heavily</li>
+            <li>Counterfactual explanations — "the decision would have been different if X had been Y"</li>
+            <li>Inherently interpretable models — choosing simpler architectures where stakes are high</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="toggleChar(this)">
+        <span class="char-badge" style="background:#e1f5ee; color:#0F6E56;">Rights</span>
+        <div class="char-header">
+          <div class="char-name">Privacy-Enhanced</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Does the system protect human autonomy, identity, and dignity — including from inferences the individual never consented to?</div>
+        <div class="char-body">
+          <p>Privacy in AI goes beyond data protection. It encompasses anonymity, confidentiality, and individual control over how personal information is used and inferred. AI creates new privacy risks not present in traditional software: systems can infer sensitive attributes (health conditions, sexual orientation, political views) from seemingly innocuous inputs — browsing history, purchase patterns, social connections — without any individual disclosing that information directly.</p>
+          <p>Privacy-Enhancing Technologies (PETs) — differential privacy, federated learning, homomorphic encryption, data minimisation — are the technical tools. But privacy by design — embedding privacy considerations into system architecture from the start — is the governance approach. Retrofitting privacy onto a deployed system is significantly harder and less effective.</p>
+          <div class="char-q-label">The privacy-fairness tension</div>
+          <p style="font-size:12px; margin-top:4px;">Privacy-enhancing techniques can reduce fairness. Differential privacy adds noise to model outputs to prevent individual identification — but that noise can disproportionately affect predictions for minority groups who are already underrepresented in training data. This is one of the most common and least understood tradeoffs in responsible AI.</p>
+        </div>
+      </div>
+
+      <div class="char-card" onclick="toggleChar(this)" style="grid-column: 1 / -1;">
+        <span class="char-badge" style="background:#FBEAF0; color:#993558;">Equity</span>
+        <div class="char-header">
+          <div class="char-name">Fair — with Harmful Bias Managed</div>
+          <span class="char-chevron">▾</span>
+        </div>
+        <div class="char-hook">Does the system treat people equitably — and are the three categories of AI bias actively managed across the entire lifecycle?</div>
+        <div class="char-body">
+          <p>Fairness and bias management are related but not identical. A system with managed bias is not necessarily fair — systems in which predictions are somewhat balanced across demographic groups may still be inaccessible to people with disabilities, may exacerbate existing disparities, or may apply equal treatment to historically unequal groups in ways that perpetuate inequality.</p>
+          <p>NIST identifies three bias categories that must all be managed: <strong>systemic</strong> (embedded in data and society), <strong>computational/statistical</strong> (in algorithms and processing), and <strong>human-cognitive</strong> (in how people design and interpret AI). All three can arise in the absence of discriminatory intent — which is why bias management requires structural processes, not just good intentions.</p>
+          <p>Standards of fairness are complex and culturally variable. Perceptions of fairness differ across cultures and shift depending on application — what is considered fair in employment may be contested in criminal justice. This context-dependence is not an excuse to avoid the question, but a reason to engage stakeholders in defining fairness criteria for each specific use case.</p>
+          <div class="char-q-label">Questions to ask about any AI system</div>
+          <ul class="clean">
+            <li>What fairness metric is being used — and is it the right one for this context and these stakes?</li>
+            <li>Are performance metrics disaggregated by demographic group, or reported only in aggregate?</li>
+            <li>Has the system been assessed for all three categories of bias — not just the data?</li>
+            <li>Have affected communities been involved in defining what fairness means in this context?</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TRADEOFFS -->
+  <div id="tab-tradeoffs" class="section">
+    <p class="lede">The tradeoffs between trustworthiness characteristics are real, documented, and in many cases mathematically provable. This is where the genuinely hard decisions in AI governance live — and where the most valuable advisory conversations happen.</p>
+
+    <div class="card card-red">
+      <span class="tag tag-red">The core principle</span>
+      <h3>Tradeoffs must be made deliberately — not by default</h3>
+      <p>Every AI deployment involves tradeoffs between the seven characteristics. The mark of mature governance is not avoiding these tradeoffs — it is making them explicitly, with appropriate justification, documented transparently, and reviewed regularly. When tradeoffs are made implicitly (by optimising for accuracy without considering fairness, or by prioritising interpretability without assessing the accuracy cost), the result is governance by accident. NIST is explicit: tradeoffs depend on "the values at play in the relevant context and should be resolved in a manner that is both transparent and appropriately justifiable."</p>
+    </div>
+
+    <div class="sub-label">Key tradeoff pairs</div>
+    <table class="tradeoff-table">
+      <tr>
+        <th>Tradeoff</th>
+        <th>The tension</th>
+        <th>How to navigate it</th>
+      </tr>
+      <tr>
+        <td><strong>Accuracy vs Explainability</strong></td>
+        <td>The most accurate models (deep neural networks, large language models) are the least explainable. Simpler, interpretable models sacrifice predictive power. <span class="tension-high">High tension.</span></td>
+        <td>Ask what the cost of a wrong decision is. For high-stakes decisions affecting rights and safety, interpretability may warrant accuracy sacrifice. For lower-stakes recommendations, accuracy may dominate. The choice must be justified.</td>
+      </tr>
+      <tr>
+        <td><strong>Privacy vs Fairness</strong></td>
+        <td>Privacy-enhancing techniques add noise to data and outputs. That noise disproportionately degrades prediction quality for underrepresented groups — often the groups most in need of fair outcomes. <span class="tension-high">High tension.</span></td>
+        <td>Assess which groups are most affected by the privacy technique and whether the impact is equitable. Consider whether privacy protections can be applied in ways that distribute the accuracy cost more evenly across groups.</td>
+      </tr>
+      <tr>
+        <td><strong>Transparency vs Security</strong></td>
+        <td>Full transparency about model architecture and training data enables adversarial attacks — attackers who know the system can craft inputs to exploit it. <span class="tension-med">Medium tension.</span></td>
+        <td>Apply layered disclosure: full technical documentation to authorised auditors, operational outputs to affected individuals, high-level methodology to the public. Transparency does not mean publishing everything — it means appropriate disclosure to appropriate audiences.</td>
+      </tr>
+      <tr>
+        <td><strong>Safety vs Autonomy</strong></td>
+        <td>Systems designed to maximise safety often restrict the range of outputs and override human autonomy. Systems designed to support human autonomy must tolerate some unsafe outcomes. <span class="tension-med">Medium tension.</span></td>
+        <td>Define the failure modes and their consequences explicitly. Safety constraints should be calibrated to the actual risk — not applied maximally regardless of context. Human override should be preserved for high-stakes decisions even when it introduces risk.</td>
+      </tr>
+      <tr>
+        <td><strong>Fairness vs Accuracy</strong></td>
+        <td>Optimising for overall accuracy ignores performance disparities across groups. Adding fairness constraints typically reduces overall accuracy. Both cannot be simultaneously maximised. <span class="tension-high">High tension.</span></td>
+        <td>Choose the fairness metric appropriate to the context and stakes. Document the accuracy cost explicitly and justify the choice. Disaggregate performance metrics to understand who bears the cost of accuracy reductions.</td>
+      </tr>
+      <tr>
+        <td><strong>Reliability vs Adaptability</strong></td>
+        <td>Systems that adapt continuously (online learning) may be less reliable — their behaviour can change in unpredictable ways. Systems that are frozen post-training are more predictable but may drift from the real world over time. <span class="tension-med">Medium tension.</span></td>
+        <td>Define update policies explicitly: when will the model be retrained, under what conditions, and what testing is required before redeployment? Treat model updates as new deployments with their own validation requirements.</td>
+      </tr>
+    </table>
+
+    <div class="sub-label">Tradeoff intensity by characteristic pair</div>
+    <div class="spectrum-wrap">
+      <div class="spectrum-row" style="background: var(--paper-warm);">
+        <div class="spectrum-label" style="font-weight:500; font-size:10px; letter-spacing:0.07em; text-transform:uppercase; color:var(--ink-muted);">Characteristic A</div>
+        <div style="padding: 8px 12px; font-size:10px; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:var(--ink-muted); text-align:center;">Tension level</div>
+        <div class="spectrum-label right" style="font-weight:500; font-size:10px; letter-spacing:0.07em; text-transform:uppercase; color:var(--ink-muted);">Characteristic B</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Accuracy / Valid</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:90%; height:100%; background:#C0392B; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#C0392B; min-width:40px;">High</span>
+        </div>
+        <div class="spectrum-label right">Explainable</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Privacy</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:85%; height:100%; background:#C0392B; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#C0392B; min-width:40px;">High</span>
+        </div>
+        <div class="spectrum-label right">Fair / Bias</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Fairness</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:80%; height:100%; background:#C0392B; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#C0392B; min-width:40px;">High</span>
+        </div>
+        <div class="spectrum-label right">Accuracy</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Transparent</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:55%; height:100%; background:#EF9F27; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#854F0B; min-width:40px;">Med</span>
+        </div>
+        <div class="spectrum-label right">Secure</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Safe</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:50%; height:100%; background:#EF9F27; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#854F0B; min-width:40px;">Med</span>
+        </div>
+        <div class="spectrum-label right">Autonomy</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Reliable</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:45%; height:100%; background:#EF9F27; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#854F0B; min-width:40px;">Med</span>
+        </div>
+        <div class="spectrum-label right">Adaptable</div>
+      </div>
+      <div class="spectrum-row">
+        <div class="spectrum-label">Privacy</div>
+        <div style="padding: 8px 12px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;"><div style="width:30%; height:100%; background:#1D9E75; border-radius:3px;"></div></div>
+          <span style="font-size:11px; font-weight:500; color:#0F6E56; min-width:40px;">Low</span>
+        </div>
+        <div class="spectrum-label right">Transparent</div>
+      </div>
+    </div>
+
+    <div class="card card-green">
+      <span class="tag tag-green">The navigation principle</span>
+      <h3>Context determines which characteristics to prioritise</h3>
+      <p>There is no universal ranking of the seven characteristics — priority depends entirely on context. A medical diagnostic AI where errors can kill people must prioritise safety and accuracy above interpretability. A hiring AI where bias perpetuates systemic inequality must prioritise fairness above accuracy. A fraud detection system where adversarial attack is likely must prioritise security above transparency. The skill is knowing which context you are in, which characteristics it demands, and how to justify that prioritisation to regulators, clients, and the public.</p>
+    </div>
+  </div>
+
+  <!-- BY SECTOR -->
+  <div id="tab-context" class="section">
+    <p class="lede">The relative priority of the seven characteristics shifts dramatically depending on where an AI system is deployed. The same model used in different sectors may require entirely different governance approaches.</p>
+
+    <div class="context-grid">
+      <div class="context-card">
+        <div class="context-sector" style="color:#922b21;">Healthcare</div>
+        <h3>Medical diagnosis & clinical decision support</h3>
+        <p>Systems that influence clinical decisions carry the highest possible stakes — errors can directly harm or kill patients. Regulators (FDA, MHRA) treat clinical AI as medical devices, requiring extensive validation.</p>
+        <div class="context-priority">
+          <strong>Primary:</strong> Valid & Reliable, Safe<br>
+          <strong>Critical:</strong> Explainable (clinicians must understand recommendations to override safely)<br>
+          <strong>Significant tension:</strong> Accuracy vs Explainability — deep learning outperforms interpretable models but cannot be explained to clinicians
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-sector" style="color:#854F0B;">Financial services</div>
+        <h3>Credit scoring, fraud detection, trading</h3>
+        <p>Financial AI affects access to credit, insurance, and financial services — with direct impacts on economic inclusion. Also a high-value target for adversarial attack.</p>
+        <div class="context-priority">
+          <strong>Primary:</strong> Fair with Bias Managed, Secure & Resilient<br>
+          <strong>Critical:</strong> Accountable & Transparent (regulatory requirement in most jurisdictions)<br>
+          <strong>Key requirement:</strong> Right to explanation — individuals must be able to understand adverse decisions
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-sector" style="color:#185FA5;">Criminal justice</div>
+        <h3>Risk assessment, predictive policing, sentencing</h3>
+        <p>AI in criminal justice directly affects liberty. The COMPAS case demonstrated that high overall accuracy can mask severe racial disparities in error rates. The most ethically contested AI domain.</p>
+        <div class="context-priority">
+          <strong>Primary:</strong> Fair with Bias Managed, Accountable & Transparent<br>
+          <strong>Critical:</strong> Explainable & Interpretable (defendants must be able to challenge decisions)<br>
+          <strong>Key question:</strong> Should AI be used here at all? Some jurisdictions are banning it outright
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-sector" style="color:#534AB7;">Employment & HR</div>
+        <h3>CV screening, performance evaluation, promotion</h3>
+        <p>Employment AI is Annex III high-risk under the EU AI Act. Amazon's scrapped hiring tool demonstrated how historical data encodes historical discrimination. High regulatory and reputational exposure.</p>
+        <div class="context-priority">
+          <strong>Primary:</strong> Fair with Bias Managed, Valid & Reliable<br>
+          <strong>Critical:</strong> Accountable & Transparent (EU AI Act requires human oversight and appeals)<br>
+          <strong>Key requirement:</strong> Bias audits before deployment — NYC Local Law 144 mandates this
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-sector" style="color:#0F6E56;">Critical infrastructure</div>
+        <h3>Energy grids, water systems, transport networks</h3>
+        <p>AI controlling or optimising critical infrastructure must withstand adversarial attack, environmental disruption, and unexpected failure modes — often with no human in the loop for millisecond-level decisions.</p>
+        <div class="context-priority">
+          <strong>Primary:</strong> Safe, Secure & Resilient, Valid & Reliable<br>
+          <strong>Critical:</strong> Reliability over time — degradation must be detected before failure<br>
+          <strong>Key requirement:</strong> Graceful degradation — must fail safely, not catastrophically
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-sector" style="color:#993C1D;">Generative AI (enterprise)</div>
+        <h3>LLMs deployed for internal use, customer-facing tools</h3>
+        <p>Generative AI introduces novel trustworthiness challenges — hallucination, prompt injection, copyright infringement, identity disclosure. Different threat model from traditional ML.</p>
+        <div class="context-priority">
+          <strong>Primary:</strong> Valid & Reliable (hallucination), Accountable & Transparent (AI disclosure)<br>
+          <strong>Critical:</strong> Secure (adversarial prompts, data leakage), Privacy (training data exposure)<br>
+          <strong>Unique challenge:</strong> Outputs are probabilistic — traditional accuracy metrics are insufficient
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">The universal requirement</span>
+      <h3>Regardless of sector — document your prioritisation</h3>
+      <p>Whatever sector you are in, whatever tradeoffs you have made, the governance requirement is the same: document which characteristics you have prioritised, why, what the alternatives were, and how you will monitor the consequences of your choice. Undocumented tradeoff decisions are governance failures waiting to become liability events. The question from a regulator or a judge will be: "How did you decide?" — and "we optimised the model for accuracy" is not an adequate answer.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The precise vocabulary of AI trustworthiness — the terms that distinguish careful, informed analysis from surface familiarity.</p>
+
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Trustworthiness</div>
+        <div class="term-hint">A social concept, not a technical property</div>
+        <div class="term-def">NIST defines trustworthiness as a social concept ranging across a spectrum — only as strong as its weakest characteristic. An AI system is not trustworthy by virtue of technical performance alone; it must demonstrate appropriate balance across all seven characteristics in its specific deployment context. Trustworthiness is perceived and maintained through ongoing engagement with affected stakeholders, not asserted by developers.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Validity</div>
+        <div class="term-hint">Doing what it's supposed to do</div>
+        <div class="term-def">Confirmation that requirements for a specific intended use have been fulfilled. A system is valid if it genuinely does what it was designed to do in its actual deployment context — not just in the conditions under which it was trained and tested. Validity requires external validity (generalisation beyond training conditions) as well as internal accuracy.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Robustness</div>
+        <div class="term-hint">Performance under pressure and variation</div>
+        <div class="term-def">The ability to maintain performance across a variety of conditions — including unexpected inputs, distribution shifts, adversarial examples, and use cases not initially anticipated. Robustness is distinct from accuracy: a system can be highly accurate under expected conditions and fail catastrophically outside them. Robust systems degrade gracefully rather than failing suddenly.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Explainability</div>
+        <div class="term-hint">How — the mechanism</div>
+        <div class="term-def">A representation of the mechanisms underlying an AI system's operation. Answers "how did the system arrive at this output?" Distinct from interpretability (which asks "what does this output mean?"). Explainability enables debugging, auditing, and human oversight of the decision-making process — not just its outcome.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Interpretability</div>
+        <div class="term-hint">Why — the meaning in context</div>
+        <div class="term-def">The meaning of an AI system's output in the context of its designed functional purpose. Answers "what does this output mean for the decision being made?" A technically explainable output may be meaningless without domain expertise to interpret it. Both explainability and interpretability are required for genuine human understanding of AI decisions.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Accuracy-Interpretability Tradeoff</div>
+        <div class="term-hint">The fundamental tension in ML</div>
+        <div class="term-def">The empirically documented tendency for more accurate models to be less interpretable. Deep neural networks and ensemble methods achieve superior predictive performance but operate as black boxes. Decision trees and linear models are fully interpretable but sacrifice accuracy. This tradeoff drives one of the most consequential design decisions in AI development — and must be made explicitly based on the stakes of the application.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Adversarial Examples</div>
+        <div class="term-hint">Crafted inputs designed to fool AI</div>
+        <div class="term-def">Carefully constructed inputs that cause an AI system to produce confident but incorrect outputs — while appearing indistinguishable from normal inputs to a human observer. A classic example: an image of a panda with imperceptible noise added causes an image classifier to confidently identify a gibbon. Adversarial robustness — resistance to such attacks — is a core security requirement for high-stakes AI systems.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Data Poisoning</div>
+        <div class="term-hint">Corrupting the training process</div>
+        <div class="term-def">A security attack in which adversaries inject malicious data into a model's training set to manipulate its behaviour post-deployment. Unlike adversarial examples (which attack deployed models), data poisoning attacks the training pipeline. Particularly concerning for models trained on crowdsourced or web-scraped data, where the training data provenance cannot be fully verified.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Privacy by Design</div>
+        <div class="term-hint">Privacy embedded from the start</div>
+        <div class="term-def">The principle that privacy protections should be built into AI systems during design and architecture — not added as an afterthought at deployment. Proactive rather than reactive: identifying and eliminating privacy risks before they materialise. Mandated by GDPR as a legal requirement for systems processing personal data. Significantly more effective and less costly than retrofitting privacy controls onto deployed systems.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">ALTAI</div>
+        <div class="term-hint">EU self-assessment checklist</div>
+        <div class="term-def">Assessment List for Trustworthy AI — the European Commission's self-assessment checklist for organisations building or deploying AI systems. Operationalises the EU's seven requirements for trustworthy AI (human agency, robustness, privacy, transparency, diversity, societal wellbeing, accountability) into a practical evaluation tool. Available free from the EU AI HLEG. A useful complement to the NIST AI RMF for organisations seeking EU alignment.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">The conversations clients have when they start thinking seriously about trustworthy AI — and the answers that demonstrate you understand both the depth and the practical implications.</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "How do we know if our AI is trustworthy?"</div>
+      <div class="pitch-a">Trustworthiness isn't a binary — it's a spectrum across seven characteristics, and you can be strong on some while being weak on others. The honest starting point is a structured assessment against each characteristic: Is it valid and reliable — do you have disaggregated performance metrics, not just overall accuracy? Is it safe — have you defined failure modes and tested them? Is it explainable — can the people who need to understand it actually do so? Is it fair — have you measured disparate impact across demographic groups? Is it private — have you assessed what the system can infer about individuals, not just what data it processes? And crucially — is it transparent and accountable — is there a named person responsible for each system, with documentation that regulators could review? Most organisations find gaps in at least three or four of these when they look honestly.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they say: "We just need our AI to be accurate — the other stuff is secondary."</div>
+      <div class="pitch-a">Accuracy is the foundation — but it's necessary, not sufficient. Consider what "accurate" means for a credit scoring model that's 95% accurate overall but has a 30% error rate for one demographic group. It's accurate in aggregate and discriminatory in practice. Or a medical AI that performs brilliantly on training data but fails on patients from hospitals with different data recording practices — technically accurate, but not valid in the deployment context. And accuracy alone tells you nothing about what happens when the system is wrong — whether it fails safely, whether there's a human who can catch and correct errors, whether affected individuals have any recourse. Accuracy is where you start, not where you stop.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Our model is a black box — does that mean it can't be trustworthy?"</div>
+      <div class="pitch-a">Not necessarily, but it depends entirely on the stakes of the application. A black-box recommendation engine for a streaming service carries very different implications than a black-box system scoring job applicants. For lower-stakes applications, post-hoc explainability methods — LIME, SHAP — can provide sufficient transparency about individual decisions without needing to open the model itself. For high-stakes applications affecting rights, safety, or significant financial outcomes, the bar is higher: regulators and courts increasingly expect systems whose decisions can be meaningfully explained and challenged. The EU AI Act requires explainability for high-risk systems. The question to ask is: if this system makes a wrong decision, can the affected individual understand why and challenge it? If the answer is no, you may have a rights problem as much as a technical one.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Which characteristic should we focus on first?"</div>
+      <div class="pitch-a">Start with validity and reliability — if the system doesn't work, nothing else is worth discussing. Then assess the characteristics most material to your specific context and risk profile. For healthcare AI, safety and explainability are usually most urgent. For hiring and credit, fairness and transparency. For critical infrastructure, security and resilience. The one characteristic that should always run in parallel regardless of context is accountability and transparency — because without it, you cannot assess or maintain any of the others over time. You need visibility into what the system is doing before you can determine whether it is safe, fair, or reliable in production. The most common mistake is treating trustworthiness as a launch-time checklist rather than an ongoing operational discipline.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they push back: "This sounds like it will slow everything down."</div>
+      <div class="pitch-a">The evidence says the opposite. Organisations that build trustworthiness in from the start deploy AI faster at scale — because they're not constantly firefighting incidents, reworking deployments that failed regulatory review, or managing the reputational fallout from high-profile failures. McKinsey's research shows organisations with embedded responsible AI governance see up to 40% higher ROI from AI investments, largely due to reduced rework and audit costs. The AI systems that get blocked or reversed — by regulators, by client procurement requirements, by board risk appetite — are almost always the ones where trustworthiness was an afterthought. Building it in is the fast path, not the slow one.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">The framing that resonates</span>
+      <h3>Trustworthiness is the licence to scale</h3>
+      <p>Frame it not as a constraint but as the precondition for ambitious AI deployment. Organisations that can demonstrate trustworthiness across all seven characteristics can move faster, deploy more broadly, and access markets where untrustworthy AI is being blocked. Trustworthiness is not the opposite of capability — it is what makes capability sustainable. The most powerful AI systems in enterprise will be the ones people actually trust to make consequential decisions.</p>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The foundational documents, standards, and research behind this guide on AI trustworthiness.</p>
+
+    <div class="sub-label">Primary sources</div>
+    <div class="src-list">
+      <a class="src-item" href="https://doi.org/10.6028/NIST.AI.100-1" target="_blank" rel="noopener">
+        <div class="src-title">NIST AI 100-1: AI Risk Management Framework — Section 3: AI Risks and Trustworthiness</div>
+        <div class="src-meta">National Institute of Standards and Technology · January 2023</div>
+        <div class="src-desc">Section 3 of the AI RMF defines the seven trustworthiness characteristics and their relationships. The authoritative source for the NIST framing of trustworthiness — including the cross-cutting nature of accountability and transparency, and the explicit acknowledgement of tradeoffs between characteristics.</div>
+      </a>
+      <a class="src-item" href="https://airc.nist.gov/airmf-resources/airmf/3-sec-characteristics/" target="_blank" rel="noopener">
+        <div class="src-title">NIST AI Resource Center — AI Risks and Trustworthiness</div>
+        <div class="src-meta">NIST AI Resource Center · airc.nist.gov</div>
+        <div class="src-desc">The online companion to the AI RMF covering the trustworthiness characteristics with expanded context and links to related standards and guidance. Continuously updated as the AI RMF ecosystem develops.</div>
+      </a>
+      <a class="src-item" href="https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai" target="_blank" rel="noopener">
+        <div class="src-title">Ethics Guidelines for Trustworthy AI — EU High-Level Expert Group on AI</div>
+        <div class="src-meta">European Commission · April 2019</div>
+        <div class="src-desc">The EU HLEG's foundational framework for trustworthy AI — seven requirements that informed the EU AI Act. Source of the ALTAI self-assessment checklist. The European counterpart to the NIST trustworthiness characteristics, with significant overlap but different framing.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Research & tools</div>
+    <div class="src-list">
+      <a class="src-item" href="https://arxiv.org/html/2411.09973v1" target="_blank" rel="noopener">
+        <div class="src-title">Establishing and Evaluating Trustworthy AI: Overview and Research Challenges</div>
+        <div class="src-meta">arxiv.org · October 2025</div>
+        <div class="src-desc">Comprehensive academic synthesis of trustworthy AI requirements across six dimensions — with particular depth on the accuracy-interpretability tradeoff and the current research challenges in measuring trustworthiness. Draws on the EU HLEG, NIST, and OECD frameworks.</div>
+      </a>
+      <a class="src-item" href="https://www.ibm.com/think/topics/trustworthy-ai" target="_blank" rel="noopener">
+        <div class="src-title">What is Trustworthy AI?</div>
+        <div class="src-meta">IBM · 2024/2025</div>
+        <div class="src-desc">IBM's overview of trustworthy AI — source of the 40% business leader concern statistic and the consumer labelling study. Useful for understanding how enterprise technology vendors are framing and operationalising trustworthiness.</div>
+      </a>
+      <a class="src-item" href="https://ec.europa.eu/newsroom/dae/redirection/document/90387" target="_blank" rel="noopener">
+        <div class="src-title">ALTAI: Assessment List for Trustworthy AI</div>
+        <div class="src-meta">European Commission High-Level Expert Group on AI</div>
+        <div class="src-desc">The EU's practical self-assessment tool for trustworthy AI — translating the seven trustworthiness requirements into actionable evaluation questions. Free to use and a useful complement to the NIST AI RMF for organisations with EU clients or operations.</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+function toggleChar(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+</script>
+</body>
+</html>
