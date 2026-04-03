@@ -335,6 +335,43 @@
 
   hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
 
+  /* ---- IN PRACTICE ---- */
+  .in-practice {
+    margin-top: 1rem;
+    padding: 10px 12px;
+    background: rgba(26,26,24,0.03);
+    border-left: 2px solid var(--line);
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+  .ip-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+
+  /* ---- TEST YOURSELF ---- */
+  .test-intro { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+  .flip-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .flip-card { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .flip-q { padding: 14px 16px; font-size: 13px; font-weight: 400; color: var(--ink); background: var(--paper-card); cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; user-select: none; transition: background 0.1s; }
+  .flip-q:hover { background: #fff; }
+  .flip-q-text { flex: 1; line-height: 1.6; }
+  .flip-icon { font-size: 12px; color: var(--ink-muted); flex-shrink: 0; margin-top: 2px; transition: transform 0.2s; }
+  .flip-card.open .flip-icon { transform: rotate(180deg); }
+  .flip-a { display: none; padding: 12px 16px; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; background: #fff; border-top: 1px solid var(--line); }
+  .flip-card.open .flip-a { display: block; }
+  .flip-a strong { font-weight: 500; color: var(--ink); }
+  .flip-scenario { background: var(--paper-warm); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-style: italic; margin-bottom: 8px; color: var(--ink-soft); line-height: 1.65; }
+  .flip-category { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; }
+  .test-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
   /* ---- RESPONSIVE ---- */
   @media (max-width: 600px) {
     .func-grid { grid-template-columns: 1fr; }
@@ -355,7 +392,7 @@
     <h1 class="hero-title">NIST <em>AI Risk</em> Management Framework</h1>
     <div class="hero-meta">
       <span>NIST AI 100-1 · Version 1.0 · January 2023</span>
-      <span>5 sections · Interactive</span>
+      <span>7 sections · Interactive</span>
     </div>
   </div>
 </div>
@@ -366,6 +403,7 @@
   <button class="tab-btn" onclick="showTab('trustworthy', this)">Trustworthy AI</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('test', this)">Test Yourself</button>
   <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
@@ -418,6 +456,10 @@
           <li>Processes for workforce training</li>
           <li>Third-party / supply chain risk governance</li>
         </ul>
+        <div class="in-practice">
+          <div class="ip-label">In practice</div>
+          When Microsoft rolled out Copilot to 300,000+ employees, GOVERN was their first challenge: who owned the AI policy? Which teams could approve new use cases? What happened when an employee used it in a way nobody had anticipated? They had to build accountability structures before the technology — because without them, every deployment decision defaulted to whoever happened to be in the room.
+        </div>
       </div>
 
       <div class="func-card map">
@@ -432,6 +474,10 @@
           <li>AI system scope and boundary definition</li>
           <li>Understanding of AI actor roles</li>
         </ul>
+        <div class="in-practice">
+          <div class="ip-label">In practice</div>
+          Amazon built a CV screening tool without doing MAP properly. They didn't fully map who the system would affect (female applicants, non-traditional career paths), what data it would learn from (a decade of historically male-dominated hiring decisions), or what "a good candidate" actually meant in different roles. The system learned to discriminate. A proper MAP exercise would have surfaced those contextual risks before a line of training code was written.
+        </div>
       </div>
 
       <div class="func-card measure">
@@ -446,6 +492,10 @@
           <li>Performance metrics with disaggregated data</li>
           <li>Documentation of residual risk</li>
         </ul>
+        <div class="in-practice">
+          <div class="ip-label">In practice</div>
+          ProPublica's investigation into COMPAS — the criminal risk-scoring algorithm — was essentially a public MEASURE exercise that the company hadn't done itself. They measured false positive rates disaggregated by race and found Black defendants were nearly twice as likely to be incorrectly flagged as high risk. The system had been evaluated on overall accuracy. Nobody had measured it on the dimension that mattered most.
+        </div>
       </div>
 
       <div class="func-card manage">
@@ -460,6 +510,10 @@
           <li>Go / no-go deployment decisions</li>
           <li>Residual risk documentation for users</li>
         </ul>
+        <div class="in-practice">
+          <div class="ip-label">In practice</div>
+          In January 2025, Apple paused its AI news summarisation feature after it generated fabricated headlines — including a false report that the BBC's director-general had been arrested. MANAGE done well means having a go/no-go mechanism that can pull a system within hours. Apple had it. The cost was a news cycle. The alternative — no MANAGE process, no clear owner, no kill switch — is a legal and reputational disaster.
+        </div>
       </div>
     </div>
 
@@ -682,6 +736,154 @@
     </div>
   </div>
 
+  <!-- TEST YOURSELF -->
+  <div id="tab-test" class="section">
+    <p class="test-intro">Read a question, try to answer it in your head, then tap to reveal. The scenario questions at the bottom are the most useful — they mirror how you'll actually use this knowledge in a client conversation.</p>
+
+    <div class="test-section-label">Recall — the basics</div>
+    <div class="flip-grid">
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">What are the four functions of the NIST AI RMF — and what is each one's role?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <strong>GOVERN</strong> — the culture layer. Policies, roles, accountability, and incentives. Cross-cutting: it runs through all other functions.<br><br>
+          <strong>MAP</strong> — the context layer. Understand the system's purpose, who it affects, and what could go wrong before measuring anything.<br><br>
+          <strong>MEASURE</strong> — the evidence layer. Test and evaluate the system against trustworthiness characteristics using metrics and TEVV.<br><br>
+          <strong>MANAGE</strong> — the action layer. Allocate resources, treat risks, monitor continuously, and make go/no-go decisions.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">Which function is cross-cutting — and what does that mean in practice?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <strong>GOVERN</strong> is cross-cutting. It doesn't happen once at the start — it runs through and informs all the other functions continuously. In practice: the policies and accountability structures set by GOVERN determine how MAP is conducted, what MEASURE looks for, and what MANAGE is empowered to do. Without GOVERN, the other three functions are just activities without authority or direction.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">What does TEVV stand for — and at which function does it appear?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <strong>Test, Evaluation, Verification, and Validation</strong> — and it appears in the <strong>MEASURE</strong> function. TEVV is the ongoing technical process of confirming that an AI system performs as intended, meets its requirements, and doesn't create unexpected harms. Critically: it should happen throughout the AI lifecycle, not just at launch. A system that passes TEVV at deployment may fail it six months later due to model drift or changing data.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">What is "residual risk" and which function requires it to be documented?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <strong>Residual risk</strong> is the risk that remains after all risk treatments have been applied. Every deployed system will have some — the goal is not to eliminate it but to make it explicit and acceptable. It appears in the <strong>MANAGE</strong> function, which requires residual risk to be documented and communicated to end users. The practical significance: if something goes wrong, documented residual risk is evidence of due diligence. Undocumented residual risk is a liability.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">What does "AI actor" mean in the framework — and why does it matter?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          Anyone with an active role in the AI system lifecycle — designers, developers, deployers, evaluators, end users, and even affected communities. It matters because risk responsibility is distributed, not held by a single team. The developer who trains a model and the enterprise that deploys it in a new context are both AI actors with distinct responsibilities. Treating AI risk as someone else's problem — the data science team's, the vendor's — is the most common governance failure the framework is designed to prevent.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="test-section-label">Deeper understanding</div>
+    <div class="flip-grid">
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">Why can't you just do MAP → MEASURE → MANAGE once and be done with it?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          Because AI systems change — and so do their contexts. The data distribution shifts. The use case expands beyond the original scope. New regulations come into force. Affected populations change. A system that was mapped, measured, and managed responsibly at launch may be creating new risks six months later that nobody has assessed. The framework is designed as a continuous loop, not a launch checklist. GOVERN exists to ensure that loop keeps running even when there's no incident forcing a review.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">What's the difference between risk tolerance and risk appetite — and which does the AI RMF set?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <strong>Risk appetite</strong> is the amount of risk an organisation is willing to accept in pursuit of its objectives — a strategic choice. <strong>Risk tolerance</strong> is the acceptable variation around that appetite — the operational guardrails. The AI RMF deliberately <em>does not</em> set either. It provides the framework for managing risk once you've defined your tolerance — but the values decision about how much risk is acceptable is left to organisations, industries, and regulators. This is intentional: what's acceptable in medical AI is fundamentally different from what's acceptable in a music recommendation engine.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">Name three characteristics of trustworthy AI — and explain the one key tradeoff between them.</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          The seven characteristics: Valid & Reliable, Safe, Secure & Resilient, Accountable & Transparent, Explainable & Interpretable, Privacy-Enhanced, Fair with Bias Managed.<br><br>
+          The sharpest tradeoff: <strong>Explainability vs Accuracy</strong>. The most accurate AI models (deep neural networks) are the least explainable. Simpler, interpretable models sacrifice predictive accuracy. This isn't a technical problem to be solved — it's a values decision to be made: in a high-stakes context (medical diagnosis, loan decisions), you may need to sacrifice accuracy for explainability so humans can meaningfully oversee and challenge the system.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="test-section-label">Scenario questions — the hardest and most useful</div>
+    <div class="flip-grid">
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">A bank wants to deploy an AI credit scoring system. Their data science team has built the model and it achieves 94% accuracy. The CRO says "we're ready to go live." Which function has almost certainly been skipped?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <div class="flip-scenario">The model is accurate overall. But has anyone asked: accurate for whom? What does 94% mean disaggregated by demographic group? Who conducted stakeholder impact analysis? Has anyone mapped which communities this system will affect, and what the consequences of errors are for those communities?</div>
+          Almost certainly <strong>MAP</strong> — and possibly <strong>GOVERN</strong>. MAP requires understanding the deployment context, affected stakeholders, and potential harms before measuring. GOVERN requires knowing who is accountable when the system makes a wrong decision. A 94% accuracy headline answers neither question. The first thing to ask: "What does performance look like disaggregated by demographic group?" If they don't know, MAP hasn't been done.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">A company's AI tool begins producing increasingly unreliable outputs six months after launch. The team that built it has moved on to other projects. Nobody knows whose job it is to investigate. Which GOVERN failure does this represent?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <div class="flip-scenario">The system is drifting. Performance is degrading. There's no accountability structure, no monitoring owner, no escalation path.</div>
+          This is a classic <strong>GOVERN failure</strong> — specifically the absence of defined roles and responsibilities that persist beyond the launch of a system. GOVERN is supposed to establish ongoing accountability, not just launch-time approval. In practice: every deployed AI system needs a named owner responsible for its continued performance and risk management. "The team that built it" is not an owner — it's a project team that has moved on. MANAGE would also be implicated: there should be monitoring and incident response processes that would have caught the degradation.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">A client says: "We ran the model through testing before we launched it, so we've done MEASURE." What's wrong with this?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <div class="flip-scenario">Pre-launch testing is a start. But MEASURE in the AI RMF is continuous, not a one-time gate.</div>
+          Three problems. First, MEASURE is <strong>ongoing</strong> — it doesn't stop at launch. Post-deployment monitoring for drift, bias emergence, and performance degradation is part of MEASURE. Second, pre-launch testing in a controlled environment often misses risks that only emerge in real-world conditions — different user behaviour, data distribution shifts, edge cases that didn't appear in test sets. Third, MEASURE should cover all seven trustworthiness characteristics — not just accuracy. Did they measure fairness across demographic groups? Explainability? Resilience to adversarial inputs? If the answer is "we tested it for accuracy," that's partial MEASURE, not complete MEASURE.
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)">
+          <span class="flip-q-text">A client asks: "We already follow ISO 27001 for cybersecurity — do we still need the AI RMF?" What do you say?</span>
+          <span class="flip-icon">▾</span>
+        </div>
+        <div class="flip-a">
+          <div class="flip-scenario">ISO 27001 is excellent for what it does. But it was designed for traditional software and information systems — not for AI.</div>
+          ISO 27001 covers confidentiality, integrity, and availability of information systems. The AI RMF covers a different and broader set of risks: model drift, hallucination, bias amplification, explainability, fairness, and the socio-technical risks that emerge from how AI interacts with people and society. These don't appear in ISO 27001. The RMF also integrates with ISO 27001 — it doesn't replace it. Think of it as the framework that fills the AI-specific gaps your existing risk management programme wasn't designed to handle. The organisations using both end up with genuinely integrated risk management rather than parallel frameworks that don't talk to each other.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- SOURCES -->
   <div id="tab-sources" class="section">
     <p class="lede">The authoritative sources behind this guide. Primary documents come directly from NIST and the standards bodies — these are the texts regulators and auditors will reference.</p>
@@ -753,6 +955,9 @@ function showTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('visible');
   btn.classList.add('active');
   window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+function toggleFlip(card) {
+  card.classList.toggle('open');
 }
 </script>
 

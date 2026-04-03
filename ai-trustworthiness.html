@@ -158,6 +158,25 @@
     .spectrum-row { grid-template-columns: 100px 1fr 100px; }
     .spectrum-label { font-size: 10px; padding: 8px 10px; }
   }
+
+  /* ---- IN PRACTICE ---- */
+  .in-practice { margin-top: 1rem; padding: 10px 12px; background: rgba(26,26,24,0.03); border-left: 2px solid var(--line); border-radius: 0 4px 4px 0; font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.7; }
+  .ip-label { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  /* ---- TEST YOURSELF ---- */
+  .test-intro { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+  .flip-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .flip-card { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .flip-q { padding: 14px 16px; font-size: 13px; font-weight: 400; color: var(--ink); background: var(--paper-card); cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; user-select: none; transition: background 0.1s; }
+  .flip-q:hover { background: #fff; }
+  .flip-q-text { flex: 1; line-height: 1.6; }
+  .flip-icon { font-size: 12px; color: var(--ink-muted); flex-shrink: 0; margin-top: 2px; transition: transform 0.2s; }
+  .flip-card.open .flip-icon { transform: rotate(180deg); }
+  .flip-a { display: none; padding: 12px 16px; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; background: #fff; border-top: 1px solid var(--line); }
+  .flip-card.open .flip-a { display: block; }
+  .flip-a strong { font-weight: 500; color: var(--ink); }
+  .flip-scenario { background: var(--paper-warm); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-style: italic; margin-bottom: 8px; color: var(--ink-soft); line-height: 1.65; }
+  .test-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
 </style>
 </head>
 <body>
@@ -185,6 +204,7 @@
   <button class="tab-btn" onclick="showTab('context', this)">By Sector</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('test', this)">Test Yourself</button>
   <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
@@ -658,6 +678,39 @@
     </div>
   </div>
 
+  <!-- TEST YOURSELF -->
+  <div id="tab-test" class="section">
+    <p class="test-intro">Trustworthiness is the concept that ties everything else together. These questions test whether you can apply it — not just define it.</p>
+
+    <div class="test-section-label">Recall — the basics</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">Name all seven trustworthiness characteristics — and identify which is the foundation and which is cross-cutting.</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">The seven: <strong>Valid & Reliable, Safe, Secure & Resilient, Accountable & Transparent, Explainable & Interpretable, Privacy-Enhanced, Fair with Harmful Bias Managed</strong>.<br><br><strong>Foundation</strong>: Valid & Reliable — without this, no other characteristic matters. A system that doesn't work cannot be trustworthy, regardless of how transparent or fair it is.<br><br><strong>Cross-cutting</strong>: Accountable & Transparent — it touches all the others. You cannot assess or maintain any other characteristic over time without transparency into what the system is doing. Without it, you cannot determine whether the system is fair, safe, or reliable in production.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What is the difference between transparency, explainability, and interpretability? Give the question each one answers.</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><strong>Transparency</strong> answers: "What happened?" — system-level visibility into what the AI did, when, and under what conditions. The audit trail.<br><br><strong>Explainability</strong> answers: "How?" — the mechanism behind a specific output. How did the system get from this input to this output? LIME and SHAP are explainability tools.<br><br><strong>Interpretability</strong> answers: "Why does this matter?" — the meaning of an output in context. What does a risk score of 7/10 actually mean for this particular decision, for this particular person?<br><br>You need all three for genuine human oversight. Transparency without explainability tells you something happened but not why. Explainability without interpretability tells you the mechanism but not the significance. All three are required for an affected individual to meaningfully understand and challenge a decision.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What is the accuracy-interpretability tradeoff — and when should interpretability win?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">The most accurate models (deep neural networks) are the least interpretable. Simpler models (decision trees, linear regression) are fully interpretable but sacrifice predictive accuracy. This is empirically documented — not a temporary technical limitation to be solved, but an inherent property of model complexity.<br><br>Interpretability should win when: the cost of an unexplainable wrong decision exceeds the benefit of slightly higher accuracy; when affected individuals have a legal or ethical right to understand decisions made about them; when the domain requires human clinical or professional judgement to be preserved (medical, legal); and when the EU AI Act requires explainability for a high-risk system. A medical diagnosis model that is 2% more accurate but cannot be explained to clinicians may be less trustworthy — and less safe — than one that is 2% less accurate but allows clinicians to meaningfully override it.</div>
+      </div>
+    </div>
+
+    <div class="test-section-label">Scenario questions</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A healthcare provider deploys an AI diagnostic tool. Which trustworthiness characteristics matter most — and what is the key tradeoff they will face?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">Medical AI where errors can directly harm or kill patients. Clinicians must be able to understand and override recommendations. Regulators treat it as a medical device.</div><strong>Primary</strong>: Valid & Reliable and Safe — the absolute non-negotiables. A system that misdiagnoses must fail safely, not silently.<br><strong>Critical</strong>: Explainable & Interpretable — clinicians need to understand recommendations well enough to override them when their clinical judgement differs. A black-box diagnostic tool that overrides clinical judgement is dangerous even if technically accurate.<br><strong>Key tradeoff</strong>: The most accurate diagnostic models are often the least explainable. Deep learning models in radiology outperform radiologists on narrow benchmarks but cannot explain their reasoning. The governance decision: is 2% more accuracy worth removing the clinician's ability to meaningfully review the recommendation? In most healthcare contexts, the answer is no — the explainability requirement constrains the accuracy that can be deployed.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A privacy-enhancing technique reduces the AI system's accuracy for one demographic group. Which two trustworthiness characteristics are in tension — and how do you navigate it?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">Differential privacy adds noise to model outputs to prevent individual re-identification. That noise disproportionately degrades prediction quality for underrepresented groups.</div><strong>Privacy-Enhanced vs Fair with Bias Managed</strong> — one of the most common and least understood trustworthiness tradeoffs.<br><br>Navigation: first, assess which group is most affected by the accuracy reduction and whether the reduction is proportionate — does the privacy benefit justify the fairness cost for this specific group? Second, explore whether the privacy technique can be applied in ways that distribute the accuracy cost more evenly (e.g., applying noise differently to majority and minority group data). Third, document the tradeoff explicitly: who made the decision, what the alternatives were, and what the residual fairness impact is. This documentation is both an ethical requirement and a regulatory one — the EU AI Act requires high-risk AI systems to demonstrate that tradeoffs between characteristics have been considered and justified.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- SOURCES -->
   <div id="tab-sources" class="section">
     <p class="lede">The foundational documents, standards, and research behind this guide on AI trustworthiness.</p>
@@ -715,6 +768,10 @@ function toggleChar(card) {
   const isOpen = card.classList.contains('open');
   document.querySelectorAll('.char-card').forEach(c => c.classList.remove('open'));
   if (!isOpen) card.classList.add('open');
+}
+
+function toggleFlip(card) {
+  card.classList.toggle('open');
 }
 </script>
 </body>

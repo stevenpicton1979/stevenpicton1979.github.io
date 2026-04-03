@@ -160,6 +160,25 @@
     .roadmap-grid { grid-template-columns: 1fr; }
     .assess-row { grid-template-columns: 1fr repeat(5,36px); }
   }
+
+  /* ---- IN PRACTICE ---- */
+  .in-practice { margin-top: 1rem; padding: 10px 12px; background: rgba(26,26,24,0.03); border-left: 2px solid var(--line); border-radius: 0 4px 4px 0; font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.7; }
+  .ip-label { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  /* ---- TEST YOURSELF ---- */
+  .test-intro { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+  .flip-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .flip-card { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .flip-q { padding: 14px 16px; font-size: 13px; font-weight: 400; color: var(--ink); background: var(--paper-card); cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; user-select: none; transition: background 0.1s; }
+  .flip-q:hover { background: #fff; }
+  .flip-q-text { flex: 1; line-height: 1.6; }
+  .flip-icon { font-size: 12px; color: var(--ink-muted); flex-shrink: 0; margin-top: 2px; transition: transform 0.2s; }
+  .flip-card.open .flip-icon { transform: rotate(180deg); }
+  .flip-a { display: none; padding: 12px 16px; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; background: #fff; border-top: 1px solid var(--line); }
+  .flip-card.open .flip-a { display: block; }
+  .flip-a strong { font-weight: 500; color: var(--ink); }
+  .flip-scenario { background: var(--paper-warm); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-style: italic; margin-bottom: 8px; color: var(--ink-soft); line-height: 1.65; }
+  .test-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
 </style>
 </head>
 <body>
@@ -187,6 +206,7 @@
   <button class="tab-btn" onclick="showTab('roadmap', this)">Roadmap</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('test', this)">Test Yourself</button>
   <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
@@ -694,6 +714,39 @@
     </div>
   </div>
 
+  <!-- TEST YOURSELF -->
+  <div id="tab-test" class="section">
+    <p class="test-intro">Maturity models are most useful as a diagnostic tool in conversation — these questions help you use them that way.</p>
+
+    <div class="test-section-label">Recall — the basics</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">Name the five maturity levels and one defining characteristic of each.</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><strong>Level 1 — Initial (Ad Hoc)</strong>: No AI inventory. Governance depends on individuals, not processes. Deployment decisions based on technical capability alone.<br><br><strong>Level 2 — Repeatable (Emerging)</strong>: Basic governance exists but applied inconsistently across teams. "Marketing does AI their way; Engineering does it theirs."<br><br><strong>Level 3 — Defined (Enterprise)</strong>: Unified governance framework applied across the org. AI Governance Council with real authority. Standard model documentation in use. The financial performance tipping point.<br><br><strong>Level 4 — Managed (Systemic)</strong>: Automated monitoring. Board receives regular AI metrics. Governance accelerates — rather than slows — responsible AI deployment.<br><br><strong>Level 5 — Optimising (Transformative)</strong>: Voluntary external audits. Published transparency reports. Federated governance across subsidiaries. Culture of responsible AI is self-sustaining.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What does MIT CISR research show about the relationship between AI maturity and financial performance?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">Based on a survey of 721 companies: organisations at <strong>Levels 1–2</strong> perform <strong>below industry average</strong> financially. Organisations at <strong>Levels 3–4</strong> perform <strong>well above industry average</strong>. The mechanism: low maturity means AI projects fail more often, take longer to debug, get blocked by regulatory concerns, and generate incidents that create liability. High maturity means faster deployment, cleaner evidence trails for regulators, and incidents caught and resolved before they escalate. McKinsey quantifies this as up to 40% higher ROI from AI investments for organisations with embedded responsible AI governance.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What is "governance debt" — and what does it look like in practice?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">The accumulation of governance shortcuts, undefined processes, and unmanaged risks that builds up when technology adoption outpaces governance development. Like technical debt, it eventually comes due — but the cost is regulatory fines, reputational damage, or the inability to scale AI because compliance processes are too slow or fragmented.<br><br>In practice: a company that has deployed 50 AI models under ad-hoc governance has accumulated 50 instances of undocumented risk, undefined accountability, and untested incident response. When the EU AI Act compliance deadline arrives, remediating 50 systems is significantly more expensive and disruptive than having governed them properly from the start.</div>
+      </div>
+    </div>
+
+    <div class="test-section-label">Scenario questions</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A client's CISO says they are at Level 4 maturity. Their data science lead says Level 2. Who do you believe — and how do you find out?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">Different parts of the organisation have different visibility into AI governance — and different incentives to report positively.</div>Believe the lower number until proven otherwise — organisations consistently overestimate maturity by confusing policy creation with enforcement. The diagnostic question: "Can you show me the evidence?" Level 4 means: automated drift monitoring with documented thresholds, incident response playbooks that have been <em>tested</em> (not just written), board-level AI metrics received in the last quarter, and governance controls that function when the people who built them are not in the room. Ask for each of those specifically. If the evidence isn't there, the level isn't there. The disagreement between CISO and data science lead is itself a signal — it suggests governance visibility is inconsistent, which is a Level 2 characteristic.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A company wants to jump from Level 2 directly to Level 4. What do you tell them?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">Level 4 automated monitoring built on top of Level 2 inconsistent processes doesn't produce mature governance — it produces the appearance of governance.</div>You can't skip levels — each requires the foundations of the previous one to be genuinely embedded. Level 4 automated monitoring only works if Level 3 unified policies and standard tooling are already in place across the whole organisation. If they're not, you're automating chaos. The signal that a level is genuinely achieved: the governance controls work without the champion who built them. The fastest path to Level 4 is building Level 3 properly — which typically takes 12–18 months — not trying to shortcut to Level 4 with technology investments that sit on top of an inconsistent foundation.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- SOURCES -->
   <div id="tab-sources" class="section">
     <p class="lede">The research, models, and frameworks behind this guide — drawn from MIT, Microsoft, CSIRO, BCG, and the RAI Institute, representing the leading thinking on responsible AI maturity.</p>
@@ -791,6 +844,10 @@ function calcScore() {
   const colours = ['', '#C0392B', '#D85A30', '#EF9F27', '#1D9E75', '#185FA5'];
   fill.style.background = colours[level];
   text.textContent = `${labels[level]} (avg ${avg.toFixed(1)})`;
+}
+
+function toggleFlip(card) {
+  card.classList.toggle('open');
 }
 </script>
 </body>

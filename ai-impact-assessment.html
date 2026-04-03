@@ -122,6 +122,25 @@
     .harm-grid { grid-template-columns: 1fr; }
     .step { grid-template-columns: 40px 1fr; }
   }
+
+  /* ---- IN PRACTICE ---- */
+  .in-practice { margin-top: 1rem; padding: 10px 12px; background: rgba(26,26,24,0.03); border-left: 2px solid var(--line); border-radius: 0 4px 4px 0; font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.7; }
+  .ip-label { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  /* ---- TEST YOURSELF ---- */
+  .test-intro { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+  .flip-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .flip-card { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .flip-q { padding: 14px 16px; font-size: 13px; font-weight: 400; color: var(--ink); background: var(--paper-card); cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; user-select: none; transition: background 0.1s; }
+  .flip-q:hover { background: #fff; }
+  .flip-q-text { flex: 1; line-height: 1.6; }
+  .flip-icon { font-size: 12px; color: var(--ink-muted); flex-shrink: 0; margin-top: 2px; transition: transform 0.2s; }
+  .flip-card.open .flip-icon { transform: rotate(180deg); }
+  .flip-a { display: none; padding: 12px 16px; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; background: #fff; border-top: 1px solid var(--line); }
+  .flip-card.open .flip-a { display: block; }
+  .flip-a strong { font-weight: 500; color: var(--ink); }
+  .flip-scenario { background: var(--paper-warm); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-style: italic; margin-bottom: 8px; color: var(--ink-soft); line-height: 1.65; }
+  .test-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
 </style>
 </head>
 <body>
@@ -149,6 +168,7 @@
   <button class="tab-btn" onclick="showTab('stakeholders', this)">Stakeholder Mapping</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('test', this)">Test Yourself</button>
   <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
@@ -540,6 +560,43 @@
     </div>
   </div>
 
+  <!-- TEST YOURSELF -->
+  <div id="tab-test" class="section">
+    <p class="test-intro">Impact assessment is a methodology — understanding the steps and why each matters is more important than memorising definitions.</p>
+
+    <div class="test-section-label">Recall — the basics</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What are the six steps of an AI impact assessment — in order?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><strong>1. Define scope</strong> — what the system is, does, and doesn't do.<br><br><strong>2. Map stakeholders</strong> — everyone affected directly and indirectly, especially subjects and vulnerable groups.<br><br><strong>3. Identify harms</strong> — potential negative impacts across physical, psychological, financial, reputational, societal, and environmental dimensions.<br><br><strong>4. Assess severity</strong> — score each harm on scale, scope, likelihood, and reversibility.<br><br><strong>5. Mitigate</strong> — define controls (technical, procedural, governance, transparency) with named owners and timelines.<br><br><strong>6. Monitor & update</strong> — ongoing evaluation with clear reassessment triggers.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What four variables make up the harm severity assessment — and what does "high severity" look like?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><strong>Scale</strong> — how many people affected?<br><strong>Scope</strong> — what proportion of the affected group?<br><strong>Likelihood</strong> — how probable given design and deployment context?<br><strong>Reversibility</strong> — can the harm be undone?<br><br>High severity = large scale + broad scope + high likelihood + irreversible. Example: a credit scoring algorithm that systematically denies mortgages to a demographic group (scale: thousands; scope: most of that group; likelihood: high given how the model is designed; reversibility: significant financial and life-opportunity harm that cannot be easily corrected after the fact).</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What is the difference between an AI impact assessment and a DPIA?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">A <strong>DPIA</strong> (Data Protection Impact Assessment) is required by GDPR when processing personal data poses high risk. It focuses on data protection risks specifically.<br><br>An <strong>AIIA</strong> is broader — it covers all potential harms from the AI system's outputs: physical, psychological, financial, reputational, societal, and environmental. Not just data protection.<br><br>Where an AI system processes personal data, you typically need both. They're designed to complement each other — not duplicate. A DPIA without an AIIA leaves the non-data-protection risks unassessed. An AIIA without a DPIA may miss specific GDPR obligations around data processing.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What is a "subject" in the context of an impact assessment — and why are they often the most important stakeholder?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">A <strong>subject</strong> is someone about whom the AI system makes decisions or inferences — distinct from the user who operates the system. A job applicant is the subject of a CV screening tool; the hiring manager is the user.<br><br>Subjects are often the most important stakeholder because they are typically: most at risk of harm (decisions are made about them), least empowered to challenge those decisions, and often unaware the system exists. The Amazon hiring tool case illustrates this perfectly — female applicants were subjects who had no knowledge of or recourse against a system that was systematically downgrading their applications.</div>
+      </div>
+    </div>
+
+    <div class="test-section-label">Scenario questions</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A client conducts a two-day workshop before launch and calls it their impact assessment. What's missing?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">A pre-launch workshop is better than nothing. But ISO/IEC 42005 is explicit: assessments should be integrated throughout the AI lifecycle, not conducted once as a launch gate.</div>Three critical gaps. First, <strong>timing</strong>: an assessment done the week before launch documents decisions already made, with little ability to change outcomes. An assessment done at design stage can actually influence architecture. Second, <strong>scope</strong>: a two-day workshop rarely includes genuine stakeholder consultation with affected communities — it's usually an internal exercise. Third, <strong>continuity</strong>: there is no ongoing monitoring, no reassessment triggers, and no living document. If the system changes, scales, or the regulatory environment shifts — there is no process to update the assessment. This is documentation of a point in time, not an impact assessment programme.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">You are assessing an AI system used to prioritise customer service queries. Who are the stakeholders — and which group is most likely to be overlooked?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">A prioritisation system decides which customer queries get answered first, and potentially which ones get answered at all.</div><strong>Operators</strong>: the customer service managers who configure and oversee the system.<br><strong>Direct users</strong>: customer service agents who see the prioritised queue.<br><strong>Subjects</strong>: customers whose queries are ranked — they have no knowledge of or input into this ranking.<br><strong>Indirect affected parties</strong>: customers whose queries are deprioritised, potentially indefinitely.<br><strong>Vulnerable groups</strong>: customers with accessibility needs, elderly customers, non-native language speakers — groups whose communication patterns may make them appear lower priority.<br><br>The most likely to be overlooked: vulnerable customers in the "indirect affected parties" and "subjects" categories — particularly those whose queries are consistently deprioritised because the model has learned to rank certain types of queries lower.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- SOURCES -->
   <div id="tab-sources" class="section">
     <p class="lede">The standards, methodologies, and frameworks that define how AI impact assessments should be conducted and documented.</p>
@@ -611,6 +668,10 @@ function showTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('visible');
   btn.classList.add('active');
   window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+
+function toggleFlip(card) {
+  card.classList.toggle('open');
 }
 </script>
 </body>

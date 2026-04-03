@@ -124,6 +124,25 @@
     .committee-row { grid-template-columns: 1fr; }
     .committee-cell { border-right: none; border-bottom: 1px solid var(--line); }
   }
+
+  /* ---- IN PRACTICE ---- */
+  .in-practice { margin-top: 1rem; padding: 10px 12px; background: rgba(26,26,24,0.03); border-left: 2px solid var(--line); border-radius: 0 4px 4px 0; font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.7; }
+  .ip-label { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  /* ---- TEST YOURSELF ---- */
+  .test-intro { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+  .flip-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .flip-card { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .flip-q { padding: 14px 16px; font-size: 13px; font-weight: 400; color: var(--ink); background: var(--paper-card); cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; user-select: none; transition: background 0.1s; }
+  .flip-q:hover { background: #fff; }
+  .flip-q-text { flex: 1; line-height: 1.6; }
+  .flip-icon { font-size: 12px; color: var(--ink-muted); flex-shrink: 0; margin-top: 2px; transition: transform 0.2s; }
+  .flip-card.open .flip-icon { transform: rotate(180deg); }
+  .flip-a { display: none; padding: 12px 16px; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; background: #fff; border-top: 1px solid var(--line); }
+  .flip-card.open .flip-a { display: block; }
+  .flip-a strong { font-weight: 500; color: var(--ink); }
+  .flip-scenario { background: var(--paper-warm); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-style: italic; margin-bottom: 8px; color: var(--ink-soft); line-height: 1.65; }
+  .test-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
 </style>
 </head>
 <body>
@@ -151,6 +170,7 @@
   <button class="tab-btn" onclick="showTab('structure', this)">Governance Structure</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('test', this)">Test Yourself</button>
   <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
@@ -500,6 +520,43 @@
     </div>
   </div>
 
+  <!-- TEST YOURSELF -->
+  <div id="tab-test" class="section">
+    <p class="test-intro">Board-level AI governance is where abstract frameworks meet real accountability. These questions test whether you can apply the concepts — not just recall them.</p>
+
+    <div class="test-section-label">Recall — the basics</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What are the four pillars of board AI governance?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><strong>1. Strategy & Ambition</strong> — understanding and challenging management's AI strategy, including the risk of NOT adopting AI.<br><br><strong>2. Risk & Compliance</strong> — ensuring AI risks are integrated into enterprise risk management, not treated as a side project.<br><br><strong>3. Accountability & Structure</strong> — ensuring clear executive ownership of AI governance and a defined reporting line to the board.<br><br><strong>4. Performance & Metrics</strong> — receiving regular AI metrics (not just activity reports) that enable genuine oversight of outcomes and risks.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What percentage of boards currently receive AI-related metrics — and why does this number matter?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">Only <strong>15% of boards</strong> currently receive AI-related metrics. This matters because it means 85% of boards are being asked to oversee a technology they have no visibility into. You cannot govern what you cannot see. The minimum boards should be receiving: ROI by business unit, incident rates and trends, regulatory alignment status, and workforce AI literacy progress. The absence of these metrics is itself a governance failure.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">What is a Chief AI Officer — and what makes the role effective vs ineffective?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a">The CAIO is the senior executive responsible for AI strategy, governance, and risk management. CAIO recruitment has tripled in five years; the US federal government mandates the role in all agencies.<br><br><strong>Effective CAIO:</strong> clear mandate, decision-making authority, defined relationship with CRO and General Counsel, direct board reporting line.<br><br><strong>Ineffective CAIO:</strong> buried in the technology team, no board access, jurisdictional disputes with existing CIO/CDO, no authority to say no to a deployment. A CAIO without authority is an expensive placeholder.</div>
+      </div>
+    </div>
+
+    <div class="test-section-label">Scenario questions</div>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A board member says: "We have an AI ethics policy on our website — that covers our governance obligations." What's your response?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">An ethics policy says "we believe in fairness." A governance framework says "here's who is accountable, here's how we test it, here's what happens when it fails."</div>An ethics policy is a starting point — fewer than 25% of companies have moved beyond it to a board-approved, structured AI governance framework. The gap between them is where AI incidents happen. Ask: "If your hiring AI produced discriminatory recommendations tomorrow — who would know first? Who would decide whether to pause the system? Who would communicate to affected candidates? Who would report to regulators?" If those answers involve committees or teams rather than named individuals, the ethics policy hasn't translated into governance.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A company's AI incident rate has increased 40% over 18 months. Management presents this to the board as "expected growth in AI activity." What questions should the board ask?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">AI incidents increased 32% industry-wide in 2024. Growth in incidents with growth in AI use may be inevitable — but the rate matters, as does the trend relative to peers.</div>The board should ask: Is the incident rate growing faster or slower than AI deployment? What types of incidents are occurring — bias, hallucination, security breaches, performance failures? What is the remediation time for each incident type? Is the incident definition consistent — are we capturing the same types of events we were 18 months ago? And critically: what governance changes has management made in response to the trend? Accepting incident growth as "expected" without asking what's being done about it is passive oversight, not governance.</div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-q" onclick="toggleFlip(this.parentElement)"><span class="flip-q-text">A board is considering whether to appoint a director with AI expertise. A long-standing director argues the existing board has sufficient technology experience from their IT backgrounds. Who's right?</span><span class="flip-icon">▾</span></div>
+        <div class="flip-a"><div class="flip-scenario">66% of directors report limited to no AI knowledge or experience. IT experience from the 1990s–2010s doesn't translate to AI governance fluency.</div>IT experience covers infrastructure, software development, cybersecurity, and digital transformation. AI governance requires understanding of fundamentally different risks: model drift, hallucination, bias amplification, socio-technical failure modes, and the specific regulatory landscape of the EU AI Act. MIT research shows organisations with AI-savvy boards outperform peers by 10.9 percentage points in return on equity. The case for AI expertise on the board is quantitative, not just qualitative — and the AI skills matrix should be an explicit recruitment criterion, not an afterthought.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- SOURCES -->
   <div id="tab-sources" class="section">
     <p class="lede">The research and frameworks behind this guide — drawn from the leading governance bodies, consulting firms, and academic institutions working on board-level AI oversight.</p>
@@ -577,6 +634,10 @@ function toggleQ(header) {
   const isOpen = item.classList.contains('open');
   document.querySelectorAll('.q-item').forEach(i => { i.classList.remove('open'); i.querySelector('.q-header').classList.remove('open'); });
   if (!isOpen) { item.classList.add('open'); header.classList.add('open'); }
+}
+
+function toggleFlip(card) {
+  card.classList.toggle('open');
 }
 </script>
 </body>
