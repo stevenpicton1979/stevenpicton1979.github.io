@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bias, Fairness & Equity — Steven Picton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --hero-bg: #0f1f2e;
+    --teal: #1D9E75; --teal-light: #e1f5ee;
+    --coral: #D85A30; --coral-light: #faece7;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --amber: #EF9F27; --amber-light: #FAEEDA;
+    --purple: #7F77DD; --purple-light: #EEEDFE;
+    --red: #C0392B; --red-light: #fdf0ee;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  .top-bar { background: var(--ink); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 48px; position: sticky; top: 0; z-index: 100; }
+  .back-link { font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+  .back-link:hover { color: #fff; }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  .hero { background: var(--hero-bg); color: #fff; padding: 3.5rem 2rem 3rem; }
+  .hero-inner { max-width: 860px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #7ec8e0; margin-bottom: 1rem; }
+  .hero-title { font-family: var(--serif); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1rem; max-width: 700px; }
+  .hero-title em { font-style: italic; color: #a8d8e8; }
+  .hero-meta { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.45); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .tab-bar { background: #fff; border-bottom: 1px solid var(--line); padding: 0 2rem; position: sticky; top: 48px; z-index: 90; display: flex; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 14px 18px; font-size: 13px; font-weight: 400; color: var(--ink-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: var(--sans); }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: #1D9E75; font-weight: 500; }
+
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lede { font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.25rem); font-style: italic; line-height: 1.75; color: var(--ink-soft); margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  p { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--ink-soft); }
+  strong { font-weight: 500; color: var(--ink); }
+  ul.clean { padding-left: 1rem; }
+  ul.clean li { font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; }
+  hr.divider { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+  .card-teal   { border-left: 3px solid var(--teal); }
+  .card-coral  { border-left: 3px solid var(--coral); }
+  .card-blue   { border-left: 3px solid var(--blue); }
+  .card-amber  { border-left: 3px solid var(--amber); }
+  .card-purple { border-left: 3px solid var(--purple); }
+  .card-red    { border-left: 3px solid var(--red); }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-bottom: 10px; }
+  .tag-teal   { background: var(--teal-light);   color: #0F6E56; }
+  .tag-coral  { background: var(--coral-light);  color: #993C1D; }
+  .tag-blue   { background: var(--blue-light);   color: var(--blue); }
+  .tag-amber  { background: var(--amber-light);  color: #854F0B; }
+  .tag-purple { background: var(--purple-light); color: #534AB7; }
+  .tag-red    { background: var(--red-light);    color: #922b21; }
+  .tag-gray   { background: var(--paper-warm);   color: var(--ink-muted); }
+
+  .sub-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin: 1.5rem 0 10px; }
+
+  /* THREE BIAS TYPES */
+  .bias-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .bias-cell { background: var(--paper-card); padding: 1.5rem; }
+  .bias-type { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .bias-cell h3 { margin-bottom: 8px; }
+  .bias-cell p { font-size: 13px; }
+  .bias-cell ul.clean li { font-size: 12px; }
+
+  /* FAIRNESS METRICS */
+  .metric-accordion { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .m-item { border-bottom: 1px solid var(--line); }
+  .m-item:last-child { border-bottom: none; }
+  .m-header { padding: 13px 16px; font-size: 13px; font-weight: 400; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--paper-card); transition: background 0.1s; user-select: none; }
+  .m-header:hover { background: #fff; }
+  .m-header.open { background: #fff; font-weight: 500; }
+  .m-chevron { font-size: 12px; color: var(--ink-muted); transition: transform 0.2s; }
+  .m-header.open .m-chevron { transform: rotate(180deg); }
+  .m-body { display: none; padding: 0 16px 14px; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.75; background: #fff; }
+  .m-body.open { display: block; }
+  .m-formula { font-family: monospace; font-size: 12px; background: var(--paper-warm); padding: 6px 10px; border-radius: 4px; margin: 6px 0; display: inline-block; }
+
+  /* MITIGATION STAGES */
+  .mit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .mit-cell { background: var(--paper-card); padding: 1.25rem; }
+  .mit-stage { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .mit-cell h3 { font-size: 13px; margin-bottom: 8px; }
+  .mit-cell ul.clean li { font-size: 12px; }
+
+  /* REAL WORLD CASES */
+  .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .case-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; }
+  .case-domain { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .case-card h3 { font-size: 13px; margin-bottom: 6px; }
+  .case-card p { font-size: 12px; }
+  .case-lesson { font-size: 11px; font-weight: 500; color: var(--ink-muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+
+  /* TERM GRID */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .term-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+  .term-card:hover { border-color: rgba(26,26,24,0.25); }
+  .term-card.open { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .term-name { font-size: 13px; font-weight: 500; }
+  .term-hint { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .term-def { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.65; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); display: none; }
+  .term-card.open .term-def { display: block; }
+
+  /* PITCH */
+  .pitch-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+  .pitch-q { background: var(--paper-warm); padding: 12px 16px; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+  .pitch-a { padding: 14px 16px; font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--ink); }
+
+  @media (max-width: 600px) {
+    .bias-grid { grid-template-columns: 1fr; }
+    .mit-grid { grid-template-columns: 1fr; }
+    .case-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Ethics · Responsible AI</div>
+    <h1 class="hero-title">Bias, <em>Fairness</em> & Equity</h1>
+    <div class="hero-meta">
+      <span>NIST SP 1270 · ISO/IEC 23894 · Real-world cases</span>
+      <span>6 sections · Interactive</span>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview', this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('types', this)">3 Types of Bias</button>
+  <button class="tab-btn" onclick="showTab('fairness', this)">Fairness Metrics</button>
+  <button class="tab-btn" onclick="showTab('mitigation', this)">Mitigation</button>
+  <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
+  <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="section visible">
+    <p class="lede">Bias in AI is not a bug that can be patched out. It is a property of socio-technical systems that learn from human history — and human history is saturated with inequality. Understanding bias means understanding where it enters, how it amplifies, and why mitigating it is not the same as achieving fairness.</p>
+
+    <div class="card card-coral">
+      <span class="tag tag-coral">The core problem</span>
+      <h3>AI doesn't create bias — it industrialises it</h3>
+      <p>AI systems are extraordinarily good at finding and reproducing patterns in data. When that data reflects historical inequalities — who was hired, who was approved for credit, who was arrested — the model learns those patterns as ground truth. The result is discrimination at scale and at speed: decisions that would previously affect hundreds of people now affect millions, faster than any human could review. A biased algorithm in a hiring tool doesn't just disadvantage one applicant — it disadvantages every applicant who shares the same characteristics, across every company using that tool.</p>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">Why it's hard</span>
+      <h3>Bias can exist without any discriminatory intent</h3>
+      <p>This is the insight that surprises most clients. You can have a team with entirely good intentions, a policy that prohibits discrimination, and a dataset that looks clean — and still produce a biased AI system. NIST identifies three categories of AI bias, each of which can arise in the complete absence of prejudice or intent to discriminate: <strong>systemic bias</strong> (in the data and society), <strong>computational bias</strong> (in the algorithms and statistics), and <strong>human-cognitive bias</strong> (in how people design and interpret AI). All three must be managed simultaneously.</p>
+    </div>
+
+    <div class="card card-blue">
+      <span class="tag tag-blue">Bias ≠ unfairness, and fairness ≠ equity</span>
+      <h3>Three related but distinct concepts</h3>
+      <p style="margin-bottom:8px;"><strong>Bias</strong> is a systematic error — outputs that consistently deviate in a particular direction for particular groups. Bias is measurable.</p>
+      <p style="margin-bottom:8px;"><strong>Fairness</strong> is a normative concept — a judgement that a system treats people in ways that are just and appropriate. There are over 20 mathematically defined fairness criteria, and they are provably mutually incompatible in most real-world settings. You cannot simultaneously satisfy all of them.</p>
+      <p><strong>Equity</strong> goes further than fairness — it asks whether outcomes are just given historical disadvantage. Equal treatment of historically unequal groups can perpetuate inequality. Equity asks whether AI systems help close gaps, not just whether they treat everyone the same way.</p>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">The regulatory reality</span>
+      <h3>Bias is now a legal and compliance issue, not just an ethical one</h3>
+      <p>New York City Local Law 144 mandates independent third-party bias audits for automated employment decision tools before deployment. The EU AI Act classifies employment AI as high-risk precisely because of bias risks. The UK Equality Act applies to AI-driven decisions. NIST SP 1270 provides the foundational guidance for identifying and managing AI bias. The question for enterprise clients is no longer "should we care about bias?" — it's "can we demonstrate we've managed it responsibly?"</p>
+    </div>
+
+    <div class="sub-label">Real-world cases that changed the conversation</div>
+    <div class="case-grid">
+      <div class="case-card">
+        <div class="case-domain" style="color:#922b21;">Criminal justice</div>
+        <h3>COMPAS Recidivism Algorithm</h3>
+        <p>A risk assessment tool used in US sentencing was found to be nearly twice as likely to falsely flag Black defendants as future criminals compared to white defendants — while incorrectly labelling white defendants as low risk at a higher rate.</p>
+        <div class="case-lesson">Lesson: High overall accuracy can mask severe disparity across demographic groups. Accuracy alone is not evidence of fairness.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-domain" style="color:#854F0B;">Hiring</div>
+        <h3>Amazon's Recruiting Tool</h3>
+        <p>Amazon scrapped an AI recruiting tool trained on a decade of hiring data — data that reflected the male dominance of the industry. The model learned to penalise CVs that included the word "women's" and downgraded graduates of all-women's colleges.</p>
+        <div class="case-lesson">Lesson: Training on historical decisions encodes historical discrimination. Removing protected attributes is insufficient if proxies remain.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-domain" style="color:#185FA5;">Healthcare</div>
+        <h3>US Hospital Algorithm</h3>
+        <p>A widely used algorithm for allocating healthcare resources systematically underestimated the medical needs of Black patients — because it used healthcare cost as a proxy for health need, and Black patients had historically been denied access to care.</p>
+        <div class="case-lesson">Lesson: Proxy variables that appear neutral can encode profound racial bias. What a variable measures and what it means are different questions.</div>
+      </div>
+      <div class="case-card">
+        <div class="case-domain" style="color:#0F6E56;">Facial recognition</div>
+        <h3>Commercial Face Recognition Systems</h3>
+        <p>MIT and NIST research found error rates for dark-skinned women reached 35% in some commercial facial recognition systems, while error rates for light-skinned men were below 1%. These systems were being used in law enforcement and building access control.</p>
+        <div class="case-lesson">Lesson: Non-representative training data produces systems that fail most severely for the groups least represented — often those most vulnerable to harm from the failure.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE TYPES OF BIAS -->
+  <div id="tab-types" class="section">
+    <p class="lede">NIST identifies three categories of AI bias, each requiring different interventions. They interact with each other — systemic bias in society shapes the data, which shapes the algorithm, which shapes how humans interpret the outputs. Addressing only one category leaves the others intact.</p>
+
+    <div class="bias-grid">
+      <div class="bias-cell">
+        <div class="bias-type" style="color:#993C1D;">Systemic bias</div>
+        <h3>Embedded in data and society</h3>
+        <p style="margin-bottom:10px;">Reflects historical and ongoing inequalities in society that are reproduced in training data. Present in AI datasets, organisational norms and practices, and the broader social context in which AI systems operate. Does not require any individual to have discriminatory intent.</p>
+        <div class="sub-label" style="margin-top:10px; margin-bottom:6px;">Where it enters</div>
+        <ul class="clean">
+          <li>Training data reflecting historical discrimination in hiring, lending, criminal justice</li>
+          <li>Underrepresentation of certain groups in datasets</li>
+          <li>Organisational practices that encode inequality into processes AI is trained on</li>
+          <li>Selection of what data to collect — and what not to</li>
+        </ul>
+        <div class="sub-label" style="margin-top:10px; margin-bottom:6px;">Example</div>
+        <p style="font-size:12px;">A credit scoring model trained on historical loan approvals learns that certain postcodes correlate with default — not because residents are inherently less creditworthy, but because those postcodes were historically redlined and denied access to credit.</p>
+      </div>
+
+      <div class="bias-cell">
+        <div class="bias-type" style="color:#854F0B;">Computational & statistical bias</div>
+        <h3>In algorithms and data processing</h3>
+        <p style="margin-bottom:10px;">Arises from systematic errors in how algorithms are designed, how data is processed, and how models are optimised. Often stems from non-representative samples, optimisation objectives that ignore equity, or feature selection that introduces proxies for protected characteristics.</p>
+        <div class="sub-label" style="margin-top:10px; margin-bottom:6px;">Where it enters</div>
+        <ul class="clean">
+          <li>Optimising for overall accuracy, which ignores performance disparities across groups</li>
+          <li>Using variables that are proxies for protected characteristics (postcode → race, name → gender)</li>
+          <li>Class imbalance — when minority groups are underrepresented in training data</li>
+          <li>Label bias — when human annotators introduce their own biases in labelling training data</li>
+        </ul>
+        <div class="sub-label" style="margin-top:10px; margin-bottom:6px;">Example</div>
+        <p style="font-size:12px;">A medical diagnosis model achieves 95% accuracy overall — but that accuracy is driven by the majority demographic. Its performance for minority groups may be far lower, and optimising for overall accuracy provides no incentive to fix this.</p>
+      </div>
+
+      <div class="bias-cell">
+        <div class="bias-type" style="color:#534AB7;">Human-cognitive bias</div>
+        <h3>In how humans shape and read AI</h3>
+        <p style="margin-bottom:10px;">The hundreds of documented cognitive biases that affect human judgement — from confirmation bias to automation bias — which enter AI systems through the decisions people make about design, development, and interpretation of outputs. Present throughout the entire AI lifecycle.</p>
+        <div class="sub-label" style="margin-top:10px; margin-bottom:6px;">Where it enters</div>
+        <ul class="clean">
+          <li>Design choices about which features to include or exclude</li>
+          <li>Automation bias — over-trusting AI outputs without critical evaluation</li>
+          <li>Confirmation bias — interpreting AI outputs to confirm existing beliefs</li>
+          <li>Anchoring bias — giving disproportionate weight to the AI's first output</li>
+        </ul>
+        <div class="sub-label" style="margin-top:10px; margin-bottom:6px;">Example</div>
+        <p style="font-size:12px;">A hiring manager uses an AI screening tool and consciously reviews every recommendation — but in practice, candidates rated highly by the AI are scrutinised far less than those the AI flagged as low-priority. The human override exists in policy but not in behaviour.</p>
+      </div>
+    </div>
+
+    <div class="card card-teal">
+      <span class="tag tag-teal">The interaction effect</span>
+      <h3>Bias compounds across the three categories</h3>
+      <p>A dataset reflecting historical hiring discrimination (systemic) is used to train a model that optimises for overall accuracy without fairness constraints (computational). The model produces discriminatory recommendations that hiring managers trust because the AI "confirmed" their existing judgements (human-cognitive). Each category reinforces the others. Addressing only the algorithm while leaving systemic and cognitive biases untouched produces a system that fails in more subtle, harder-to-detect ways.</p>
+    </div>
+  </div>
+
+  <!-- FAIRNESS METRICS -->
+  <div id="tab-fairness" class="section">
+    <p class="lede">There are over 20 mathematically defined fairness criteria — and they are provably mutually incompatible in most real-world settings. The most important practical skill is knowing which metric to apply in which context, and being honest about the tradeoffs involved. Tap each metric to understand what it measures and when to use it.</p>
+
+    <div class="card card-red">
+      <span class="tag tag-red">The impossibility result</span>
+      <h3>You cannot satisfy all fairness metrics simultaneously</h3>
+      <p>This is one of the most important findings in algorithmic fairness research. Except in trivial cases, it is mathematically impossible to simultaneously satisfy demographic parity, equalised odds, and calibration — the three most commonly used fairness criteria. Every fairness intervention involves a tradeoff. The question is not "which metric makes us fair?" but "which tradeoff is most appropriate given our context, values, and the harms at stake?" That decision must be made deliberately and documented transparently.</p>
+    </div>
+
+    <div class="sub-label">Key fairness metrics — what they measure and when to use them</div>
+    <div class="metric-accordion">
+      <div class="m-item">
+        <div class="m-header" onclick="toggleM(this)">
+          Demographic Parity (Statistical Parity)
+          <span class="m-chevron">▾</span>
+        </div>
+        <div class="m-body">
+          <strong>What it measures:</strong> Whether positive outcomes are distributed equally across groups, regardless of actual qualifications or risk.<br>
+          <div class="m-formula">P(Ŷ=1 | A=0) = P(Ŷ=1 | A=1)</div>
+          <strong>Plain English:</strong> The loan approval rate should be the same for Group A and Group B.<br><br>
+          <strong>When to use it:</strong> When you want to ensure equal opportunity access to a benefit — job interviews, loan applications, educational admissions.<br><br>
+          <strong>The tradeoff:</strong> If groups genuinely differ in the underlying qualification rates (due to historical disadvantage, not inherent difference), enforcing demographic parity may require approving less-qualified candidates from one group — which may be exactly the equity intervention required, or may introduce accuracy problems depending on context. Requires careful contextual justification.
+        </div>
+      </div>
+      <div class="m-item">
+        <div class="m-header" onclick="toggleM(this)">
+          Equalised Odds
+          <span class="m-chevron">▾</span>
+        </div>
+        <div class="m-body">
+          <strong>What it measures:</strong> Whether the model's error rates — both false positives and false negatives — are equal across groups.<br>
+          <div class="m-formula">P(Ŷ=1 | Y=y, A=0) = P(Ŷ=1 | Y=y, A=1) for y ∈ {0,1}</div>
+          <strong>Plain English:</strong> Among all actually qualified applicants, the approval rate should be equal across groups. And among all actually unqualified applicants, the rejection rate should also be equal.<br><br>
+          <strong>When to use it:</strong> When both false positives and false negatives have significant consequences — predictive policing, medical diagnosis, parole decisions. The COMPAS recidivism case violated equalised odds: false positive rates for Black defendants were nearly twice those for white defendants.<br><br>
+          <strong>The tradeoff:</strong> Equalised odds and calibration are mathematically incompatible when base rates differ across groups. You must choose which error type to prioritise based on which harm is more severe.
+        </div>
+      </div>
+      <div class="m-item">
+        <div class="m-header" onclick="toggleM(this)">
+          Equal Opportunity
+          <span class="m-chevron">▾</span>
+        </div>
+        <div class="m-body">
+          <strong>What it measures:</strong> A relaxation of equalised odds — focuses only on the true positive rate (sensitivity), ensuring qualified individuals have equal chances of being correctly identified.<br>
+          <div class="m-formula">P(Ŷ=1 | Y=1, A=0) = P(Ŷ=1 | Y=1, A=1)</div>
+          <strong>Plain English:</strong> Among people who would genuinely repay a loan, the approval rate should be equal across groups.<br><br>
+          <strong>When to use it:</strong> When false negatives are the primary harm — denying a benefit to someone who deserves it. Commonly applied in hiring and lending where the focus is ensuring qualified candidates from all groups receive equal consideration.<br><br>
+          <strong>The tradeoff:</strong> Does not constrain false positive rates — so one group may be approved at a higher rate even when unqualified. A less restrictive metric than equalised odds.
+        </div>
+      </div>
+      <div class="m-item">
+        <div class="m-header" onclick="toggleM(this)">
+          Calibration
+          <span class="m-chevron">▾</span>
+        </div>
+        <div class="m-body">
+          <strong>What it measures:</strong> Whether the model's predicted probabilities accurately reflect actual outcomes across groups. A model is calibrated if people scored at 70% risk actually default at roughly 70% — for all groups.<br>
+          <div class="m-formula">P(Y=1 | Ŷ=s, A=0) = P(Y=1 | Ŷ=s, A=1)</div>
+          <strong>Plain English:</strong> A risk score of 7/10 should mean the same thing for Group A and Group B.<br><br>
+          <strong>When to use it:</strong> When decision-makers rely on risk scores to make proportionate decisions — parole, medical resource allocation, insurance pricing. Calibration ensures the scores are meaningful and trustworthy.<br><br>
+          <strong>The tradeoff:</strong> When base rates differ across groups (e.g., historical default rates differ because of access to credit), calibration and equalised odds are mathematically incompatible. This is the fundamental impossibility result in fairness research.
+        </div>
+      </div>
+      <div class="m-item">
+        <div class="m-header" onclick="toggleM(this)">
+          Individual Fairness
+          <span class="m-chevron">▾</span>
+        </div>
+        <div class="m-body">
+          <strong>What it measures:</strong> Whether similar individuals receive similar treatment — "treat like cases alike." A contrast to group fairness metrics that focus on aggregate statistics.<br><br>
+          <strong>Plain English:</strong> Two candidates with near-identical qualifications should receive near-identical assessments, regardless of which demographic group they belong to.<br><br>
+          <strong>When to use it:</strong> When the context demands consistency at the individual level rather than group-level parity — personalised medicine, appeals processes, individualised sentencing.<br><br>
+          <strong>The tradeoff:</strong> Requires a principled definition of "similar" — which is itself a contested and potentially biased judgement. Does not guarantee group-level fairness: a system can be individually fair while producing disparate outcomes across groups if the groups differ in aggregate characteristics.
+        </div>
+      </div>
+      <div class="m-item">
+        <div class="m-header" onclick="toggleM(this)">
+          Counterfactual Fairness
+          <span class="m-chevron">▾</span>
+        </div>
+        <div class="m-body">
+          <strong>What it measures:</strong> Whether a decision would have been different if the individual had belonged to a different group, all else being equal. A causal rather than statistical definition of fairness.<br><br>
+          <strong>Plain English:</strong> If this applicant had been a different race — with everything else the same — would the outcome have changed? If yes, the decision is not counterfactually fair.<br><br>
+          <strong>When to use it:</strong> High-stakes individual decisions where causal fairness is legally and ethically required — particularly in regulated sectors. Aligns closely with discrimination law, which typically requires showing that a protected characteristic was a cause of the adverse treatment.<br><br>
+          <strong>The tradeoff:</strong> Technically demanding to implement. Requires a causal model of the data generating process. Cannot be measured from observational data alone — requires causal assumptions. Most practically useful as a framing tool for impact assessments and legal analysis.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MITIGATION -->
+  <div id="tab-mitigation" class="section">
+    <p class="lede">Bias mitigation happens at three stages of the AI lifecycle — before training, during training, and after training. Each stage has different tools, different tradeoffs, and different limits. No single intervention eliminates bias: the goal is meaningful, documented reduction that brings systems within acceptable thresholds.</p>
+
+    <div class="mit-grid">
+      <div class="mit-cell">
+        <div class="mit-stage" style="color:#993C1D;">Pre-processing — before training</div>
+        <h3>Fix the data before the model sees it</h3>
+        <p style="margin-bottom:10px; font-size:13px;">Address bias at the data collection and preparation stage. Most effective when the root cause is in data representation or labelling. The highest-leverage intervention — problems fixed here don't propagate into the model.</p>
+        <ul class="clean">
+          <li>Resampling — oversample underrepresented groups or undersample majority groups to balance representation</li>
+          <li>Reweighting — assign higher weights to underrepresented examples during training</li>
+          <li>Data augmentation — synthetically generate additional examples for underrepresented groups</li>
+          <li>Feature removal — remove or transform variables that proxy for protected characteristics</li>
+          <li>Label cleaning — audit and correct biased human annotations in training labels</li>
+          <li>Diverse data sourcing — deliberately source data from underrepresented populations</li>
+        </ul>
+      </div>
+      <div class="mit-cell">
+        <div class="mit-stage" style="color:#854F0B;">In-processing — during training</div>
+        <h3>Build fairness constraints into the learning process</h3>
+        <p style="margin-bottom:10px; font-size:13px;">Modify the training objective or algorithm to incorporate fairness directly. More technically demanding but produces tighter integration between fairness and model performance.</p>
+        <ul class="clean">
+          <li>Fairness-aware optimisation — add fairness constraints or penalties to the loss function</li>
+          <li>Adversarial debiasing — train an adversary to detect protected attributes from predictions, forcing the main model to make them unpredictable</li>
+          <li>Regularisation — penalise disparate impact during training</li>
+          <li>Multi-objective optimisation — explicitly balance accuracy and fairness metrics as dual objectives</li>
+          <li>Causal modelling — build causal structure into the model to prevent spurious correlations with protected attributes</li>
+        </ul>
+      </div>
+      <div class="mit-cell">
+        <div class="mit-stage" style="color:#185FA5;">Post-processing — after training</div>
+        <h3>Adjust model outputs to achieve fairness thresholds</h3>
+        <p style="margin-bottom:10px; font-size:13px;">Apply corrections to model predictions after training. Most flexible approach — can be applied to any existing model without retraining. Particularly useful when the model cannot be modified.</p>
+        <ul class="clean">
+          <li>Threshold adjustment — apply different decision thresholds for different groups to equalise error rates</li>
+          <li>Output recalibration — adjust predicted probabilities to achieve calibration across groups</li>
+          <li>Group-specific decision rules — define different decision functions per group based on fairness criteria</li>
+          <li>Reject option classification — flag borderline cases for human review rather than automated decision</li>
+        </ul>
+      </div>
+      <div class="mit-cell">
+        <div class="mit-stage" style="color:#0F6E56;">Organisational mitigations</div>
+        <h3>Beyond technical interventions</h3>
+        <p style="margin-bottom:10px; font-size:13px;">Technical bias mitigations are necessary but insufficient. Organisational practices determine whether technical interventions are implemented, maintained, and updated as systems and contexts evolve.</p>
+        <ul class="clean">
+          <li>Diverse development teams — reduce human-cognitive bias at the design stage</li>
+          <li>Bias audits — regular third-party assessment of deployed system fairness</li>
+          <li>Disaggregated metrics — report performance across demographic subgroups, not just overall accuracy</li>
+          <li>Stakeholder consultation — engage affected communities in defining what fairness means in context</li>
+          <li>Human oversight requirements — ensure consequential decisions include meaningful human review</li>
+          <li>Appeals mechanisms — give affected individuals a way to challenge AI-driven decisions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-amber">
+      <span class="tag tag-amber">The accuracy-fairness tradeoff</span>
+      <h3>Fairness constraints almost always cost some accuracy — and that's often the right choice</h3>
+      <p>When fairness constraints are added to a model, overall predictive accuracy typically decreases slightly. This is not a failure — it is the intended consequence of prioritising equity over optimisation. A model that achieves 95% overall accuracy by failing disproportionately for vulnerable groups is not better than one that achieves 92% accuracy with equitable error distribution. The question is which metric we should optimise for, given the values and stakes in our specific context. That decision belongs to humans — not to the algorithm.</p>
+    </div>
+
+    <div class="card card-purple">
+      <span class="tag tag-purple">The proxy problem</span>
+      <h3>Removing protected attributes is not enough</h3>
+      <p>One of the most common — and ineffective — bias interventions is removing protected attributes (race, gender, age) from training data. It almost never works. These characteristics are correlated with observable proxies: postcode correlates with race, name correlates with gender and ethnicity, work history correlates with age. A model trained without protected attributes but with their proxies will rediscover and use the correlations. Effective bias mitigation requires identifying and addressing proxies, not just removing the protected attributes themselves.</p>
+    </div>
+  </div>
+
+  <!-- TERMINOLOGY -->
+  <div id="tab-terms" class="section">
+    <p class="lede">The technical and conceptual vocabulary of bias and fairness — the terms that distinguish genuine understanding from surface familiarity.</p>
+
+    <div class="sub-label">Core concepts</div>
+    <div class="term-grid">
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Algorithmic Bias</div>
+        <div class="term-hint">Systematic error in model outputs</div>
+        <div class="term-def">Systematic errors in AI decision-making that consistently favour or disadvantage specific groups. Can arise from biased training data, flawed algorithm design, or optimisation objectives that ignore equity. Distinguished from random error by its consistency and directionality — it reliably produces worse outcomes for particular groups.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Protected Attribute</div>
+        <div class="term-hint">Characteristics that must not drive decisions</div>
+        <div class="term-def">Characteristics that should not be used as the basis for decisions — including race, gender, age, religion, disability, and national origin. Protected in law (Equality Act, Title VII, GDPR) and in fairness frameworks. AI systems must not use protected attributes directly or through proxies to make consequential decisions.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Proxy Variable</div>
+        <div class="term-hint">The real bias hiding behind neutral data</div>
+        <div class="term-def">A variable that is correlated with a protected attribute and that a model uses as a substitute — even when the protected attribute itself has been removed. Postcode is a proxy for race; first name is a proxy for gender and ethnicity; employment history is a proxy for age. Removing protected attributes without addressing their proxies is the most common ineffective bias mitigation.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Disparate Impact</div>
+        <div class="term-hint">Unequal outcomes regardless of intent</div>
+        <div class="term-def">When an AI system produces significantly different outcomes for different demographic groups, regardless of whether any discriminatory intent is present. A legal concept (from US civil rights law) that applies to AI: a system can be found discriminatory if it produces disparate outcomes, even if no-one intended to discriminate. The EU AI Act and equality legislation in most jurisdictions prohibit disparate impact.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Automation Bias</div>
+        <div class="term-hint">Over-trusting the algorithm</div>
+        <div class="term-def">The human tendency to over-rely on automated system recommendations and under-scrutinise AI outputs. A form of human-cognitive bias that means "human oversight" can be nominal rather than genuine. A judge who always defers to a risk score, or a doctor who rarely questions an AI diagnosis, is exhibiting automation bias. Mitigating automation bias requires training, organisational culture, and interface design — not just a technical override button.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Disaggregated Metrics</div>
+        <div class="term-hint">Performance broken down by group</div>
+        <div class="term-def">Performance metrics reported separately for different demographic subgroups, rather than as a single overall score. A model with 95% accuracy overall may have 70% accuracy for a minority group — a difference that is invisible in aggregate reporting. Disaggregated metrics are required by the EU AI Act for high-risk systems, and are a defining feature of Level 3+ AI governance maturity.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Redlining (algorithmic)</div>
+        <div class="term-hint">Historical discrimination reproduced in AI</div>
+        <div class="term-def">When an AI system reproduces the effects of historical discriminatory practices — particularly in financial services, housing, and healthcare — even without using protected attributes explicitly. Named after the historical practice of drawing red lines around neighbourhoods (often correlating with race) and denying services to residents. A key example of systemic bias entering AI through historical training data.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Fairness-Accuracy Tradeoff</div>
+        <div class="term-hint">The fundamental tension</div>
+        <div class="term-def">The empirically observed tendency for fairness constraints to reduce overall predictive accuracy. When a model is required to equalise error rates across groups, it typically cannot maintain the accuracy it achieved by optimising purely for performance. This tradeoff is real and documented — but it does not mean fairness should be sacrificed for accuracy. It means the tradeoff must be made deliberately, transparently, and with appropriate contextual justification.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Construct Validity</div>
+        <div class="term-hint">Are you measuring what you think you are?</div>
+        <div class="term-def">Whether an AI system is actually measuring the concept it claims to measure. NIST identifies construct validity as particularly important in AI development. A recidivism prediction tool claims to measure likelihood of reoffending — but if its training labels are rearrest rates (which are shaped by policing intensity) rather than actual reoffending, it may be measuring policing bias rather than criminal risk. Invalid constructs produce systematically misleading outputs.</div>
+      </div>
+      <div class="term-card" onclick="this.classList.toggle('open')">
+        <div class="term-name">Algorithmic Auditing</div>
+        <div class="term-hint">Independent fairness verification</div>
+        <div class="term-def">Independent evaluation of an AI system's fairness properties, typically conducted by a third party using structured methodology. New York City Local Law 144 mandates annual algorithmic audits for employment AI tools. The EU AI Act requires conformity assessments that include bias evaluation. Auditing is the primary mechanism for demonstrating fairness to regulators and the public — analogous to financial auditing for accounting claims.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PITCH / TALKING POINTS -->
+  <div id="tab-pitch" class="section">
+    <p class="lede">The conversations clients most need help navigating — where technical complexity meets legal exposure and reputational risk.</p>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they say: "We removed race and gender from the model — we're bias-free."</div>
+      <div class="pitch-a">This is the most common misconception about bias in AI — and it's dangerous because it creates false confidence. Removing protected attributes almost never eliminates bias, because those attributes are correlated with dozens of observable proxies. Postcode correlates with race. First name correlates with gender and ethnicity. Work history correlates with age. A model trained without race but with postcode will rediscover racial patterns through the proxy. Amazon built a hiring tool without gender data — and it learned to penalise CVs containing the word "women's" because that correlated with female applicants in the historical data. The only way to know whether proxies are driving disparate outcomes is to measure disaggregated performance metrics. What do the outcomes look like across demographic groups?</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Our model is 94% accurate — doesn't that mean it's fair?"</div>
+      <div class="pitch-a">Accuracy and fairness are different things, and high accuracy can mask severe unfairness. COMPAS — the recidivism prediction tool at the centre of one of the most significant AI fairness controversies — had relatively high overall accuracy. The problem was that its false positive rate for Black defendants was nearly twice that for white defendants. The model was wrong about both groups, but it was wrong in systematically different ways that compounded existing racial inequalities. The question to ask isn't "what's our overall accuracy?" but "what does our error rate look like when disaggregated by demographic group? And who bears the cost of our errors?"</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "Which fairness metric should we use?"</div>
+      <div class="pitch-a">This is exactly the right question — and the answer depends on your context and values, not on mathematics alone. There are over 20 fairness metrics, and they are provably mutually incompatible in most real-world settings. You cannot simultaneously achieve demographic parity, equalised odds, and calibration. The choice of metric is a values decision: which type of error is most harmful in your context? For a loan approval system, denying credit to someone who would have repaid may be the primary harm — equalised odds focuses there. For a medical screening tool, missing a disease in any group may be the primary harm — sensitivity equalisation becomes paramount. That decision must be made deliberately, documented, and justified to regulators. It should not be made implicitly by the data science team optimising for overall accuracy.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "We have human oversight — that prevents bias, right?"</div>
+      <div class="pitch-a">Human oversight is necessary but not sufficient — and is often less effective than organisations assume. Automation bias is well-documented: people systematically over-trust algorithmic recommendations, especially when they appear objective and numerical. A judge who always defers to a risk score, or a recruiter who only reads the CVs the AI ranked highly, is providing nominal rather than genuine oversight. Meaningful human oversight requires: decision-makers who are trained to understand the system's limitations and bias risks; interface design that surfaces uncertainty and alternative interpretations; organisational culture that rewards questioning AI recommendations; and audit trails that track when and how humans actually deviate from AI outputs. If you don't know your override rate, your oversight may be a formality rather than a safeguard.</div>
+    </div>
+
+    <div class="pitch-card">
+      <div class="pitch-q">When they ask: "How do we explain this to the board without it becoming a PR crisis?"</div>
+      <div class="pitch-a">Lead with the proactive narrative. The organisations that face PR crises on AI bias are those who discovered the problem after deployment — or worse, had it discovered by journalists or regulators. The organisations that build reputational advantage are those who can say: "We tested for bias before deployment, we found issues, we addressed them, here is our documented evidence, and here is how we monitor for emerging issues post-deployment." That's not a PR crisis — that's governance leadership. The board conversation is simpler than it seems: bias is a legal risk, a reputational risk, and a business risk. We have a documented process for managing it. Here's our current state and here's what we're monitoring.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <span class="tag tag-gray">The framing that cuts through</span>
+      <h3>Bias is not a diversity issue — it's a quality issue</h3>
+      <p>The most effective reframe for resistant clients is to move the conversation from ethics to engineering quality. A biased model is a model that is systematically wrong for certain inputs. That's a quality defect — the same category of problem as a model that underperforms in certain geographies or certain time periods. You wouldn't deploy a financial model knowing it was wrong 35% of the time for a particular asset class. The same logic applies here. Bias testing isn't a social obligation — it's due diligence on whether your model actually works for all the people it affects.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop - 48, behavior: 'smooth' });
+}
+function toggleM(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  document.querySelectorAll('.m-header').forEach(h => { h.classList.remove('open'); h.nextElementSibling.classList.remove('open'); });
+  if (!isOpen) { header.classList.add('open'); body.classList.add('open'); }
+}
+</script>
+</body>
+</html>
