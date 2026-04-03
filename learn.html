@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn — Steven Picton AI Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1a18; --ink-soft: #4a4a44; --ink-muted: #8a8a80;
+    --paper: #f7f5f0; --paper-warm: #eeeae0; --paper-card: #faf9f6;
+    --accent: #1D9E75; --accent-soft: #e1f5ee;
+    --line: rgba(26,26,24,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --c-nist:     #1D9E75;
+    --c-eu:       #003399;
+    --c-boards:   #2D6A4F;
+    --c-impact:   #7F77DD;
+    --c-maturity: #B7860B;
+    --c-bias:     #185FA5;
+    --c-trust:    #1D9E75;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  /* TOP BAR */
+  .top-bar { background: var(--ink); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 48px; position: sticky; top: 0; z-index: 100; }
+  .back-link { font-size: 12px; color: rgba(247,245,240,0.6); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+  .back-link:hover { color: #fff; }
+  .top-bar-title { font-size: 12px; color: rgba(247,245,240,0.4); letter-spacing: 0.05em; }
+
+  /* HERO */
+  .hero { background: var(--ink); color: #fff; padding: 2.5rem 2rem 2rem; }
+  .hero-inner { max-width: 760px; margin: 0 auto; }
+  .hero-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.75rem; }
+  .hero-title { font-family: var(--serif); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .hero-title em { font-style: italic; color: #7ec8a0; }
+  .hero-sub { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.45); }
+
+  /* MAIN */
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 2rem 5rem; }
+
+  /* TOPIC FILTER */
+  .filter-section { margin-bottom: 2rem; }
+  .filter-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
+  .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--line); background: var(--paper-card); color: var(--ink-soft); font-size: 12px; font-weight: 400; cursor: pointer; transition: all 0.15s; user-select: none; }
+  .pill:hover { border-color: rgba(26,26,24,0.25); color: var(--ink); }
+  .pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .pill[data-topic="nist"].active     { background: var(--c-nist);     border-color: var(--c-nist); }
+  .pill[data-topic="eu"].active       { background: var(--c-eu);       border-color: var(--c-eu); }
+  .pill[data-topic="boards"].active   { background: var(--c-boards);   border-color: var(--c-boards); }
+  .pill[data-topic="impact"].active   { background: var(--c-impact);   border-color: var(--c-impact); }
+  .pill[data-topic="maturity"].active { background: var(--c-maturity); border-color: var(--c-maturity); }
+  .pill[data-topic="bias"].active     { background: var(--c-bias);     border-color: var(--c-bias); }
+  .pill[data-topic="trust"].active    { background: #0e1a0e;           border-color: #0e1a0e; }
+
+  /* SESSION CONTROLS */
+  .session-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+  .session-info { font-size: 13px; font-weight: 300; color: var(--ink-muted); }
+  .session-info span { font-weight: 500; color: var(--ink); }
+  .start-btn { padding: 9px 20px; background: var(--ink); color: #fff; border: none; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--sans); transition: opacity 0.15s; }
+  .start-btn:hover { opacity: 0.85; }
+  .start-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 1.5rem; display: none; }
+  .progress-wrap.visible { display: block; }
+  .progress-track { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+  .progress-meta { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--ink-muted); }
+
+  /* CARD AREA */
+  .card-area { min-height: 300px; }
+
+  /* IDLE STATE */
+  .idle-state { border: 1px dashed var(--line); border-radius: 8px; padding: 3rem 2rem; text-align: center; }
+  .idle-icon { font-size: 2rem; margin-bottom: 1rem; opacity: 0.3; }
+  .idle-text { font-family: var(--serif); font-size: 1.1rem; font-style: italic; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .idle-sub { font-size: 12px; font-weight: 300; color: var(--ink-muted); }
+
+  /* FLASH CARD */
+  .flash-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .flash-topic-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .flash-type-tag { font-size: 10px; color: var(--ink-muted); float: right; font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .flash-question { padding: 2rem 1.5rem 1.5rem; }
+  .flash-q-text { font-size: 15px; font-weight: 400; line-height: 1.65; color: var(--ink); margin-bottom: 1.5rem; }
+  .flash-scenario { background: var(--paper-warm); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-style: italic; color: var(--ink-soft); line-height: 1.65; margin-bottom: 1.5rem; }
+  .reveal-btn { width: 100%; padding: 12px; background: var(--paper-warm); border: none; border-top: 1px solid var(--line); font-size: 13px; font-weight: 400; color: var(--ink-soft); cursor: pointer; font-family: var(--sans); transition: background 0.1s; }
+  .reveal-btn:hover { background: var(--paper-warm); color: var(--ink); }
+
+  /* ANSWER */
+  .flash-answer { padding: 1.5rem; border-top: 1px solid var(--line); background: #fff; font-size: 13px; font-weight: 300; color: var(--ink-soft); line-height: 1.8; }
+  .flash-answer strong { font-weight: 500; color: var(--ink); }
+  .flash-answer.hidden { display: none; }
+
+  /* RESPONSE BUTTONS */
+  .response-btns { display: flex; gap: 8px; padding: 1rem 1.5rem; border-top: 1px solid var(--line); background: var(--paper-card); }
+  .response-btns.hidden { display: none; }
+  .resp-btn { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid var(--line); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--sans); transition: all 0.1s; }
+  .resp-got-it { background: var(--accent-soft); color: #0F6E56; border-color: rgba(29,158,117,0.3); }
+  .resp-got-it:hover { background: #c8eedd; }
+  .resp-review { background: var(--paper-warm); color: var(--ink-soft); }
+  .resp-review:hover { background: #e0dcd2; }
+
+  /* RESULTS */
+  .results-card { background: var(--paper-card); border: 1px solid var(--line); border-radius: 8px; padding: 2rem; text-align: center; }
+  .results-score { font-family: var(--serif); font-size: 3rem; font-weight: 400; color: var(--ink); line-height: 1; margin-bottom: 0.5rem; }
+  .results-label { font-size: 13px; font-weight: 300; color: var(--ink-muted); margin-bottom: 1.5rem; }
+  .results-breakdown { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; text-align: left; }
+  .rb-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+  .rb-topic { font-weight: 400; color: var(--ink-soft); }
+  .rb-bar-wrap { flex: 1; margin: 0 12px; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .rb-bar { height: 100%; border-radius: 2px; background: var(--accent); }
+  .rb-score { font-weight: 500; color: var(--ink); min-width: 40px; text-align: right; }
+  .results-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .action-btn { padding: 9px 18px; border-radius: 4px; border: 1px solid var(--line); font-size: 13px; font-weight: 400; cursor: pointer; font-family: var(--sans); background: var(--paper-card); color: var(--ink); transition: all 0.1s; }
+  .action-btn:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+  .action-btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .action-btn.primary:hover { opacity: 0.85; }
+
+  /* TOPIC DOT */
+  .topic-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  @media (max-width: 500px) {
+    .response-btns { flex-direction: column; }
+    .filter-pills { gap: 4px; }
+    .pill { font-size: 11px; padding: 5px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-link" href="index.html">← Portfolio</a>
+  <span class="top-bar-title">Steven Picton · AI Knowledge</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Learning tool</div>
+    <h1 class="hero-title">Test your <em>AI governance</em> knowledge</h1>
+    <p class="hero-sub">Pick a topic or go all-in. Read the question, answer in your head, then reveal.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="filter-section">
+    <div class="filter-label">Topic</div>
+    <div class="filter-pills">
+      <div class="pill active" data-topic="all" onclick="selectTopic('all', this)">All topics</div>
+      <div class="pill" data-topic="nist" onclick="selectTopic('nist', this)">NIST AI RMF</div>
+      <div class="pill" data-topic="eu" onclick="selectTopic('eu', this)">EU AI Act</div>
+      <div class="pill" data-topic="boards" onclick="selectTopic('boards', this)">AI Governance for Boards</div>
+      <div class="pill" data-topic="impact" onclick="selectTopic('impact', this)">AI Impact Assessment</div>
+      <div class="pill" data-topic="maturity" onclick="selectTopic('maturity', this)">AI Maturity</div>
+      <div class="pill" data-topic="bias" onclick="selectTopic('bias', this)">Bias, Fairness & Equity</div>
+      <div class="pill" data-topic="trust" onclick="selectTopic('trust', this)">AI Trustworthiness</div>
+    </div>
+  </div>
+
+  <div class="session-bar">
+    <div class="session-info" id="sessionInfo">
+      <span id="queueCount">43</span> questions available
+    </div>
+    <button class="start-btn" id="startBtn" onclick="startSession()">Start session →</button>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-meta">
+      <span id="progressText">Question 1 of 10</span>
+      <span id="scoreText">0 got it · 0 to review</span>
+    </div>
+  </div>
+
+  <div class="card-area" id="cardArea">
+    <div class="idle-state">
+      <div class="idle-icon">◈</div>
+      <p class="idle-text">Ready when you are</p>
+      <p class="idle-sub">Pick a topic above, then hit Start session</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  // ── NIST AI RMF ─────────────────────────────────────────────────────────
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Recall',
+    q: 'What are the four functions of the NIST AI RMF — and what is each one\'s role?',
+    a: '<strong>GOVERN</strong> — the culture layer. Policies, roles, accountability, incentives. Cross-cutting across all other functions.<br><br><strong>MAP</strong> — the context layer. Understand the system\'s purpose, who it affects, and what could go wrong before measuring anything.<br><br><strong>MEASURE</strong> — the evidence layer. Test and evaluate against trustworthiness characteristics using metrics and TEVV.<br><br><strong>MANAGE</strong> — the action layer. Allocate resources, treat risks, monitor continuously, make go/no-go decisions.' },
+
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Recall',
+    q: 'Which function is cross-cutting — and what does that mean in practice?',
+    a: '<strong>GOVERN</strong> is cross-cutting. It runs through and informs all other functions continuously. The policies and accountability structures set by GOVERN determine how MAP is conducted, what MEASURE looks for, and what MANAGE is empowered to do. Without GOVERN, the other three are activities without authority or direction.' },
+
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Recall',
+    q: 'What does TEVV stand for — and at which function does it appear?',
+    a: '<strong>Test, Evaluation, Verification, and Validation</strong> — it appears in the <strong>MEASURE</strong> function. It\'s the ongoing technical process of confirming an AI system performs as intended and doesn\'t create unexpected harms. Critically: it should happen throughout the lifecycle, not just at launch.' },
+
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Recall',
+    q: 'What is "residual risk" — and which function requires it to be documented?',
+    a: '<strong>Residual risk</strong> is the risk that remains after all treatments have been applied. It appears in the <strong>MANAGE</strong> function, which requires it to be documented and communicated to end users. Documented residual risk is evidence of due diligence. Undocumented residual risk is a liability.' },
+
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Scenario',
+    scenario: 'A bank\'s model achieves 94% accuracy. The CRO says "we\'re ready to go live."',
+    q: 'Which function has almost certainly been skipped — and what is the first question to ask?',
+    a: 'Almost certainly <strong>MAP</strong> — and possibly <strong>GOVERN</strong>. MAP requires understanding the deployment context, affected stakeholders, and potential harms before measuring. 94% accuracy answers none of those questions. The first question: "What does performance look like disaggregated by demographic group?" If they don\'t know, MAP hasn\'t been done.' },
+
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Scenario',
+    scenario: 'A client says: "We ran the model through testing before we launched it, so we\'ve done MEASURE."',
+    q: 'What is wrong with this statement?',
+    a: 'Three problems. First, MEASURE is <strong>ongoing</strong> — it continues post-deployment through monitoring for drift and bias emergence. Second, pre-launch testing in controlled conditions often misses risks that emerge in real-world use. Third, MEASURE should cover all seven trustworthiness characteristics — not just accuracy. "We tested it for accuracy" is partial MEASURE, not complete MEASURE.' },
+
+  { topic: 'nist', label: 'NIST AI RMF', type: 'Scenario',
+    scenario: 'An AI tool begins producing unreliable outputs six months after launch. Nobody knows whose job it is to investigate.',
+    q: 'Which function failure does this represent — and what should have been in place?',
+    a: 'A classic <strong>GOVERN failure</strong> — the absence of defined roles and responsibilities that persist beyond the launch of a system. Every deployed AI system needs a named owner responsible for its continued performance and risk management. <strong>MANAGE</strong> is also implicated: there should have been monitoring and incident response processes that caught the degradation before anyone noticed by accident.' },
+
+  // ── EU AI ACT ────────────────────────────────────────────────────────────
+  { topic: 'eu', label: 'EU AI Act', type: 'Recall',
+    q: 'What are the four risk tiers in the EU AI Act — and what obligation does each carry?',
+    a: '<strong>Unacceptable</strong> — banned outright. Eight practices prohibited from February 2025.<br><br><strong>High risk</strong> — conformity assessment, technical documentation, EU public database registration, human oversight.<br><br><strong>Limited risk</strong> — transparency obligations only. Chatbots must disclose they\'re AI.<br><br><strong>Minimal risk</strong> — no mandatory obligations. Spam filters, video game AI.' },
+
+  { topic: 'eu', label: 'EU AI Act', type: 'Recall',
+    q: 'What is Annex III — and name three domains it covers?',
+    a: 'Annex III is the list of use cases automatically classified as high-risk. Eight domains: critical infrastructure, education, <strong>employment</strong> (CV screening, performance evaluation), essential private/public services (credit, insurance), law enforcement, migration, administration of justice, democratic processes. Employment is the one that catches most enterprise clients by surprise.' },
+
+  { topic: 'eu', label: 'EU AI Act', type: 'Recall',
+    q: 'What is the difference between a "provider" and a "deployer" — and when does a deployer become a provider?',
+    a: '<strong>Provider</strong> — develops or places AI on the market. Heaviest obligations: conformity assessment, documentation, registration.<br><br><strong>Deployer</strong> — uses AI in their operations. Lighter but real obligations: FRIA, human oversight, logging.<br><br>A deployer becomes a provider if they put their own brand on the system or make <strong>substantial modifications</strong> to it — inheriting all provider obligations.' },
+
+  { topic: 'eu', label: 'EU AI Act', type: 'Recall',
+    q: 'What is a "conformity assessment" — and how long does it take?',
+    a: 'The formal process by which a provider proves a high-risk AI system meets the Act\'s requirements before market placement. Results in technical documentation and, where required, third-party certification. The most resource-intensive compliance obligation in the Act. A realistic implementation timeline is <strong>12–18 months</strong> — which makes the August 2026 deadline urgent to act on now.' },
+
+  { topic: 'eu', label: 'EU AI Act', type: 'Scenario',
+    scenario: 'A US company says: "We don\'t operate in Europe so the EU AI Act doesn\'t apply to us." Their AI hiring tool is used by their European subsidiary.',
+    q: 'How do you respond?',
+    a: 'The Act applies to any organisation whose AI systems are <strong>placed on the EU market or used in the EU</strong> — regardless of where the company is headquartered. This is the Brussels Effect. If their hiring tool screens European applicants, they are in scope as a deployer — and because hiring AI is Annex III high-risk, that comes with real obligations. The question is not "do we operate in Europe?" but "does any output from our AI affect people in the EU?"' },
+
+  { topic: 'eu', label: 'EU AI Act', type: 'Scenario',
+    scenario: 'A client\'s HR team uses ChatGPT to shortlist CVs.',
+    q: 'What are their EU AI Act obligations?',
+    a: 'As a <strong>deployer</strong> using a GPAI model for a high-risk use case (employment = Annex III), the client must: conduct a Fundamental Rights Impact Assessment, assign human oversight to a competent person, maintain logs for six months, and inform employees that AI influences decisions about them. OpenAI handles GPAI obligations as provider — but the deployer\'s high-risk obligations are entirely the client\'s responsibility. This is not a vendor problem to outsource.' },
+
+  // ── AI GOVERNANCE FOR BOARDS ─────────────────────────────────────────────
+  { topic: 'boards', label: 'AI Governance · Boards', type: 'Recall',
+    q: 'What are the four pillars of board AI governance?',
+    a: '<strong>1. Strategy & Ambition</strong> — understanding and challenging AI strategy, including the risk of NOT adopting AI.<br><br><strong>2. Risk & Compliance</strong> — integrating AI risks into enterprise risk management.<br><br><strong>3. Accountability & Structure</strong> — clear executive ownership with a direct board reporting line.<br><br><strong>4. Performance & Metrics</strong> — receiving regular AI metrics that enable genuine oversight.' },
+
+  { topic: 'boards', label: 'AI Governance · Boards', type: 'Recall',
+    q: 'What percentage of boards currently receive AI-related metrics — and why does this number matter?',
+    a: 'Only <strong>15%</strong> of boards currently receive AI-related metrics. It matters because you cannot govern what you cannot see. The minimum boards should receive: ROI by business unit, incident rates and trends, regulatory alignment status, and workforce AI literacy progress. Absence of these metrics is itself a governance failure.' },
+
+  { topic: 'boards', label: 'AI Governance · Boards', type: 'Recall',
+    q: 'What does MIT CISR research show about AI-savvy boards and financial performance?',
+    a: 'Organisations with digitally and AI-savvy boards outperform their peers by <strong>10.9 percentage points in return on equity</strong>. Organisations without them perform 3.8% below industry average. The governance case for board AI expertise is quantitative, not just qualitative.' },
+
+  { topic: 'boards', label: 'AI Governance · Boards', type: 'Scenario',
+    scenario: 'A board member says: "We have an AI ethics policy on our website — that covers our governance obligations."',
+    q: 'What\'s missing — and how do you illustrate the gap?',
+    a: 'An ethics policy says "we believe in fairness." A governance framework says "here\'s who is accountable, here\'s how we test it, here\'s what happens when it fails." Fewer than 25% of companies have moved beyond a policy to a board-approved structured framework. The diagnostic: "If your hiring AI produced discriminatory recommendations tomorrow — who would know first? Who would pause the system? Who would report to regulators?" If the answers involve committees rather than named individuals, the policy hasn\'t become governance.' },
+
+  { topic: 'boards', label: 'AI Governance · Boards', type: 'Scenario',
+    scenario: 'A long-standing director argues existing board members\' IT experience is sufficient for AI governance.',
+    q: 'How do you make the case for AI-specific expertise on the board?',
+    a: '66% of directors report limited to no AI knowledge or experience. IT experience covers infrastructure, software, and cybersecurity — fundamentally different risks from AI. AI governance requires understanding of model drift, hallucination, bias amplification, socio-technical failure modes, and the EU AI Act specifically. MIT research quantifies the performance gap. The AI skills matrix should be an explicit board recruitment criterion — not an afterthought.' },
+
+  // ── AI IMPACT ASSESSMENT ─────────────────────────────────────────────────
+  { topic: 'impact', label: 'AI Impact Assessment', type: 'Recall',
+    q: 'What are the six steps of an AI impact assessment — in order?',
+    a: '<strong>1. Define scope</strong> — what the system is, does, and doesn\'t do.<br><strong>2. Map stakeholders</strong> — everyone affected, especially subjects and vulnerable groups.<br><strong>3. Identify harms</strong> — physical, psychological, financial, reputational, societal, environmental.<br><strong>4. Assess severity</strong> — score by scale, scope, likelihood, reversibility.<br><strong>5. Mitigate</strong> — controls with named owners and timelines.<br><strong>6. Monitor & update</strong> — ongoing, with clear reassessment triggers.' },
+
+  { topic: 'impact', label: 'AI Impact Assessment', type: 'Recall',
+    q: 'What four variables make up harm severity — and what does high severity look like?',
+    a: '<strong>Scale</strong> (how many affected) + <strong>Scope</strong> (what proportion of the group) + <strong>Likelihood</strong> (how probable) + <strong>Reversibility</strong> (can it be undone).<br><br>High severity = large scale + broad scope + high likelihood + irreversible. Example: a credit algorithm systematically denying mortgages to a demographic group is high on all four variables.' },
+
+  { topic: 'impact', label: 'AI Impact Assessment', type: 'Recall',
+    q: 'What is a "subject" in impact assessment — and why are they often the most important stakeholder?',
+    a: 'A <strong>subject</strong> is someone about whom the AI system makes decisions or inferences — distinct from the user who operates the system. A job applicant is the subject of a CV screening tool; the hiring manager is the user.<br><br>Subjects are typically: most at risk of harm, least empowered to challenge decisions, and often unaware the system exists. The Amazon case: female applicants were subjects with no knowledge of or recourse against a system downgrading their applications.' },
+
+  { topic: 'impact', label: 'AI Impact Assessment', type: 'Scenario',
+    scenario: 'A client conducts a two-day pre-launch workshop and calls it their impact assessment.',
+    q: 'What are the three critical gaps?',
+    a: '<strong>1. Timing</strong> — done the week before launch, it documents decisions already made with no ability to change them. Assessment at design stage can actually influence architecture.<br><br><strong>2. Stakeholder engagement</strong> — an internal workshop rarely includes genuine consultation with affected communities.<br><br><strong>3. Continuity</strong> — no ongoing monitoring, no reassessment triggers. If the system changes or scales, there is no process to update the assessment. This is documentation of a moment, not an assessment programme.' },
+
+  { topic: 'impact', label: 'AI Impact Assessment', type: 'Scenario',
+    scenario: 'You are assessing an AI system that prioritises customer service queries.',
+    q: 'Who are the stakeholders — and which group is most likely to be overlooked?',
+    a: '<strong>Operators</strong>: managers who configure the system. <strong>Users</strong>: agents who see the queue. <strong>Subjects</strong>: customers whose queries are ranked (no knowledge of this). <strong>Indirect affected</strong>: customers whose queries are consistently deprioritised. <strong>Vulnerable groups</strong>: elderly customers, non-native language speakers, people with disabilities whose communication patterns may read as lower priority.<br><br>Most overlooked: vulnerable customers in the deprioritised category — systematically disadvantaged by patterns the model learned, with no mechanism to challenge it.' },
+
+  // ── AI MATURITY ───────────────────────────────────────────────────────────
+  { topic: 'maturity', label: 'AI Maturity', type: 'Recall',
+    q: 'Name the five maturity levels and one defining characteristic of each.',
+    a: '<strong>Level 1 — Ad Hoc</strong>: No AI inventory. Governance depends on individuals, not processes.<br><strong>Level 2 — Repeatable</strong>: Basic governance exists but inconsistently applied across teams.<br><strong>Level 3 — Defined</strong>: Unified framework applied across the org. The financial performance tipping point.<br><strong>Level 4 — Managed</strong>: Automated monitoring. Board receives regular AI metrics. Governance accelerates deployment.<br><strong>Level 5 — Optimising</strong>: Voluntary external audits. Published transparency reports. Self-sustaining culture.' },
+
+  { topic: 'maturity', label: 'AI Maturity', type: 'Recall',
+    q: 'What does MIT CISR research show about the relationship between AI maturity and financial performance?',
+    a: 'Organisations at <strong>Levels 1–2 perform below industry average</strong> financially. Levels <strong>3–4 perform well above average</strong>. The mechanism: low maturity means AI projects fail more, take longer to fix, get blocked by regulators, and generate incidents. High maturity means faster deployment, cleaner evidence trails, and incidents caught before they escalate. McKinsey quantifies this as up to <strong>40% higher ROI</strong> for organisations with embedded responsible AI governance.' },
+
+  { topic: 'maturity', label: 'AI Maturity', type: 'Recall',
+    q: 'What is "governance debt" — and what does it look like in practice?',
+    a: 'The accumulation of governance shortcuts and undefined processes that builds up when technology adoption outpaces governance development. Like technical debt, it comes due — as regulatory fines, reputational damage, or inability to scale AI because compliance is too slow.<br><br>In practice: a company with 50 AI models under ad-hoc governance has 50 instances of undocumented risk and untested incident response. Remediating them before an EU AI Act deadline is significantly more expensive than governing them properly from the start.' },
+
+  { topic: 'maturity', label: 'AI Maturity', type: 'Scenario',
+    scenario: 'A client\'s CISO says Level 4. Their data science lead says Level 2.',
+    q: 'Who do you believe — and how do you find out?',
+    a: 'Believe the lower number until proven otherwise — organisations consistently overestimate maturity by confusing policy creation with enforcement. The diagnostic: "Can you show me the evidence?" Level 4 means: automated drift monitoring with documented thresholds, incident response playbooks that have been <em>tested</em>, board-level AI metrics received recently, and governance controls that function when the people who built them are not in the room. The disagreement itself is a Level 2 signal — inconsistent visibility is a defining Level 2 characteristic.' },
+
+  { topic: 'maturity', label: 'AI Maturity', type: 'Scenario',
+    scenario: 'A company wants to jump from Level 2 directly to Level 4.',
+    q: 'What do you tell them — and why can\'t levels be skipped?',
+    a: 'Level 4 automated monitoring built on Level 2 inconsistent processes produces the appearance of governance, not actual governance. Each level requires the foundations of the previous one. Level 4 only works if Level 3 unified policies and standard tooling are already embedded across the whole organisation. The signal a level is genuinely achieved: governance controls work without the champion who built them. The fastest path to Level 4 is building Level 3 properly — which takes 12–18 months.' },
+
+  // ── BIAS FAIRNESS EQUITY ──────────────────────────────────────────────────
+  { topic: 'bias', label: 'Bias, Fairness & Equity', type: 'Recall',
+    q: 'What are the three NIST categories of AI bias — and what distinguishes each?',
+    a: '<strong>Systemic</strong>: In datasets and society. Historical inequalities reproduced in training data. No discriminatory intent required.<br><br><strong>Computational/statistical</strong>: In algorithms and processing. Non-representative samples, proxy variables, optimisation for overall accuracy that ignores group disparities.<br><br><strong>Human-cognitive</strong>: In how humans design and interpret AI. Confirmation bias, automation bias, anchoring. Omnipresent throughout the entire AI lifecycle.' },
+
+  { topic: 'bias', label: 'Bias, Fairness & Equity', type: 'Recall',
+    q: 'What is the "impossibility result" in algorithmic fairness?',
+    a: 'It is <strong>mathematically impossible</strong> to simultaneously satisfy demographic parity, equalised odds, and calibration in most real-world settings where base rates differ across groups.<br><br>In practice: there is no fairness setting you can turn on that satisfies all criteria. Every fairness intervention is a choice about which error type to prioritise and who bears the cost. That choice must be made deliberately, justified contextually, and documented.' },
+
+  { topic: 'bias', label: 'Bias, Fairness & Equity', type: 'Recall',
+    q: 'What is a proxy variable — and give a real example.',
+    a: 'A variable correlated with a protected attribute that a model uses as a substitute even when the protected attribute has been removed.<br><br>Real example: Amazon removed "gender" from their hiring model. The model learned to penalise CVs containing "women\'s" (as in "women\'s chess club") because female applicants were historically correlated with that word. Removing the protected attribute without auditing proxies is the most common and most ineffective bias mitigation.' },
+
+  { topic: 'bias', label: 'Bias, Fairness & Equity', type: 'Scenario',
+    scenario: 'A client\'s credit model achieves 96% accuracy. They say it\'s unbiased.',
+    q: 'What four questions do you ask?',
+    a: '<strong>1.</strong> What does accuracy look like disaggregated by demographic group? 96% overall can hide 80% for one group.<br><br><strong>2.</strong> What are the false positive and false negative rates across groups? COMPAS had high overall accuracy and nearly 2× false positive rate for Black defendants.<br><br><strong>3.</strong> Which fairness metric was used — and is it right for a credit decision? Demographic parity, equalised odds, and calibration produce different conclusions.<br><br><strong>4.</strong> Has the model been audited for proxy variables? Historical credit data likely encodes historical discrimination through postcode, name, or other proxies.' },
+
+  { topic: 'bias', label: 'Bias, Fairness & Equity', type: 'Scenario',
+    scenario: 'A client says their hiring AI has "human oversight" — a recruiter reviews every AI recommendation.',
+    q: 'Is this sufficient to prevent bias? Why or why not?',
+    a: 'Necessary but not sufficient. The question is whether oversight is <em>genuine</em> or <em>nominal</em>. If recruiters rarely override — because the AI appears objective, deviation requires justification, or time pressure prevents deep review — the human is providing a veneer, not meaningful governance.<br><br>The diagnostic question: <strong>"What is your override rate?"</strong> If they don\'t track it, oversight may be nominal. A very low override rate reflects automation bias rather than perfect AI performance.' },
+
+  // ── AI TRUSTWORTHINESS ────────────────────────────────────────────────────
+  { topic: 'trust', label: 'AI Trustworthiness', type: 'Recall',
+    q: 'Name all seven trustworthiness characteristics — identify which is the foundation and which is cross-cutting.',
+    a: 'The seven: Valid & Reliable, Safe, Secure & Resilient, Accountable & Transparent, Explainable & Interpretable, Privacy-Enhanced, Fair with Harmful Bias Managed.<br><br><strong>Foundation</strong>: Valid & Reliable — without this, no other characteristic matters.<br><br><strong>Cross-cutting</strong>: Accountable & Transparent — you cannot assess or maintain any other characteristic without transparency into what the system is doing.' },
+
+  { topic: 'trust', label: 'AI Trustworthiness', type: 'Recall',
+    q: 'What is the difference between transparency, explainability, and interpretability?',
+    a: '<strong>Transparency</strong> answers: "What happened?" — system-level audit trail of what the AI did and when.<br><br><strong>Explainability</strong> answers: "How?" — the mechanism behind a specific output. LIME and SHAP are explainability tools.<br><br><strong>Interpretability</strong> answers: "Why does this matter?" — the meaning of an output in context for the specific decision and person.<br><br>You need all three. Transparency without explainability tells you something happened but not why. Explainability without interpretability tells you the mechanism but not the significance.' },
+
+  { topic: 'trust', label: 'AI Trustworthiness', type: 'Recall',
+    q: 'What is the accuracy-interpretability tradeoff — and when should interpretability win?',
+    a: 'The most accurate models (deep neural networks) are the least interpretable. Simpler models are fully interpretable but sacrifice accuracy. This is an inherent property of model complexity — not a temporary limitation to be solved.<br><br>Interpretability should win when: the cost of an unexplainable wrong decision exceeds the accuracy benefit; affected individuals have a right to understand decisions; the domain requires preserved human professional judgement (medical, legal); or the EU AI Act requires explainability for a high-risk system.' },
+
+  { topic: 'trust', label: 'AI Trustworthiness', type: 'Scenario',
+    scenario: 'A healthcare provider deploys an AI diagnostic tool. It\'s 2% more accurate than an interpretable alternative but cannot explain its reasoning to clinicians.',
+    q: 'Which characteristic tradeoff are they facing — and what should they decide?',
+    a: 'The <strong>accuracy vs explainability</strong> tradeoff. The question is whether 2% more accuracy is worth removing the clinician\'s ability to meaningfully review and override the recommendation.<br><br>In most healthcare contexts: no. A medical diagnosis AI that outperforms on benchmarks but cannot be explained to the clinician responsible for the patient is not more trustworthy — it may be less safe. Clinicians who cannot understand a recommendation cannot exercise genuine clinical oversight. The <strong>Safe</strong> and <strong>Explainable</strong> characteristics both point in the same direction here: choose interpretability.' },
+
+  { topic: 'trust', label: 'AI Trustworthiness', type: 'Scenario',
+    scenario: 'A privacy-enhancing technique reduces the AI system\'s accuracy for one demographic group more than others.',
+    q: 'Which two trustworthiness characteristics are in tension — and how do you navigate it?',
+    a: '<strong>Privacy-Enhanced vs Fair with Bias Managed</strong> — one of the most common and least understood tradeoffs.<br><br>Navigation: First, assess whether the accuracy reduction is proportionate — does the privacy benefit justify the fairness cost for this specific group? Second, explore whether the technique can distribute the accuracy cost more evenly (e.g., applying noise differently to majority and minority data). Third, document the tradeoff explicitly: who decided, what alternatives were considered, and what the residual fairness impact is. Both the ethical and regulatory (EU AI Act) requirements point to the same conclusion: this must be deliberate, not accidental.' },
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentTopic = 'all';
+let sessionCards = [];
+let sessionIndex = 0;
+let gotIt = 0;
+let toReview = 0;
+let sessionActive = false;
+let answered = false;
+let topicScores = {};
+
+// ── TOPIC COLOURS ──────────────────────────────────────────────────────────
+const TOPIC_COLORS = {
+  nist: '#1D9E75', eu: '#003399', boards: '#2D6A4F',
+  impact: '#7F77DD', maturity: '#B7860B', bias: '#185FA5', trust: '#0e1a0e'
+};
+
+// ── TOPIC FILTER ───────────────────────────────────────────────────────────
+function selectTopic(topic, el) {
+  if (sessionActive) return;
+  currentTopic = topic;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  updateQueueCount();
+}
+
+function getFilteredQuestions() {
+  if (currentTopic === 'all') return [...QUESTIONS];
+  return QUESTIONS.filter(q => q.topic === currentTopic);
+}
+
+function updateQueueCount() {
+  const n = getFilteredQuestions().length;
+  document.getElementById('queueCount').textContent = n;
+}
+
+// ── SESSION ────────────────────────────────────────────────────────────────
+function startSession() {
+  const pool = getFilteredQuestions();
+  if (!pool.length) return;
+
+  // Shuffle
+  sessionCards = pool.sort(() => Math.random() - 0.5);
+  sessionIndex = 0;
+  gotIt = 0;
+  toReview = 0;
+  topicScores = {};
+  sessionActive = true;
+  answered = false;
+
+  document.getElementById('progressWrap').classList.add('visible');
+  document.getElementById('startBtn').disabled = true;
+  document.querySelector('.filter-section').style.opacity = '0.4';
+  document.querySelector('.filter-section').style.pointerEvents = 'none';
+
+  showCard();
+}
+
+function showCard() {
+  if (sessionIndex >= sessionCards.length) { showResults(); return; }
+  answered = false;
+  const card = sessionCards[sessionIndex];
+  updateProgress();
+
+  const dot = `<span class="topic-dot" style="background:${TOPIC_COLORS[card.topic] || '#888'}"></span>`;
+  const scenarioHtml = card.scenario
+    ? `<div class="flash-scenario">${card.scenario}</div>` : '';
+
+  document.getElementById('cardArea').innerHTML = `
+    <div class="flash-card">
+      <div class="flash-topic-tag" style="color:${TOPIC_COLORS[card.topic] || '#888'}">
+        ${dot}${card.label}
+        <span class="flash-type-tag">${card.type}</span>
+      </div>
+      <div class="flash-question">
+        ${scenarioHtml}
+        <div class="flash-q-text">${card.q}</div>
+        <button class="reveal-btn" onclick="revealAnswer()">Tap to reveal answer ▾</button>
+      </div>
+      <div class="flash-answer hidden" id="flashAnswer">${card.a}</div>
+      <div class="response-btns hidden" id="responseBtns">
+        <button class="resp-btn resp-got-it" onclick="respond(true)">Got it ✓</button>
+        <button class="resp-btn resp-review" onclick="respond(false)">Need to review</button>
+      </div>
+    </div>`;
+}
+
+function revealAnswer() {
+  if (answered) return;
+  answered = true;
+  document.getElementById('flashAnswer').classList.remove('hidden');
+  document.getElementById('responseBtns').classList.remove('hidden');
+  document.querySelector('.reveal-btn').style.display = 'none';
+}
+
+function respond(correct) {
+  const card = sessionCards[sessionIndex];
+  if (!topicScores[card.topic]) topicScores[card.topic] = { got: 0, total: 0, label: card.label };
+  topicScores[card.topic].total++;
+  if (correct) { gotIt++; topicScores[card.topic].got++; } else { toReview++; }
+  sessionIndex++;
+  updateProgress();
+  showCard();
+}
+
+function updateProgress() {
+  const total = sessionCards.length;
+  const done = sessionIndex;
+  const pct = total > 0 ? (done / total) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent =
+    done < total ? `Question ${done + 1} of ${total}` : `Complete`;
+  document.getElementById('scoreText').textContent =
+    `${gotIt} got it · ${toReview} to review`;
+}
+
+// ── RESULTS ────────────────────────────────────────────────────────────────
+function showResults() {
+  const total = sessionCards.length;
+  const pct = total > 0 ? Math.round((gotIt / total) * 100) : 0;
+
+  let breakdownHtml = '';
+  for (const [topic, data] of Object.entries(topicScores)) {
+    const tpct = data.total > 0 ? Math.round((data.got / data.total) * 100) : 0;
+    const color = TOPIC_COLORS[topic] || '#888';
+    breakdownHtml += `
+      <div class="rb-row">
+        <span class="rb-topic"><span class="topic-dot" style="background:${color}"></span>${data.label}</span>
+        <div class="rb-bar-wrap"><div class="rb-bar" style="width:${tpct}%;background:${color}"></div></div>
+        <span class="rb-score">${data.got}/${data.total}</span>
+      </div>`;
+  }
+
+  let message = pct >= 80 ? 'Strong performance.' : pct >= 60 ? 'Good foundation — review the missed ones.' : 'Keep going — revisit the topic guides and try again.';
+
+  document.getElementById('cardArea').innerHTML = `
+    <div class="results-card">
+      <div class="results-score">${pct}%</div>
+      <div class="results-label">${gotIt} of ${total} · ${message}</div>
+      ${Object.keys(topicScores).length > 1 ? `<div class="results-breakdown">${breakdownHtml}</div>` : ''}
+      <div class="results-actions">
+        <button class="action-btn" onclick="retryMissed()">Retry missed</button>
+        <button class="action-btn" onclick="resetSession()">New session</button>
+        <button class="action-btn primary" onclick="window.location.href='index.html'">Back to portfolio</button>
+      </div>
+    </div>`;
+
+  sessionActive = false;
+}
+
+function retryMissed() {
+  // Rebuild session from cards the user marked as "to review"
+  // Since we don't track which specific ones, we reshuffle the weak topics
+  const weakTopics = Object.entries(topicScores)
+    .filter(([, d]) => d.got < d.total)
+    .map(([t]) => t);
+
+  if (!weakTopics.length) { resetSession(); return; }
+
+  sessionCards = QUESTIONS
+    .filter(q => weakTopics.includes(q.topic))
+    .sort(() => Math.random() - 0.5);
+  sessionIndex = 0; gotIt = 0; toReview = 0; topicScores = {};
+  answered = false; sessionActive = true;
+  document.getElementById('progressWrap').classList.add('visible');
+  showCard(); updateProgress();
+}
+
+function resetSession() {
+  sessionActive = false;
+  answered = false;
+  sessionIndex = 0; gotIt = 0; toReview = 0;
+  document.getElementById('progressWrap').classList.remove('visible');
+  document.getElementById('startBtn').disabled = false;
+  document.querySelector('.filter-section').style.opacity = '1';
+  document.querySelector('.filter-section').style.pointerEvents = 'auto';
+  document.getElementById('cardArea').innerHTML = `
+    <div class="idle-state">
+      <div class="idle-icon">◈</div>
+      <p class="idle-text">Ready when you are</p>
+      <p class="idle-sub">Pick a topic above, then hit Start session</p>
+    </div>`;
+  updateProgress();
+}
+
+// Init
+updateQueueCount();
+</script>
+</body>
+</html>
