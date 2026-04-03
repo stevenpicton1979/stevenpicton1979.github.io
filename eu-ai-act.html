@@ -196,6 +196,7 @@
   <button class="tab-btn" onclick="showTab('nist', this)">vs NIST RMF</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
 <div class="content-wrap">
@@ -548,7 +549,69 @@
     </div>
   </div>
 
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The authoritative sources behind this guide. The EU AI Act is binding law — these are the primary legal texts, not summaries.</p>
+
+    <div class="sub-label">Primary sources</div>
+    <div class="src-list">
+      <a class="src-item" href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689" target="_blank" rel="noopener">
+        <div class="src-title">Regulation (EU) 2024/1689 — The EU Artificial Intelligence Act</div>
+        <div class="src-meta">Official Journal of the European Union · 12 July 2024</div>
+        <div class="src-desc">The full legal text of the EU AI Act as published in the Official Journal. The authoritative reference for all provisions, annexes, and definitions. EUR-Lex is the official EU law database.</div>
+      </a>
+      <a class="src-item" href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener">
+        <div class="src-title">EU AI Act — European Commission Overview</div>
+        <div class="src-meta">European Commission · digital-strategy.ec.europa.eu</div>
+        <div class="src-desc">The European Commission's official overview of the AI Act, including the four risk tiers, timeline, and policy context. Updated as implementation progresses.</div>
+      </a>
+      <a class="src-item" href="https://artificialintelligenceact.eu/" target="_blank" rel="noopener">
+        <div class="src-title">EU Artificial Intelligence Act — Full Text Explorer</div>
+        <div class="src-meta">Future of Life Institute · artificialintelligenceact.eu</div>
+        <div class="src-desc">Article-by-article browser of the full AI Act text with plain-language summaries and cross-references. The most accessible way to navigate the legislation. Used by over 150,000 users monthly.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Official guidance & implementation</div>
+    <div class="src-list">
+      <a class="src-item" href="https://digital-strategy.ec.europa.eu/en/policies/ai-office" target="_blank" rel="noopener">
+        <div class="src-title">European AI Office</div>
+        <div class="src-meta">European Commission · Established 2024</div>
+        <div class="src-desc">The EU body responsible for overseeing and implementing the AI Act, particularly for General Purpose AI models. Publishes guidance, codes of practice, and enforcement updates.</div>
+      </a>
+      <a class="src-item" href="https://digital-strategy.ec.europa.eu/en/policies/ai-act-single-information-platform" target="_blank" rel="noopener">
+        <div class="src-title">AI Act Single Information Platform</div>
+        <div class="src-meta">European Commission</div>
+        <div class="src-desc">The official one-stop-shop for EU AI Act questions, guidance documents, and implementation support. The first port of call for compliance queries.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Further reading</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.europarl.europa.eu/topics/en/article/20230601STO93804/eu-ai-act-first-regulation-on-artificial-intelligence" target="_blank" rel="noopener">
+        <div class="src-title">EU AI Act: First Regulation on Artificial Intelligence</div>
+        <div class="src-meta">European Parliament · europarl.europa.eu</div>
+        <div class="src-desc">The European Parliament's plain-language overview of the Act, covering the legislative process, key provisions, and what it means for citizens and businesses.</div>
+      </a>
+      <a class="src-item" href="https://iapp.org/resources/article/eu-artificial-intelligence-act-summary/" target="_blank" rel="noopener">
+        <div class="src-title">EU AI Act Compliance Guidance</div>
+        <div class="src-meta">International Association of Privacy Professionals (IAPP)</div>
+        <div class="src-desc">Practical compliance-focused analysis of the Act from IAPP — particularly useful for understanding how the Act interacts with GDPR and existing privacy obligations.</div>
+      </a>
+    </div>
+  </div>
+
 </div>
+
+<style>
+.src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+.src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+.src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+.src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+.src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+</style>
 
 <script>
 function showTab(id, btn) {

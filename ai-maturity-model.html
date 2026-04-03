@@ -187,6 +187,7 @@
   <button class="tab-btn" onclick="showTab('roadmap', this)">Roadmap</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
 <div class="content-wrap">
@@ -693,7 +694,69 @@
     </div>
   </div>
 
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The research, models, and frameworks behind this guide — drawn from MIT, Microsoft, CSIRO, BCG, and the RAI Institute, representing the leading thinking on responsible AI maturity.</p>
+
+    <div class="sub-label">Primary research & models</div>
+    <div class="src-list">
+      <a class="src-item" href="https://cisr.mit.edu/publication/2024_1201_EnterpriseAIMaturityModel_WeillWoernerSebastian" target="_blank" rel="noopener">
+        <div class="src-title">Building Enterprise AI Maturity — MIT CISR Four-Stage Model</div>
+        <div class="src-meta">Peter Weill, Stephanie Woerner, Ina Sebastian · MIT CISR · December 2024</div>
+        <div class="src-desc">The source of the financial performance data linking AI maturity to business outcomes — Stages 1–2 below industry average, Stages 3–4 above. Based on a 721-company survey and 2024 executive interviews. The most rigorous quantitative foundation for the maturity-performance relationship.</div>
+      </a>
+      <a class="src-item" href="https://www.microsoft.com/en-us/research/publication/responsible-ai-maturity-model/" target="_blank" rel="noopener">
+        <div class="src-title">Responsible AI Maturity Model (RAI MM)</div>
+        <div class="src-meta">Microsoft Research · Updated 2025</div>
+        <div class="src-desc">Microsoft's empirically-derived RAI MM — 24 dimensions across five levels (Latent to Leading), based on interviews with over 90 RAI specialists and AI practitioners. Freely available, with practical worksheets for strategic planning sessions.</div>
+      </a>
+      <a class="src-item" href="https://research.csiro.au/ss/science/projects/responsible-ai-pattern-catalogue/rai-maturity-model/" target="_blank" rel="noopener">
+        <div class="src-title">RAI Maturity Model — CSIRO</div>
+        <div class="src-meta">Commonwealth Scientific and Industrial Research Organisation · Australia</div>
+        <div class="src-desc">CSIRO's responsible AI maturity model — particularly strong on mapping maturity dimensions to the EU AI Act and ISO/IEC 42001. Includes comparative analysis of BCG, Salesforce, Element AI, and other leading models.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Standards</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener">
+        <div class="src-title">ISO/IEC 42001:2023 — AI Management Systems</div>
+        <div class="src-meta">International Organization for Standardization · 2023</div>
+        <div class="src-desc">The certifiable standard for AI management systems. Certification against ISO 42001 is the most credible external validation of Level 4–5 maturity currently available. Defines requirements for governance, risk management, and continuous improvement.</div>
+      </a>
+      <a class="src-item" href="https://aimaturitymodel.mitre.org/" target="_blank" rel="noopener">
+        <div class="src-title">MITRE AI Maturity Model</div>
+        <div class="src-meta">MITRE Corporation</div>
+        <div class="src-desc">MITRE's six-pillar AI maturity model covering ethical use, strategy, organisation, technology, data, and performance. Includes a free self-assessment tool. Widely used in US government and defence contexts.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Further reading</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.responsible.ai/news/our-responsible-ai-maturity-model/" target="_blank" rel="noopener">
+        <div class="src-title">Responsible AI Maturity Model — RAI Institute</div>
+        <div class="src-meta">Responsible AI Institute · 2024</div>
+        <div class="src-desc">The RAI Institute's five-stage model (Initial/Latent through Transformative) — informed by seven years of research across hundreds of maturity models. Particularly useful for its stage-by-stage practical guidance on what "next steps" look like.</div>
+      </a>
+      <a class="src-item" href="https://www.dataversity.net/articles/building-a-practical-framework-for-ai-governance-maturity-in-the-enterprise/" target="_blank" rel="noopener">
+        <div class="src-title">Building a Practical Framework for AI Governance Maturity</div>
+        <div class="src-meta">Dataversity · November 2025</div>
+        <div class="src-desc">Practical implementation guidance for AI governance maturity — covering the five stages, measurable governance metrics (Data Integrity Index, Explainability Ratio, Bias Remediation Time), and the McKinsey 40% ROI finding.</div>
+      </a>
+    </div>
+  </div>
+
 </div>
+
+<style>
+.src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+.src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+.src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+.src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+.src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+</style>
 
 <script>
 function showTab(id, btn) {

@@ -158,6 +158,7 @@
   <button class="tab-btn" onclick="showTab('mitigation', this)">Mitigation</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
 <div class="content-wrap">
@@ -535,7 +536,74 @@
     </div>
   </div>
 
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The foundational research, standards, and key studies behind this guide — from NIST's bias taxonomy to landmark algorithmic fairness cases.</p>
+
+    <div class="sub-label">Primary sources & standards</div>
+    <div class="src-list">
+      <a class="src-item" href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1270.pdf" target="_blank" rel="noopener">
+        <div class="src-title">NIST SP 1270: Towards a Standard for Identifying and Managing Bias in AI</div>
+        <div class="src-meta">National Institute of Standards and Technology · March 2022</div>
+        <div class="src-desc">The primary source for the three-category AI bias framework (systemic, computational/statistical, human-cognitive) used throughout this guide. The authoritative NIST reference on bias — essential reading alongside the AI RMF.</div>
+      </a>
+      <a class="src-item" href="https://www.iso.org/standard/77607.html" target="_blank" rel="noopener">
+        <div class="src-title">ISO/IEC 23894:2023 — Information Technology: AI Risk Management</div>
+        <div class="src-meta">International Organization for Standardization · 2023</div>
+        <div class="src-desc">The international standard for AI risk management — includes specific guidance on managing bias as a risk category. Distinguishes between system-level bias risks and organisational process risks.</div>
+      </a>
+      <a class="src-item" href="https://fairmlbook.org/" target="_blank" rel="noopener">
+        <div class="src-title">Fairness and Machine Learning: Limitations and Opportunities</div>
+        <div class="src-meta">Solon Barocas, Moritz Hardt, Arvind Narayanan · fairmlbook.org</div>
+        <div class="src-desc">The definitive academic textbook on algorithmic fairness — freely available online. The source for the mathematical fairness metrics (demographic parity, equalised odds, calibration) and the impossibility results between them. Essential for technical depth.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Landmark cases & research</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing" target="_blank" rel="noopener">
+        <div class="src-title">Machine Bias — COMPAS Recidivism Algorithm Investigation</div>
+        <div class="src-meta">ProPublica · Julia Angwin et al. · May 2016</div>
+        <div class="src-desc">The investigation that brought algorithmic fairness into mainstream discourse — finding that COMPAS was nearly twice as likely to falsely flag Black defendants as future criminals. The case that demonstrated the real-world stakes of fairness metric choices.</div>
+      </a>
+      <a class="src-item" href="https://proceedings.mlr.press/v81/buolamwini18a.html" target="_blank" rel="noopener">
+        <div class="src-title">Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification</div>
+        <div class="src-meta">Joy Buolamwini & Timnit Gebru · MIT Media Lab · 2018</div>
+        <div class="src-desc">The landmark research exposing error rate disparities in commercial facial recognition systems — up to 35% for dark-skinned women vs below 1% for light-skinned men. Triggered global reassessment of facial recognition in law enforcement.</div>
+      </a>
+      <a class="src-item" href="https://www.science.org/doi/10.1126/science.aax2342" target="_blank" rel="noopener">
+        <div class="src-title">Dissecting Racial Bias in an Algorithm Used to Manage the Health of Populations</div>
+        <div class="src-meta">Obermeyer et al. · Science · October 2019</div>
+        <div class="src-desc">The study revealing that a widely used US healthcare algorithm systematically underestimated the medical needs of Black patients — because it used healthcare cost as a proxy for health need. The defining proxy variable case study.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Further reading</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.brookings.edu/articles/algorithmic-bias-detection-and-mitigation-best-practices-and-policies-to-reduce-consumer-harms/" target="_blank" rel="noopener">
+        <div class="src-title">Algorithmic Bias Detection and Mitigation: Best Practices and Policies</div>
+        <div class="src-meta">Brookings Institution · June 2023</div>
+        <div class="src-desc">Policy-focused analysis of algorithmic bias mitigation — drawing on 40 thought leaders from academia, industry, and civil society. Covers technical mitigations, self-regulatory practices, and public policy recommendations. Bridges technical and governance perspectives.</div>
+      </a>
+      <a class="src-item" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12823528/" target="_blank" rel="noopener">
+        <div class="src-title">Bias in AI Systems: Integrating Formal and Socio-Technical Approaches</div>
+        <div class="src-meta">PMC / Frontiers · 2025</div>
+        <div class="src-desc">Comprehensive review of bias mitigation strategies across pre-processing, in-processing, and post-processing stages — including the formal mathematical relationships between fairness metrics and their tradeoffs. Draws on 72 published sources.</div>
+      </a>
+    </div>
+  </div>
+
 </div>
+
+<style>
+.src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+.src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+.src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+.src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+.src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+</style>
 
 <script>
 function showTab(id, btn) {

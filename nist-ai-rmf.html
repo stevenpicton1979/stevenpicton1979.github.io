@@ -366,6 +366,7 @@
   <button class="tab-btn" onclick="showTab('trustworthy', this)">Trustworthy AI</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
 <div class="content-wrap">
@@ -681,7 +682,69 @@
     </div>
   </div>
 
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The authoritative sources behind this guide. Primary documents come directly from NIST and the standards bodies — these are the texts regulators and auditors will reference.</p>
+
+    <div class="sub-label">Primary sources</div>
+    <div class="src-list">
+      <a class="src-item" href="https://doi.org/10.6028/NIST.AI.100-1" target="_blank" rel="noopener">
+        <div class="src-title">NIST AI 100-1: Artificial Intelligence Risk Management Framework (AI RMF 1.0)</div>
+        <div class="src-meta">National Institute of Standards and Technology · January 2023</div>
+        <div class="src-desc">The primary source document for this entire guide. Free to download from NIST. The definitive reference for all four functions, trustworthiness characteristics, and terminology.</div>
+      </a>
+      <a class="src-item" href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1270.pdf" target="_blank" rel="noopener">
+        <div class="src-title">NIST SP 1270: Towards a Standard for Identifying and Managing Bias in Artificial Intelligence</div>
+        <div class="src-meta">National Institute of Standards and Technology · March 2022</div>
+        <div class="src-desc">The foundation for the three-category bias framework (systemic, computational, human-cognitive) referenced in the NIST AI RMF. Essential companion reading.</div>
+      </a>
+      <a class="src-item" href="https://www.nist.gov/artificial-intelligence/executive-order-safe-secure-and-trustworthy-artificial-intelligence" target="_blank" rel="noopener">
+        <div class="src-title">NIST AI RMF Playbook</div>
+        <div class="src-meta">National Institute of Standards and Technology · nist.gov</div>
+        <div class="src-desc">The companion tactical resource to the AI RMF — provides specific suggested actions for each category and subcategory. Freely available and continuously updated.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Standards & frameworks</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener">
+        <div class="src-title">ISO/IEC 42001:2023 — Artificial Intelligence Management Systems</div>
+        <div class="src-meta">International Organization for Standardization · 2023</div>
+        <div class="src-desc">The international standard for AI management systems. Complements the NIST AI RMF with a certifiable management system framework. Often used alongside the RMF for organisations seeking third-party certification.</div>
+      </a>
+      <a class="src-item" href="https://oecd.ai/en/ai-principles" target="_blank" rel="noopener">
+        <div class="src-title">OECD Principles on Artificial Intelligence</div>
+        <div class="src-meta">Organisation for Economic Co-operation and Development · 2019, updated 2024</div>
+        <div class="src-desc">The international policy framework that informed the NIST AI RMF. Adopted by over 40 countries. Defines AI actors and the five principles for responsible AI stewardship.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Further reading</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.nist.gov/artificial-intelligence" target="_blank" rel="noopener">
+        <div class="src-title">NIST Trustworthy and Responsible AI Resource Center</div>
+        <div class="src-meta">National Institute of Standards and Technology · nist.gov</div>
+        <div class="src-desc">The central hub for all NIST AI resources — including the AI RMF, Playbook, and ongoing research. Bookmark this for updates as the framework evolves.</div>
+      </a>
+      <a class="src-item" href="https://airc.nist.gov/" target="_blank" rel="noopener">
+        <div class="src-title">NIST AI RMF Playbook Interactive</div>
+        <div class="src-meta">National Institute of Standards and Technology · airc.nist.gov</div>
+        <div class="src-desc">The interactive online version of the AI RMF Playbook. Browse suggested actions by function and category, and contribute your organisation's own practices to the community resource.</div>
+      </a>
+    </div>
+  </div>
+
 </div><!-- /content-wrap -->
+
+<style>
+.src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+.src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+.src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+.src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+.src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+</style>
 
 <script>
 function showTab(id, btn) {

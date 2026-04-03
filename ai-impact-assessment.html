@@ -149,6 +149,7 @@
   <button class="tab-btn" onclick="showTab('stakeholders', this)">Stakeholder Mapping</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
 <div class="content-wrap">
@@ -539,7 +540,69 @@
     </div>
   </div>
 
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The standards, methodologies, and frameworks that define how AI impact assessments should be conducted and documented.</p>
+
+    <div class="sub-label">Primary standards</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.iso.org/standard/42005" target="_blank" rel="noopener">
+        <div class="src-title">ISO/IEC 42005:2025 — AI System Impact Assessment</div>
+        <div class="src-meta">International Organization for Standardization · 2025</div>
+        <div class="src-desc">The international standard for AI system impact assessments — the primary methodological reference for this guide. Provides standardised guidance for evaluating societal, individual, and organisational effects of AI systems across the full lifecycle. Published in 2025.</div>
+      </a>
+      <a class="src-item" href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689" target="_blank" rel="noopener">
+        <div class="src-title">EU AI Act — Article 27: Fundamental Rights Impact Assessment</div>
+        <div class="src-meta">Regulation (EU) 2024/1689 · Official Journal of the EU · 2024</div>
+        <div class="src-desc">Article 27 of the EU AI Act sets out the Fundamental Rights Impact Assessment obligation for deployers of high-risk AI systems. The full Act is available at this link — navigate to Article 27 for the specific FRIA requirements.</div>
+      </a>
+      <a class="src-item" href="https://rm.coe.int/cai-2024-16rev2-methodology-for-the-risk-and-impact-assessment-of-arti/1680b2a09f" target="_blank" rel="noopener">
+        <div class="src-title">HUDERIA Methodology — Human Rights, Democracy and Rule of Law Impact Assessment</div>
+        <div class="src-meta">Council of Europe Committee on Artificial Intelligence · November 2024</div>
+        <div class="src-desc">The HUDERIA methodology adopted by the Council of Europe — the source of the scale, scope, likelihood, and reversibility severity framework used in this guide. Flexible, context-adaptive, and designed for diverse jurisdictions.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Frameworks & templates</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.microsoft.com/en-us/research/project/responsible-ai-impact-assessment/" target="_blank" rel="noopener">
+        <div class="src-title">Microsoft Responsible AI Impact Assessment Template</div>
+        <div class="src-meta">Microsoft Research</div>
+        <div class="src-desc">Microsoft's publicly available AIIA template — one of the most widely referenced practitioner templates. Useful as a starting point for organisations building their own assessment process.</div>
+      </a>
+      <a class="src-item" href="https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/algorithmic-impact-assessment.html" target="_blank" rel="noopener">
+        <div class="src-title">Algorithmic Impact Assessment — Government of Canada</div>
+        <div class="src-meta">Treasury Board of Canada Secretariat</div>
+        <div class="src-desc">Canada's government-mandated algorithmic impact assessment tool for automated decision systems. A leading example of a jurisdiction requiring structured impact assessment before deployment — useful comparative reference.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Further reading</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.isaca.org/resources/news-and-trends/newsletters/atisaca/2025/volume-15/how-to-conduct-an-ai-impact-assessment" target="_blank" rel="noopener">
+        <div class="src-title">How to Conduct an AI Impact Assessment</div>
+        <div class="src-meta">ISACA · August 2025</div>
+        <div class="src-desc">Practical step-by-step guidance on conducting an AIIA aligned with ISO/IEC 42005:2025. Written for practitioners — useful for translating the standard into operational process.</div>
+      </a>
+      <a class="src-item" href="https://www.coe.int/en/web/artificial-intelligence/huderia-risk-and-impact-assessment-of-ai-systems" target="_blank" rel="noopener">
+        <div class="src-title">HUDERIA — Council of Europe AI Risk and Impact Assessment</div>
+        <div class="src-meta">Council of Europe · coe.int</div>
+        <div class="src-desc">The Council of Europe's central resource for the HUDERIA methodology — including background, full documentation, and implementation guidance. The HUDERIA Model (COBRA) was adopted in February 2026.</div>
+      </a>
+    </div>
+  </div>
+
 </div>
+
+<style>
+.src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+.src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+.src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+.src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+.src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+</style>
 
 <script>
 function showTab(id, btn) {

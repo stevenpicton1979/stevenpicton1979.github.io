@@ -151,6 +151,7 @@
   <button class="tab-btn" onclick="showTab('structure', this)">Governance Structure</button>
   <button class="tab-btn" onclick="showTab('terms', this)">Terminology</button>
   <button class="tab-btn" onclick="showTab('pitch', this)">Client Talking Points</button>
+  <button class="tab-btn" onclick="showTab('sources', this)">Sources</button>
 </div>
 
 <div class="content-wrap">
@@ -499,7 +500,69 @@
     </div>
   </div>
 
+  <!-- SOURCES -->
+  <div id="tab-sources" class="section">
+    <p class="lede">The research and frameworks behind this guide — drawn from the leading governance bodies, consulting firms, and academic institutions working on board-level AI oversight.</p>
+
+    <div class="sub-label">Primary research</div>
+    <div class="src-list">
+      <a class="src-item" href="https://cisr.mit.edu/publication/2024_1201_EnterpriseAIMaturityModel_WeillWoernerSebastian" target="_blank" rel="noopener">
+        <div class="src-title">Building Enterprise AI Maturity — MIT CISR</div>
+        <div class="src-meta">Peter Weill, Stephanie Woerner, Ina Sebastian · MIT Center for Information Systems Research · December 2024</div>
+        <div class="src-desc">The research behind the 10.9 percentage point ROI advantage for AI-savvy boards. Based on a 2022 survey of 721 companies supplemented with 2024 executive interviews. One of the most cited quantitative studies on AI governance and financial performance.</div>
+      </a>
+      <a class="src-item" href="https://www.mckinsey.com/capabilities/mckinsey-technology/our-insights/the-ai-reckoning-how-boards-can-evolve" target="_blank" rel="noopener">
+        <div class="src-title">Elevating Board Governance Through AI Posture and Archetypes</div>
+        <div class="src-meta">McKinsey & Company · December 2025</div>
+        <div class="src-desc">McKinsey's analysis of how boards can evolve their AI governance — based on interviews with directors from 75 boards. Covers board AI posture, committee structures, and the gap between AI adoption and oversight.</div>
+      </a>
+      <a class="src-item" href="https://corpgov.law.harvard.edu/2025/04/24/strategic-governance-of-ai-a-roadmap-for-the-future/" target="_blank" rel="noopener">
+        <div class="src-title">Strategic Governance of AI: A Roadmap for the Future</div>
+        <div class="src-meta">Deloitte LLP · Harvard Law School Forum on Corporate Governance · April 2025</div>
+        <div class="src-desc">Deloitte's AI Governance Roadmap applied to the board context — including guiding questions for each governance domain and the board's role in strategy, risk, accountability, and performance.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Standards & frameworks</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.nacdonline.org/all-governance/governance-resources/governance-research/director-faqs-and-essentials/implementing-ai-governance/" target="_blank" rel="noopener">
+        <div class="src-title">Director Essentials: Implementing AI Governance</div>
+        <div class="src-meta">National Association of Corporate Directors (NACD) · 2025</div>
+        <div class="src-desc">The NACD's practical framework for board AI oversight — including the 4-pillar model, survey data on board AI activities, and scenario-specific guidance for directors.</div>
+      </a>
+      <a class="src-item" href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener">
+        <div class="src-title">ISO/IEC 42001:2023 — AI Management Systems</div>
+        <div class="src-meta">International Organization for Standardization · 2023</div>
+        <div class="src-desc">The certifiable AI management system standard. Sets requirements for governance structures, risk management, and accountability that boards can use as a benchmark for assessing management's AI governance programme.</div>
+      </a>
+    </div>
+
+    <div class="sub-label">Further reading</div>
+    <div class="src-list">
+      <a class="src-item" href="https://www.diligent.com/resources/blog/ai-governance" target="_blank" rel="noopener">
+        <div class="src-title">AI Governance: A Guide to Responsible AI for Boards</div>
+        <div class="src-meta">Diligent Institute · January 2026</div>
+        <div class="src-desc">Current survey data on board AI governance readiness, including the finding that only 29% of organisations have comprehensive AI governance plans. Covers global regulatory context including EU, UK, US, and APAC approaches.</div>
+      </a>
+      <a class="src-item" href="https://corpgov.law.harvard.edu/2025/11/29/using-ai-in-the-boardroom-new-opportunities-and-challenges/" target="_blank" rel="noopener">
+        <div class="src-title">Using AI in the Boardroom — New Opportunities and Challenges</div>
+        <div class="src-meta">PricewaterhouseCoopers · Harvard Law School Forum · November 2025</div>
+        <div class="src-desc">PwC's 2025 Annual Corporate Directors Survey findings on how boards are using AI in their own governance processes — and the opportunities and risks that creates.</div>
+      </a>
+    </div>
+  </div>
+
 </div>
+
+<style>
+.src-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.src-item { display: block; background: var(--paper-card); border: 1px solid var(--line); border-radius: 6px; padding: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+.src-item:hover { background: #fff; border-color: rgba(26,26,24,0.25); }
+.src-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.src-meta { font-size: 11px; font-weight: 500; color: var(--ink-muted); letter-spacing: 0.04em; margin-bottom: 6px; }
+.src-desc { font-size: 12px; font-weight: 300; color: var(--ink-soft); line-height: 1.6; }
+.src-item::after { content: ' ↗'; font-size: 11px; color: var(--ink-muted); }
+</style>
 
 <script>
 function showTab(id, btn) {
